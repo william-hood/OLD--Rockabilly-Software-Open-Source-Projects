@@ -18,20 +18,44 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-using System;
-namespace Rockabilly.Common
+
+
+using System.Text;
+using System.Collections.Generic;
+using Rockabilly.Common;
+
+namespace Rockabilly.Common.HtmlEffects
 {
-	public enum VerticalJustification
+
+	public class ControlCluster : List<WebInterfaceControl>, WebInterfaceControl
 	{
-		TOP,
 
-		CENTER,
+		public int columns = 4;
 
-		BOTTOM
-	}
+		public override string ToString()
+		{
+			int colIndex = 0;
+			StringBuilder result = new StringBuilder("\t\t<table border=\"0\" ><tr>");
+			for (int index = 0; index < Count; index++)
+			{
+				colIndex++;
+				if (colIndex > columns)
+				{
+					colIndex = 1;
+					result.Append("\t\t</tr><tr>");
+				}
+				if (colIndex > 1)
+				{
+					result.Append("<td>&nbsp;</td>");
+				}
+				result.Append("\t\t\t<td>");
+				result.Append(this[index].ToString());
+				result.Append("</td>");
+				result.Append(Symbols.CarriageReturnLineFeed);
+			}
+			result.Append("\t\t</tr></table>");
+			return result.ToString();
+		}
 
-	public enum HorizontalJustification
-	{
-		LEFT, CENTER, RIGHT
 	}
 }

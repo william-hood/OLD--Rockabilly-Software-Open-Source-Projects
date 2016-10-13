@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{463F0CF5-6D6C-41BB-BF82-528396FF185A}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>rockabilly.common</RootNamespace>
+    <RootNamespace>Rockabilly.Common</RootNamespace>
     <AssemblyName>Common</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
@@ -42,6 +42,29 @@
     <Compile Include="ImpossibleCodePathException.cs" />
     <Compile Include="ImproperObjectConstructionException.cs" />
     <Compile Include="MatchList.cs" />
+    <Compile Include="DelimitedDataManager.cs" />
+    <Compile Include="Parser.cs" />
+    <Compile Include="HtmlLogSystem.cs" />
+    <Compile Include="HtmlEffects\WebInterfaceControl.cs" />
+    <Compile Include="HtmlEffects\Button.cs" />
+    <Compile Include="HtmlEffects\CaptionedControl.cs" />
+    <Compile Include="HtmlEffects\ConjoinedControls.cs" />
+    <Compile Include="HtmlEffects\ControlCluster.cs" />
+    <Compile Include="HtmlEffects\Divider.cs" />
+    <Compile Include="HtmlEffects\InlineImage.cs" />
+    <Compile Include="HtmlEffects\InStyleImage.cs" />
+    <Compile Include="HtmlEffects\Label.cs" />
+    <Compile Include="HtmlEffects\LineBreak.cs" />
+    <Compile Include="HtmlEffects\Link.cs" />
+    <Compile Include="HtmlEffects\ProgressBar.cs" />
+    <Compile Include="HtmlEffects\RawCodeSegment.cs" />
+    <Compile Include="HtmlEffects\TiledControl.cs" />
+    <Compile Include="HtmlEffects\WebImage.cs" />
+    <Compile Include="HtmlEffects\WebInterface_ImgsInStyleSection.cs" />
+    <Compile Include="HtmlEffects\WebInterface.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="HtmlEffects\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

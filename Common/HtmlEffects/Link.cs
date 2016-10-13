@@ -18,20 +18,52 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-using System;
-namespace Rockabilly.Common
+
+using Rockabilly.Common;
+using System.Text;
+
+namespace Rockabilly.Common.HtmlEffects
 {
-	public enum VerticalJustification
+
+	public class Link : WebInterfaceControl
 	{
-		TOP,
+		private string content = default(string);
+		private string destUrl = default(string);
 
-		CENTER,
+		public Link(string destinationUrl, string text)
+		{
+			destUrl = destinationUrl;
+			content = text;
+		}
 
-		BOTTOM
-	}
+		public Link(string destinationUrl, WebInterfaceControl innerControl) : this(destinationUrl, innerControl.ToString())
+		{
+		}
 
-	public enum HorizontalJustification
-	{
-		LEFT, CENTER, RIGHT
+		public string getStyle()
+		{
+			return "text-decoration: none";
+		}
+
+		public override string ToString()
+		{
+			StringBuilder result = new StringBuilder("<a ");
+			result.Append("href=\"");
+			result.Append(destUrl);
+			result.Append("\"");
+
+			string style = getStyle();
+			if (style != default(string))
+			{
+				result.Append(" style=\"");
+				result.Append(style);
+				result.Append(";\"");
+			}
+
+			result.Append('>');
+			result.Append(content);
+			result.Append("</a>");
+			return result.ToString();
+		}
 	}
 }

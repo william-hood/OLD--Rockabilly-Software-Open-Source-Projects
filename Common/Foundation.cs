@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016 William Arthur Hood
+// Copyright (c) 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,11 +21,16 @@
 using System;
 using System.Text;
 using System.Management;
-namespace rockabilly.common
+using System.IO;
+using System.Collections.Generic;
+namespace Rockabilly.Common
 {
 	public static class Foundation
 	{
 		private static string quickDateFormatString = "yyyy-MM-dd kk-mm-ss.SSS";
+
+		public static Random Random = new Random();
+
 		public static string TimeStamp
 		{
 			get
@@ -41,7 +46,7 @@ namespace rockabilly.common
 
 		private const string nullString = "(null)";
 
-	public static string RobustGetString(object candidate)
+		public static string RobustGetString(object candidate)
 		{
 			if (candidate == null)
 				return nullString;
@@ -59,7 +64,7 @@ namespace rockabilly.common
 			}
 		}
 
-		
+
 		public static string DepictException(Exception thisException)
 		{
 			StringBuilder result = new StringBuilder();
@@ -78,14 +83,11 @@ namespace rockabilly.common
 			return result.ToString();
 		}
 
-		// From http://stackoverflow.com/questions/577634/how-to-get-the-friendly-os-version-name
 		public static string OperatingSystemName
 		{
 			get
 			{
-				var name = (from x in new ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem").Get().Cast<ManagementObject>()
-							select x.GetPropertyValue("Caption")).FirstOrDefault();
-				return name != null ? name.ToString() : "Unknown";
+				return Environment.OSVersion.ToString();
 			}
 		}
 
@@ -105,8 +107,21 @@ namespace rockabilly.common
 			}
 		}
 
-
-		// Currently at nextLong Foundation.java line  165
-		// Still need DelimitedDataManager and HTML Log System
+		public static void CopyCompletely(string sourcePath, string destinationPath)
+		{
+			FileAttributes check = File.GetAttributes(sourcePath);
+			if (check.HasFlag(FileAttributes.Directory))
+			{
+				List<string> contents = new List<string>(Directory.EnumerateFileSystemEntries(sourcePath));
+				foreach (string thisFile in contents)
+				{
+					CopyCompletely(sourcePath + Path.DirectorySeparatorChar + thisFile, destinationPath + Path.DirectorySeparatorChar + thisFile);
+				}
+			}
+			else {
+				Directory.CreateDirectory(destinationPath);
+				File.Copy(sourcePath, destinationPath);
+			}
+		}
 	}
 }

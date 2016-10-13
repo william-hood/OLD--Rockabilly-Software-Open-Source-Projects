@@ -18,51 +18,57 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-using System;
+
+using Rockabilly.Common;
+using System.Text;
 using System.Collections.Generic;
 
-namespace Rockabilly.Common
+namespace Rockabilly.Common.HtmlEffects
 {
-	public class MatchList : List<string>
+	public class WebInterface_ImgsInStyleSection : WebInterface
 	{
-		public bool Matches(string candidateString)
-		{
-			foreach (string thisListedString in this)
-			{
-				if (candidateString.Contains(thisListedString)) return true;
-			}
+		public const string HTML_BODY_START = "\t<body>";
+		public const string HTML_BODY_END = "\t</body>";
 
-			return false;
+		private readonly Dictionary<string, InStyleImage> images = new Dictionary<string, InStyleImage>();
+
+		public string externalStyleSheetName = default(string);
+
+		public InStyleImage useInStyleImage(InStyleImage thisImage)
+		{
+			if (!images.ContainsKey(thisImage.GetType().Name))
+			{
+				images.Add(thisImage.GetType().Name, thisImage);
+			}
+			return thisImage;
 		}
 
-		public bool Contains(string candidateString)
+		public void clearInStyleImages()
 		{
-			foreach (string thisListedString in this)
-			{
-				if (thisListedString.Equals(candidateString)) return true;
-			}
-
-			return false;
+			images.Clear();
 		}
 
-		public bool MatchesCaseInspecific(string candidateString)
+		protected override bool HasCssStyle()
 		{
-			foreach (string thisListedString in this)
-			{
-				if (candidateString.ToUpper().Contains(thisListedString.ToUpper())) return true;
-			}
-
-			return false;
+			return (styles != default(string)) || (images.Count > 0);
 		}
 
-		public bool ContainsCaseInspecific(string candidateString)
+
+		protected override string getCssStyle()
 		{
-			foreach (string thisListedString in this)
+			StringBuilder result = new StringBuilder(base.getCssStyle());
+
+			if (images.Count > 0)
 			{
-				if (thisListedString.ToUpper().Equals(candidateString.ToUpper())) return true;
+				foreach (InStyleImage thisImage in images.Values)
+				{
+					result.Append(thisImage.ToCssClassString());
+					result.Append(Symbols.CarriageReturnLineFeed);
+				}
 			}
 
-			return false;
+			return result.ToString();
 		}
+
 	}
 }

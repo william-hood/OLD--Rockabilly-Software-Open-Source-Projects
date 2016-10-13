@@ -18,20 +18,53 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-using System;
-namespace Rockabilly.Common
+
+using System.Text;
+
+
+namespace Rockabilly.Common.HtmlEffects
 {
-	public enum VerticalJustification
+
+	public class Button : WebInterfaceControl
 	{
-		TOP,
+		private string content = default(string);
 
-		CENTER,
+		public Button(string text)
+		{
+			content = text;
+		}
 
-		BOTTOM
-	}
+		public string CssStyle
+		{
+			get
+			{
+				return "";
+			}
+		}
 
-	public enum HorizontalJustification
-	{
-		LEFT, CENTER, RIGHT
+		// Can override to "submit" or "reset"
+		public string ButtonType { get { return "button"; } }
+
+
+		public override string ToString()
+		{
+			StringBuilder result = new StringBuilder("<button ");
+			result.Append("type=\"");
+			result.Append(ButtonType);
+			result.Append("\"");
+
+			string style = CssStyle;
+			if (style != "")
+			{
+				result.Append(" style=\"");
+				result.Append(style);
+				result.Append(";\"");
+			}
+
+			result.Append('>');
+			result.Append(content);
+			result.Append("</button>");
+			return result.ToString();
+		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016 William Arthur Hood
+// Copyright (c) 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,7 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 using System;
-namespace rockabilly.common
+namespace Rockabilly.Common
 {
 	public class ImproperObjectConstructionException : Exception
 	{

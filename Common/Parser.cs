@@ -21,17 +21,35 @@
 using System;
 namespace Rockabilly.Common
 {
-	public enum VerticalJustification
+	public interface Parser<T>
 	{
-		TOP,
-
-		CENTER,
-
-		BOTTOM
+		T parseMethod(string stringToParse);
 	}
 
-	public enum HorizontalJustification
+	public class FloatParser : Parser<float>
 	{
-		LEFT, CENTER, RIGHT
+
+		public float parseMethod(String stringToParse)
+		{
+			return float.Parse(stringToParse);
+		}
+	}
+
+	public class IntParser : Parser<int>
+	{
+
+		public int parseMethod(String stringToParse)
+		{
+			return int.Parse(stringToParse);
+		}
+	}
+
+	public class StringParser : Parser<string>
+	{
+
+		public string parseMethod(string stringToParse)
+		{
+			return stringToParse;
+		}
 	}
 }

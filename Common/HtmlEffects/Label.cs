@@ -18,20 +18,44 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-using System;
-namespace Rockabilly.Common
+
+using System.Text;
+
+namespace Rockabilly.Common.HtmlEffects
 {
-	public enum VerticalJustification
+
+	public class Label : WebInterfaceControl
 	{
-		TOP,
+		private const int DEFAULT_FONTSIZE = 100;
+		private int textSize = DEFAULT_FONTSIZE;
+		private string labelText = default(string);
 
-		CENTER,
+		public Label(string text, int fontSize = DEFAULT_FONTSIZE)
+		{
+			labelText = text;
+			FontSize = fontSize;
+		}
 
-		BOTTOM
+		public int FontSize
+		{
+			get
+			{
+				return textSize;
+			}
+			set
+			{
+				textSize = value;
+				if (textSize < 1) textSize = 1;
+			}
+		}
+
+		public override string ToString()
+		{
+			StringBuilder result = new StringBuilder("<div style=\"font-size:");
+			result.Append(textSize);
+			result.Append("%;\">");
+			result.Append(labelText);
+			result.Append("</div>");
+			return result.ToString();
+		}
 	}
-
-	public enum HorizontalJustification
-	{
-		LEFT, CENTER, RIGHT
-	}
-}

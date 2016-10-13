@@ -21,17 +21,11 @@
 using System;
 namespace Rockabilly.Common
 {
-	public enum VerticalJustification
+	public interface WebInterfaceControl
 	{
-		TOP,
 
-		CENTER,
+		// All WebInterfaceControls should assume
+		// that ToString() will render their HTML.
 
-		BOTTOM
-	}
-
-	public enum HorizontalJustification
-	{
-		LEFT, CENTER, RIGHT
 	}
 }

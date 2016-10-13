@@ -18,20 +18,24 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-using System;
-namespace Rockabilly.Common
+
+using Rockabilly.Common
+
+namespace Rockabilly.Common.HtmlEffects
 {
-	public enum VerticalJustification
+
+	public class RawCodeSegment : WebInterfaceControl
 	{
-		TOP,
+		string content = default(string);
 
-		CENTER,
+		public RawCodeSegment(string codeSnip)
+		{
+			content = codeSnip;
+		}
 
-		BOTTOM
-	}
-
-	public enum HorizontalJustification
-	{
-		LEFT, CENTER, RIGHT
+		public override string ToString()
+		{
+			return content;
+		}
 	}
 }

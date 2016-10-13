@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016 William Arthur Hood
+// Copyright (c) 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
-namespace rockabilly.common
+namespace Rockabilly.Common
 {
 	public static class Symbols
 	{

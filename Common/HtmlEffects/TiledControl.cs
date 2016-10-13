@@ -18,20 +18,50 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-using System;
-namespace Rockabilly.Common
+
+using Rockabilly.Common;
+using System.Text;
+
+namespace Rockabilly.Common.HtmlEffects
 {
-	public enum VerticalJustification
+
+	public class TiledControl : WebInterfaceControl
 	{
-		TOP,
+		WebInterfaceControl content = null;
+		public string foregroundColor = "FFFFFF";
+		public string backgroundColor = "000000";
 
-		CENTER,
+		public TiledControl(WebInterfaceControl control)
+		{
+			content = control;
+		}
 
-		BOTTOM
-	}
+		public TiledControl(string caption, int fontSize = 100) : this(new Label(caption, fontSize))
+		{
 
-	public enum HorizontalJustification
-	{
-		LEFT, CENTER, RIGHT
+		}
+
+		public override string ToString()
+		{
+			StringBuilder result = new StringBuilder("<table border=\"0\"><tr><td><div style=\"padding:25px;text-align:center;vertical-align:middle;");
+			if (backgroundColor != default(string))
+			{
+				result.Append("background-color:#");
+				result.Append(backgroundColor);
+				result.Append(';');
+			}
+
+			if (foregroundColor != default(string))
+			{
+				result.Append("color:#");
+				result.Append(foregroundColor);
+				result.Append(';');
+			}
+
+			result.Append("\">");
+			result.Append(content.ToString());
+			result.Append("</div></td></tr></table>");
+			return result.ToString();
+		}
 	}
 }

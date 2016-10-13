@@ -18,20 +18,26 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-using System;
-namespace Rockabilly.Common
+
+using System.Text;
+
+namespace Rockabilly.Common.HtmlEffects
 {
-	public enum VerticalJustification
+
+	public abstract class InlineImage : WebInterfaceControl, WebImage
 	{
-		TOP,
+		public abstract string Base64ImageData { get; }
+		public abstract string ImageType { get; }
 
-		CENTER,
-
-		BOTTOM
-	}
-
-	public enum HorizontalJustification
-	{
-		LEFT, CENTER, RIGHT
+		public override string ToString()
+		{
+			StringBuilder result = new StringBuilder("<img src=\"");
+			result.Append("data:img/");
+			result.Append(ImageType);
+			result.Append(";base64,");
+			result.Append(Base64ImageData);
+			result.Append("\">");
+			return result.ToString();
+		}
 	}
 }

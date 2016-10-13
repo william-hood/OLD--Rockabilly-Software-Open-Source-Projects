@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016 William Arthur Hood
+// Copyright (c) 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,9 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Collections.Generic;
 
-namespace rockabilly.common
+namespace Rockabilly.Common
 {
 	public static class StringExtensions
 	{
@@ -282,6 +283,84 @@ namespace rockabilly.common
 			}
 
 			return baseExt;
+		}
+
+		public static bool ContainsMatch(this List<string> checkList, string candidate)
+		{
+			foreach (string thisString in checkList)
+			{
+				if (thisString.Matches(candidate)) return true;
+			}
+
+			return false;
+		}
+
+		public static bool ContainsMatchCaseInspecific(this List<string> checkList, string candidate)
+		{
+			foreach (string thisString in checkList)
+			{
+				if (thisString.MatchesCaseInspecific(candidate)) return true;
+			}
+
+			return false;
+		}
+
+		public static bool ContainsMatch(this string[] checkList, string candidate)
+		{
+			return new List<string>(checkList).ContainsMatch(candidate);
+		}
+
+		public static bool ContainsMatchCaseInspecific(this string[] checkList, string candidate)
+		{
+			return new List<string>(checkList).ContainsMatchCaseInspecific(candidate);
+		}
+
+		public static List<string> SortMarkupTags(this string target)
+		{
+			List<string> result = new List<string>();
+			StringBuilder thisString = new StringBuilder();
+			int levelsIn = 0;
+			for (int index = 0; index < target.Length; index++)
+			{
+				char thisChar = target[index];
+				if (levelsIn > 0)
+				{
+					if (thisChar == '<') { levelsIn++; }
+					else if (thisChar == '>') { levelsIn--; }
+
+					thisString.Append(thisChar);
+
+					if (levelsIn == 0)
+					{
+						if (thisString.Length > 0)
+						{
+							result.Add(thisString.ToString());
+							thisString = new StringBuilder();
+						}
+					}
+				}
+				else {
+					if (thisChar == '<')
+					{
+						if (thisString.Length > 0)
+						{
+							result.Add(thisString.ToString());
+							thisString = new StringBuilder();
+						}
+						levelsIn = 1;
+					}
+
+					thisString.Append(thisChar);
+				}
+			}
+
+			if (thisString.Length > 0)
+			{
+				result.Add(thisString.ToString());
+				thisString = new StringBuilder();
+			}
+
+			return result;
 		}
 	}
 }

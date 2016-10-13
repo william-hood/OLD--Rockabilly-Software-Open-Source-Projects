@@ -18,51 +18,72 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-using System;
-using System.Collections.Generic;
 
-namespace Rockabilly.Common
+using Rockabilly.Common;
+using System.Text;
+
+namespace Rockabilly.Common.HtmlEffects
 {
-	public class MatchList : List<string>
+
+	public class ProgressBar : WebInterfaceControl
 	{
-		public bool Matches(string candidateString)
-		{
-			foreach (string thisListedString in this)
-			{
-				if (candidateString.Contains(thisListedString)) return true;
-			}
+		private int value = default(int);
+		private int max = default(int);
 
-			return false;
+		public ProgressBar()
+		{
+			// Indeterminate Throbberr
+			max = 100;
 		}
 
-		public bool Contains(string candidateString)
+		public ProgressBar(int currentProgress, int maximum)
 		{
-			foreach (string thisListedString in this)
-			{
-				if (thisListedString.Equals(candidateString)) return true;
-			}
+			value = currentProgress;
+			max = maximum;
 
-			return false;
+			if (currentProgress < 0) currentProgress = 0;
+			if (max < currentProgress) max = currentProgress;
 		}
 
-		public bool MatchesCaseInspecific(string candidateString)
+		public int WidthPixels
 		{
-			foreach (string thisListedString in this)
+			get
 			{
-				if (candidateString.ToUpper().Contains(thisListedString.ToUpper())) return true;
+				return 600;
 			}
-
-			return false;
 		}
 
-		public bool ContainsCaseInspecific(string candidateString)
+		public int HeightPixels
 		{
-			foreach (string thisListedString in this)
+			get
 			{
-				if (thisListedString.ToUpper().Equals(candidateString.ToUpper())) return true;
+				return 50;
+			}
+		}
+
+		public override string ToString()
+		{
+			StringBuilder result = new StringBuilder("<progress ");
+
+			result.Append("style=\"border:0; width:");
+			result.Append(WidthPixels);
+			result.Append("px; height:");
+			result.Append(HeightPixels);
+			result.Append("px;\" ");
+
+			if (value != default(int))
+			{
+				result.Append("value=\"");
+				result.Append(value);
+				result.Append("\" ");
 			}
 
-			return false;
+			result.Append("max=\"");
+			result.Append(max);
+			result.Append('"');
+
+			result.Append("></progress>");
+			return result.ToString();
 		}
 	}
 }
