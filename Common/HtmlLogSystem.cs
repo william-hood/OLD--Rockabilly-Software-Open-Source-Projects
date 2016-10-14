@@ -323,7 +323,7 @@ namespace Rockabilly.Common
 			return mustBeTrue;
 		}
 
-		public void ShowException(Exception loggedException, LoggingLevel requestedLevel, InlineImage icon = null)
+		public void ShowException(Exception loggedException, LoggingLevel requestedLevel = LoggingLevel.Critical, InlineImage icon = null)
 		{
 			string currentLine = default(string);
 			try

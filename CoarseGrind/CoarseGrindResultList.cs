@@ -1,0 +1,57 @@
+﻿// Copyright (c) 2016 William Arthur Hood
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights to
+// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+// of the Software, and to permit persons to whom the Software is furnished
+// to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+
+
+// Complete when I remember what-the-heck this does and if it's appropriate for the C# version
+
+using System;
+using System.Collections.Generic;
+namespace Rockabilly.CoarseGrind
+{
+	public class CoarseGrindResultList
+	{
+		File resultsRoot = null;
+		internal readonly List<string> resultFolders = new List<string>();
+
+		void refresh()
+		{
+			resultFolders.Clear();
+			try
+			{
+				resultFolders.AddAll(Arrays.asList(resultsRoot.list(new FilenameFilter() {
+				  @Override
+				  public bool accept(File current, string name)
+		{
+			return new File(current, name).isDirectory();
+		}
+	})));
+		} catch (Exception dontCare) {
+			// DELIBERATE NO-OP
+		}
+	}
+
+	CoarseGrindResultList(string resultsRootPath)
+{
+	resultsRoot = new File(resultsRootPath);
+	refresh();
+}
+}
+}
