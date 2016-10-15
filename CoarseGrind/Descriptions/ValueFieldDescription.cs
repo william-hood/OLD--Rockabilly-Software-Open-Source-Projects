@@ -23,12 +23,15 @@ namespace Rockabilly.CoarseGrind.Descriptions
 {
 	public abstract class ValueFieldDescription<T> : FieldDescription<T>
 	{
-		public ValueFieldTargets target = ValueFieldTargets.HAPPY_PATH;
+		public ValueFieldTargets Target = ValueFieldTargets.HAPPY_PATH;
 		private LimitsDescription<T> bounds = null;
 
-		public LimitsDescription<T> getLimits()
+		public LimitsDescription<T> Limits
 		{
-			return bounds;
+			get
+			{
+				return bounds;
+			}
 		}
 
 		public ValueFieldDescription(LimitsDescription<T> limitsDescription) : this()
@@ -61,9 +64,9 @@ namespace Rockabilly.CoarseGrind.Descriptions
 
 		public override string ToString()
 		{
-			if (target == ValueFieldTargets.EXPLICIT)
-				return target.ToString() + " (" + BasisValue + ")";
-			return target.ToString();
+			if (Target == ValueFieldTargets.EXPLICIT)
+				return Target.ToString() + " (" + BasisValue + ")";
+			return Target.ToString();
 		}
 
 		public abstract T PositiveMinisculeValue { get; } //throws InappropriateDescriptionException;
@@ -112,7 +115,7 @@ namespace Rockabilly.CoarseGrind.Descriptions
 		{
 			get
 			{
-				switch (target)
+				switch (Target)
 				{
 					case ValueFieldTargets.EXPLICIT:
 						if (BasisValue == null)
@@ -179,7 +182,7 @@ namespace Rockabilly.CoarseGrind.Descriptions
 		{
 			get
 			{
-				return ((target == ValueFieldTargets.HAPPY_PATH) && BasisValue != null);
+				return ((Target == ValueFieldTargets.HAPPY_PATH) && BasisValue != null);
 			}
 		}
 
@@ -187,7 +190,7 @@ namespace Rockabilly.CoarseGrind.Descriptions
 		{
 			get
 			{
-				return target == ValueFieldTargets.EXPLICIT;
+				return Target == ValueFieldTargets.EXPLICIT;
 			}
 		}
 
@@ -195,14 +198,14 @@ namespace Rockabilly.CoarseGrind.Descriptions
 		{
 			get
 			{
-				return target == ValueFieldTargets.DEFAULT;
+				return Target == ValueFieldTargets.DEFAULT;
 			}
 		}
 
 		public override void SetToExplicitValue(T value)
 		{
 			BasisValue = value;
-			target = ValueFieldTargets.EXPLICIT;
+			Target = ValueFieldTargets.EXPLICIT;
 		}
 	}
 }

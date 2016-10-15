@@ -52,6 +52,8 @@
     <Compile Include="Descriptions\FieldDescription.cs" />
     <Compile Include="Descriptions\LimitsDescription.cs" />
     <Compile Include="Descriptions\ValueFieldDescription.cs" />
+    <Compile Include="Descriptions\SimpleFieldTargets.cs" />
+    <Compile Include="Descriptions\SimpleFieldDescription.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
