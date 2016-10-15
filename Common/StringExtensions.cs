@@ -268,6 +268,7 @@ namespace Rockabilly.Common
 		}
 
 		//use regex
+		// FIXED
 		private const string REPLACER = "\u25a2";
 		public static string FilterOutNonPrintables(this string candidate)
 		{

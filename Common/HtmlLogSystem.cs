@@ -22,6 +22,8 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using Rockabilly.Common.HtmlEffects;
+using System.Text.RegularExpressions;
+
 namespace Rockabilly.Common
 {
 	public enum LoggingLevel
@@ -296,7 +298,8 @@ namespace Rockabilly.Common
 				}
 				else {
 					//use regex
-					result.Append(thisString.Justify(HTML_LOG_JUSTIFY_SIZE).Replace(Symbols.CarriageReturnLineFeed, "<br>" + Symbols.CarriageReturnLineFeed));
+					// FIXED
+					result.Append(Regex.Replace(thisString.Justify(HTML_LOG_JUSTIFY_SIZE), Symbols.CarriageReturnLineFeed, "<br>" + Symbols.CarriageReturnLineFeed));
 				}
 			}
 
@@ -448,7 +451,8 @@ namespace Rockabilly.Common
 						}
 						else {
 							//use regex
-							result.Append(singleFailureLine(currentLine.Replace(Symbols.CarriageReturnLineFeed, " ")));
+							// FIXED
+							result.Append(singleFailureLine(Regex.Replace(currentLine, Symbols.CarriageReturnLineFeed, " ")));
 						}
 					}
 

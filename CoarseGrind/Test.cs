@@ -27,6 +27,7 @@ using Rockabilly.Common;
 using System.IO;
 using Rockabilly.CoarseGrind;
 using Rockabilly.Common.HtmlEffects;
+using System.Text.RegularExpressions;
 
 namespace Rockabilly.CoarseGrind
 {
@@ -269,7 +270,8 @@ namespace Rockabilly.CoarseGrind
 		private string FilterForSummary(string it)
 		{
 			//use regex -- will need to search the Java version for ReplaceAll() calls.
-			return it.replaceAll("[,\r\f\b]", "").replaceAll("[\t\n]", " ");
+			// FIXED
+			return Regex.Replace(Regex.Replace(it, "[,\r\f\b]", ""), "[\t\n]", " ");
 		}
 
 		public List<String> SummaryDataRow
