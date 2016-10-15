@@ -295,6 +295,7 @@ namespace Rockabilly.Common
 					}
 				}
 				else {
+					//use regex
 					result.Append(thisString.Justify(HTML_LOG_JUSTIFY_SIZE).Replace(Symbols.CarriageReturnLineFeed, "<br>" + Symbols.CarriageReturnLineFeed));
 				}
 			}
@@ -446,6 +447,7 @@ namespace Rockabilly.Common
 							result.Append("</center><br>");
 						}
 						else {
+							//use regex
 							result.Append(singleFailureLine(currentLine.Replace(Symbols.CarriageReturnLineFeed, " ")));
 						}
 					}

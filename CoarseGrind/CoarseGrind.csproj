@@ -41,6 +41,7 @@
     <Compile Include="TestStatus.cs" />
     <Compile Include="TestResult.cs" />
     <Compile Include="CoarseGrindBanner.cs" />
+    <Compile Include="CoarseGrindUserInterface.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">

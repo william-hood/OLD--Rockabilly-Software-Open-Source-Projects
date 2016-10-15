@@ -268,7 +268,7 @@ namespace Rockabilly.CoarseGrind
 
 		private string FilterForSummary(string it)
 		{
-			//use regex
+			//use regex -- will need to search the Java version for ReplaceAll() calls.
 			return it.replaceAll("[,\r\f\b]", "").replaceAll("[\t\n]", " ");
 		}
 
