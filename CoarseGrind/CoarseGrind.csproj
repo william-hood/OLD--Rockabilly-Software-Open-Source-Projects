@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{49EA574B-5DFA-4A26-B6D8-8048D08F8075}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Rockabilly.CoarseGrind</RootNamespace>
+    <RootNamespace>Rockabilly.CoarseGrind.Descriptions</RootNamespace>
     <AssemblyName>CoarseGrind</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <ReleaseVersion>5.0</ReleaseVersion>
@@ -42,12 +42,26 @@
     <Compile Include="TestResult.cs" />
     <Compile Include="CoarseGrindBanner.cs" />
     <Compile Include="CoarseGrindUserInterface.cs" />
+    <Compile Include="LoadTesting\LoadGenerationOrder.cs" />
+    <Compile Include="LoadTesting\LoadSequenceOrder.cs" />
+    <Compile Include="Descriptions\ObjectDescription.cs" />
+    <Compile Include="Descriptions\NoValueException.cs" />
+    <Compile Include="Descriptions\InappropriateDescriptionException.cs" />
+    <Compile Include="Descriptions\ExceptionDescription.cs" />
+    <Compile Include="Descriptions\ValueFieldTargets.cs" />
+    <Compile Include="Descriptions\FieldDescription.cs" />
+    <Compile Include="Descriptions\LimitsDescription.cs" />
+    <Compile Include="Descriptions\ValueFieldDescription.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{463F0CF5-6D6C-41BB-BF82-528396FF185A}</Project>
       <Name>Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="LoadTesting\" />
+    <Folder Include="Descriptions\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
