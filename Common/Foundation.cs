@@ -123,5 +123,16 @@ namespace Rockabilly.Common
 				File.Copy(sourcePath, destinationPath);
 			}
 		}
+
+
+		// Based on http://stackoverflow.com/questions/6651554/random-number-in-long-range-is-this-the-way
+		public static long RandomLong(long min, long max)
+		{
+			byte[] buf = new byte[8];
+			Random.NextBytes(buf);
+			long longRand = BitConverter.ToInt64(buf, 0);
+			return (Math.Abs(longRand % (max - min)) + min);
+			//return add(min, Foundation.Random..nextLong(new Random(), subtract(max, min)));
+		}
 	}
 }

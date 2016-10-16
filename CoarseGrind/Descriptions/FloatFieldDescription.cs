@@ -23,90 +23,101 @@ using Rockabilly.Common;
 
 namespace Rockabilly.CoarseGrind.Descriptions
 {
-	public class LongFieldDescription : ValueFieldDescription<long>
+	public class FloatFieldDescription : ValueFieldDescription<float>
 	{
-		public LongFieldDescription(LimitsDescription<long> limitsDescription) : base(limitsDescription)
+		public FloatFieldDescription(LimitsDescription<float> limitsDescription) : base(limitsDescription)
 		{
 		}
 
-		public LongFieldDescription() : base()
+		public FloatFieldDescription() : base()
 		{
 		}
 
-		public LongFieldDescription(long BasisValue) : base(BasisValue)
+		public FloatFieldDescription(float basisValue) : base(basisValue)
 		{
 		}
 
-		public override long PositiveMinisculeValue
-		{
-			get
-			{
-				return (long)1;
-			}
-		}
 
-		public override long PositiveModerateValue
+		public override float PositiveMinisculeValue
 		{
 			get
 			{
-				return (long)100;
+				return (float)1;
 			}
 		}
 
-		public override long MaximumPossibleValue
+
+		public override float PositiveModerateValue
 		{
 			get
 			{
-				return long.MaxValue;
+				return (float)100;
 			}
 		}
 
-		public override long MinimumPossibleValue
+
+		public override float MaximumPossibleValue
 		{
 			get
 			{
-				return long.MinValue;
+				return float.MaxValue;
 			}
 		}
 
-		public override long ZeroOrOrigin
+
+		public override float MinimumPossibleValue
 		{
 			get
 			{
-				return (long)0;
+				return float.MinValue;
 			}
 		}
 
-		public override long Add(long x, long y)
+
+		public override float ZeroOrOrigin
+		{
+			get
+			{
+				return (float)0;
+			}
+		}
+
+
+		public override float Add(float x, float y)
 		{
 			return x + y;
 		}
 
-		public override long Subtract(long x, long y)
+
+		public override float Subtract(float x, float y)
 		{
 			return x - y;
 		}
 
-		public override long Multiply(long x, long y)
+
+		public override float Multiply(float x, float y)
 		{
 			return x * y;
 		}
 
-		public override long Divide(long x, long y)
+
+		public override float Divide(float x, float y)
 		{
-			return x / y; // Does this round properly???
+			return x / y;
 		}
 
-		public override long Half(long x)
+
+		public override float Half(float x)
 		{
-			return Divide(x, (long)2);
+			return Divide(x, (float)2);
 		}
 
-		// Based on http://stackoverflow.com/questions/6651554/random-number-in-long-range-is-this-the-way
-		public override long Random(long min, long max)
+
+		public override float Random(float min, float max)
 		{
-			return Foundation.RandomLong(min, max);
-			//return add(min, Foundation.Random..nextLong(new Random(), subtract(max, min)));
+			// return add(min, new Random().nextInt(subtract(max, min)));
+			// Will implement support later
+			throw new InappropriateDescriptionException();
 		}
 
 	}

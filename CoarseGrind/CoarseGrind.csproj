@@ -29,6 +29,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -58,6 +59,15 @@
     <Compile Include="Descriptions\StringFieldTargets.cs" />
     <Compile Include="Descriptions\LongLimitsDescription.cs" />
     <Compile Include="Descriptions\LongFieldDescription.cs" />
+    <Compile Include="Descriptions\FloatLimitsDescription.cs" />
+    <Compile Include="Descriptions\FloatFieldDescription.cs" />
+    <Compile Include="Descriptions\DoubleLimitsDescription.cs" />
+    <Compile Include="Descriptions\DateTimeLimitsDescription.cs" />
+    <Compile Include="Descriptions\BigIntegerLimitsDescription.cs" />
+    <Compile Include="Descriptions\DoubleFieldDescription.cs" />
+    <Compile Include="Descriptions\DateTimeFieldTargets.cs" />
+    <Compile Include="Descriptions\DateTimeFieldDescription.cs" />
+    <Compile Include="Descriptions\BigIntegerFieldDescription.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">

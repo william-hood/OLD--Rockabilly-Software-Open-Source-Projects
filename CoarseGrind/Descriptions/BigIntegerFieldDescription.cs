@@ -19,94 +19,96 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 using System;
-using Rockabilly.Common;
+using System.Numerics;
 
 namespace Rockabilly.CoarseGrind.Descriptions
 {
-	public class LongFieldDescription : ValueFieldDescription<long>
+	public class BigIntegerFieldDescription : ValueFieldDescription<BigInteger>
 	{
-		public LongFieldDescription(LimitsDescription<long> limitsDescription) : base(limitsDescription)
+		public BigIntegerFieldDescription(LimitsDescription<BigInteger> limitsDescription) : base(limitsDescription)
 		{
 		}
 
-		public LongFieldDescription() : base()
+		public BigIntegerFieldDescription() : base()
 		{
 		}
 
-		public LongFieldDescription(long BasisValue) : base(BasisValue)
+		public BigIntegerFieldDescription(BigInteger BasisValue) : base(BasisValue)
 		{
 		}
 
-		public override long PositiveMinisculeValue
-		{
-			get
-			{
-				return (long)1;
-			}
-		}
-
-		public override long PositiveModerateValue
+		public override BigInteger PositiveMinisculeValue
 		{
 			get
 			{
-				return (long)100;
+				return BigInteger.One;
 			}
 		}
 
-		public override long MaximumPossibleValue
+		public override BigInteger PositiveModerateValue
 		{
 			get
 			{
-				return long.MaxValue;
+				return new BigInteger((long)100);
 			}
 		}
 
-		public override long MinimumPossibleValue
+		public override BigInteger MaximumPossibleValue
 		{
 			get
 			{
-				return long.MinValue;
+				// Going by spec, there is no max or min
+				throw new InappropriateDescriptionException();
 			}
 		}
 
-		public override long ZeroOrOrigin
+		public override BigInteger MinimumPossibleValue
 		{
 			get
 			{
-				return (long)0;
+				// Going by spec, there is no max or min
+				throw new InappropriateDescriptionException();
 			}
 		}
 
-		public override long Add(long x, long y)
+		public override BigInteger ZeroOrOrigin
+		{
+			get
+			{
+				return BigInteger.Zero;
+			}
+		}
+
+		public override BigInteger Add(BigInteger x, BigInteger y)
 		{
 			return x + y;
 		}
 
-		public override long Subtract(long x, long y)
+		public override BigInteger Subtract(BigInteger x, BigInteger y)
 		{
 			return x - y;
 		}
 
-		public override long Multiply(long x, long y)
+		public override BigInteger Multiply(BigInteger x, BigInteger y)
 		{
 			return x * y;
 		}
 
-		public override long Divide(long x, long y)
+		public override BigInteger Divide(BigInteger x, BigInteger y)
 		{
-			return x / y; // Does this round properly???
+			return x / y;
 		}
 
-		public override long Half(long x)
+		public override BigInteger Half(BigInteger x)
 		{
-			return Divide(x, (long)2);
+			return Divide(x, new BigInteger((long)2));
 		}
 
-		// Based on http://stackoverflow.com/questions/6651554/random-number-in-long-range-is-this-the-way
-		public override long Random(long min, long max)
+		public override BigInteger Random(BigInteger min, BigInteger max)
 		{
-			return Foundation.RandomLong(min, max);
-			//return add(min, Foundation.Random..nextLong(new Random(), subtract(max, min)));
+			// return Add(min, new Random().nextInt(Subtract(max, min)));
+			// Will implement support later
+			throw new InappropriateDescriptionException();
 		}
 
 	}

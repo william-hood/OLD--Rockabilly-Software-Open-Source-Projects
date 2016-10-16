@@ -19,94 +19,103 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 using System;
-using Rockabilly.Common;
-
 namespace Rockabilly.CoarseGrind.Descriptions
 {
-	public class LongFieldDescription : ValueFieldDescription<long>
+	public class DoubleFieldDescription : ValueFieldDescription<double>
 	{
-		public LongFieldDescription(LimitsDescription<long> limitsDescription) : base(limitsDescription)
+		public DoubleFieldDescription(LimitsDescription<double> limitsDescription) : base(limitsDescription)
 		{
 		}
 
-		public LongFieldDescription() : base()
+		public DoubleFieldDescription() : base()
 		{
 		}
 
-		public LongFieldDescription(long BasisValue) : base(BasisValue)
+		public DoubleFieldDescription(double basisValue) : base(basisValue)
 		{
 		}
 
-		public override long PositiveMinisculeValue
-		{
-			get
-			{
-				return (long)1;
-			}
-		}
 
-		public override long PositiveModerateValue
+		public override double PositiveMinisculeValue
 		{
 			get
 			{
-				return (long)100;
+				return (double)1;
 			}
 		}
 
-		public override long MaximumPossibleValue
+
+		public override double PositiveModerateValue
 		{
 			get
 			{
-				return long.MaxValue;
+				return (double)100;
 			}
 		}
 
-		public override long MinimumPossibleValue
+
+		public override double MaximumPossibleValue
 		{
 			get
 			{
-				return long.MinValue;
+				return double.MaxValue;
 			}
 		}
 
-		public override long ZeroOrOrigin
+
+		public override double MinimumPossibleValue
 		{
 			get
 			{
-				return (long)0;
+				return double.MinValue;
 			}
 		}
 
-		public override long Add(long x, long y)
+
+		public override double ZeroOrOrigin
+		{
+			get
+			{
+				return (double)0;
+			}
+		}
+
+
+		public override double Add(double x, double y)
 		{
 			return x + y;
 		}
 
-		public override long Subtract(long x, long y)
+
+		public override double Subtract(double x, double y)
 		{
 			return x - y;
 		}
 
-		public override long Multiply(long x, long y)
+
+		public override double Multiply(double x, double y)
 		{
 			return x * y;
 		}
 
-		public override long Divide(long x, long y)
+
+		public override double Divide(double x, double y)
 		{
-			return x / y; // Does this round properly???
+			return x / y;
 		}
 
-		public override long Half(long x)
+
+		public override double Half(double x)
 		{
-			return Divide(x, (long)2);
+			return Divide(x, (double)2);
 		}
 
-		// Based on http://stackoverflow.com/questions/6651554/random-number-in-long-range-is-this-the-way
-		public override long Random(long min, long max)
+
+		public override double Random(double min, double max)
 		{
-			return Foundation.RandomLong(min, max);
-			//return add(min, Foundation.Random..nextLong(new Random(), subtract(max, min)));
+			// return add(min, new Random().nextInt(subtract(max, min)));
+			// Will implement support later
+			throw new InappropriateDescriptionException();
 		}
 
 	}
