@@ -25,7 +25,6 @@ using System.Threading;
 using System.Collections.Generic;
 using Rockabilly.Common;
 using System.IO;
-using Rockabilly.CoarseGrind;
 using Rockabilly.Common.HtmlEffects;
 using System.Text.RegularExpressions;
 
@@ -41,9 +40,9 @@ namespace Rockabilly.CoarseGrind
 		public string parentArtifactsDirectory = default(string);
 		public TestPriority Priority = TestPriority.Normal;
 		private Thread executionThread = null;
-		bool WasSetup = false;
-		bool WasRun = false;
-		bool WasCleanedUp = false;
+		internal bool WasSetup = false;
+		internal bool WasRun = false;
+		internal bool WasCleanedUp = false;
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		internal float getProgress()
@@ -143,7 +142,7 @@ namespace Rockabilly.CoarseGrind
 			Log.Header(IdentifiedName);
 		}
 
-		public void runTestCase(LoggingLevel preferredLoggingLevel, string rootDirectory)
+		public void RunTest(LoggingLevel preferredLoggingLevel, string rootDirectory)
 		{
 			bool setupResult = true;
 
@@ -229,7 +228,7 @@ namespace Rockabilly.CoarseGrind
 			Log.ClearSpecificOutput(thisOutputIdentifier);
 		}
 
-		public void InterruptTest()
+		public void Interrupt()
 		{
 			try
 			{
@@ -336,17 +335,17 @@ namespace Rockabilly.CoarseGrind
 			}
 		}
 
-		protected TestResult GetResultForFailure(Exception thisFailure, string section = "")
+		public TestResult GetResultForFailure(Exception thisFailure, string section = "")
 		{
 			return GetResultForIncident(TestStatus.Fail, section, thisFailure);
 		}
 
-		protected void ReportFailureInCleanup(Exception thisFailure)
+		public void ReportFailureInCleanup(Exception thisFailure)
 		{
 			ReportFailureInCleanup("", thisFailure);
 		}
 
-		protected void ReportFailureInCleanup(string additionalMessage,
+		public void ReportFailureInCleanup(string additionalMessage,
 				Exception thisFailure)
 		{
 			if (additionalMessage.Length > 0)
@@ -357,19 +356,17 @@ namespace Rockabilly.CoarseGrind
 			Log.ShowException(thisFailure);
 		}
 
-		protected TestResult GetResultForPreclusionInSetup(Exception thisPreclusion)
+		public TestResult GetResultForPreclusionInSetup(Exception thisPreclusion)
 		{
-			return GetResultForIncident(TestStatus.Inconclusive, SETUP,
-					thisPreclusion);
+			return GetResultForIncident(TestStatus.Inconclusive, SETUP, thisPreclusion);
 		}
 
-		protected TestResult GetResultForPreclusion(Exception thisPreclusion)
+		public TestResult GetResultForPreclusion(Exception thisPreclusion)
 		{
 			return GetResultForIncident(TestStatus.Inconclusive, "", thisPreclusion);
 		}
 
-		private TestResult GetResultForIncident(TestStatus status, string section,
-				Exception thisFailure)
+		private TestResult GetResultForIncident(TestStatus status, string section, Exception thisFailure)
 		{
 			if (section.Length > 0)
 				section = " (" + section + ")";

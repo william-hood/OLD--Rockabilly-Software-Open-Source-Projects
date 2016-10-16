@@ -42,7 +42,7 @@ namespace Rockabilly.Common
 		const char SINGLE_DIVIDER = '_';
 		const char DOUBLE_DIVIDER = '=';
 
-		public static string divider(DividerTypes typeToUse = DividerTypes.SINGLE, int length = DEFAULT_DIVIDER_LENGTH)
+		public static string Divider(DividerTypes typeToUse = DividerTypes.SINGLE, int length = DEFAULT_DIVIDER_LENGTH)
 		{
 			char dividerChar = DOUBLE_DIVIDER;
 			string dividerString = "";
