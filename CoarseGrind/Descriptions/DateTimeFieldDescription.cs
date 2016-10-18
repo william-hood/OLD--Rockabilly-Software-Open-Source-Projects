@@ -22,7 +22,9 @@
 
 
 //
-// C# VERSION: THIS STILL HAS BITS THAT ARE NOT IMPLEMENTED
+// THIS CODE MAKES THE ASSUMPTION THAT YOU ARE RUNNING IT IN A YEAR WITH FOUR DIGITS.
+// IF YOU ARE SOMEHOW STILL USING THIS CODE AFTER JANUARY 1, 10000, IT WILL NEED
+// TO BE FIXED.
 //
 
 
@@ -181,7 +183,7 @@ namespace Rockabilly.CoarseGrind.Descriptions
 		{
 			get
 			{
-				string parsingDateTime = default(string);
+				DateTime result = DateTime.Now;
 				switch (Target)
 				{
 					case DateTimeFieldTargets.EXPLICIT:
@@ -243,69 +245,35 @@ namespace Rockabilly.CoarseGrind.Descriptions
 					case DateTimeFieldTargets.SLIGHTLY_BELOW_MAXIMUM:
 						return Subtract(MaximumPossibleValue, PositiveMinisculeValue);
 					case DateTimeFieldTargets.FIVE_DIGIT_YEAR:
-						throw new NotImplementedException();
-					/*
-		try {
-			return new SimpleDateFormat("yyyyyMMdd")
-					.parse(((Integer) (Foundation.randomInt(1, 9) * 1000))
-							.ToString()
-							+ HAPPY_YEAR
-							+ CURRENT_MONTH
-							+ CURRENT_DAY);
-		} catch (Exception e1) {
-			Test.Log.ShowException(e1);
-			return null;
-		}
-		*/
+						result.AddYears(10000);
+						return result;
 					case DateTimeFieldTargets.FOUR_DIGIT_YEAR:
 						return Present; // Make sure you remember to change this
 										// before January 1'st, 10000.
 					case DateTimeFieldTargets.THREE_DIGIT_YEAR:
-						parsingDateTime = "0" + HAPPY_YEAR.Substring(0, 2) + CURRENT_MONTH
-								+ CURRENT_DAY;
+						result.AddYears(-1000);
 						break;
 					case DateTimeFieldTargets.TWO_DIGIT_YEAR:
-						parsingDateTime = "00" + HAPPY_YEAR.Substring(0, 1) + CURRENT_MONTH
-								+ CURRENT_DAY;
+						result.AddYears(-1 * (DateTime.Now.Year - 50));
 						break;
 					case DateTimeFieldTargets.SINGLE_DIGIT_YEAR:
-						parsingDateTime = "000" + Foundation.Random.Next(1, 9).ToString()
-								+ CURRENT_MONTH + CURRENT_DAY;
+						result.AddYears(-1 * (DateTime.Now.Year - 3));
 						break;
 					case DateTimeFieldTargets.TWO_DIGIT_MONTH:
-						parsingDateTime = HAPPY_YEAR + Foundation.Random.Next(11, 12).ToString() + CURRENT_DAY;
-						break;
+						return new DateTime(result.Year - 1, Foundation.Random.Next(11, 12), result.Day);
 					case DateTimeFieldTargets.SINGLE_DIGIT_MONTH:
-						parsingDateTime = HAPPY_YEAR + "0"
-								+ Foundation.Random.Next(1, 9).ToString() + CURRENT_DAY;
-						break;
+						return new DateTime(result.Year - 1, Foundation.Random.Next(1, 9), result.Day);
 					case DateTimeFieldTargets.TWO_DIGIT_DAY:
-						parsingDateTime = HAPPY_YEAR + CURRENT_MONTH
-								+ Foundation.Random.Next(10, 28).ToString();
-						break;
+						return new DateTime(result.Year - 1, result.Month - 1, Foundation.Random.Next(10, 28));
 					case DateTimeFieldTargets.SINGLE_DIGIT_DAY:
-						parsingDateTime = HAPPY_YEAR + CURRENT_MONTH + "0"
-								+ Foundation.Random.Next(1, 9).ToString();
-						break;
+						return new DateTime(result.Year - 1, result.Month - 1, Foundation.Random.Next(1, 9));
 					case DateTimeFieldTargets.SINGLE_DIGIT_MONTH_AND_DAY:
-						parsingDateTime = HAPPY_YEAR + "0"
-								+ Foundation.Random.Next(1, 9).ToString() + "0"
-								+ Foundation.Random.Next(1, 9).ToString();
-						break;
+						return new DateTime(result.Year - 1, Foundation.Random.Next(11, 12), Foundation.Random.Next(10, 28));
 					default:
 						throw new NoValueException();
 				}
 
-				throw new NotImplementedException();
-				/*
-		try {
-			Test.Log.Message("Parsing the following value as date:  " + parsingDateTime, LoggingLevel.Debug);
-			return dateFormat.parse(parsingDate);
-		} catch (Exception e) {
-			Test.Log.ShowException(e);
-			return null;
-		}
-			*/
+				return result;
 			}
 		}
 

@@ -24,34 +24,25 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+
 namespace Rockabilly.CoarseGrind
 {
-	public class CoarseGrindResultList
+	internal class CoarseGrindResultList
 	{
-		File resultsRoot = null;
-		internal readonly List<string> resultFolders = new List<string>();
+		DirectoryInfo resultsRoot = null;
+		internal readonly List<DirectoryInfo> resultFolders = new List<DirectoryInfo>();
 
-		void refresh()
+		internal void refresh()
 		{
 			resultFolders.Clear();
-			try
-			{
-				resultFolders.AddAll(Arrays.asList(resultsRoot.list(new FilenameFilter() {
-				  @Override
-				  public bool accept(File current, string name)
-		{
-			return new File(current, name).isDirectory();
+			resultFolders.AddRange(resultsRoot.EnumerateDirectories());
 		}
-	})));
-		} catch (Exception dontCare) {
-			// DELIBERATE NO-OP
+
+		internal CoarseGrindResultList(string resultsRootPath)
+		{
+			resultsRoot = new DirectoryInfo(resultsRootPath);
+			refresh();
 		}
 	}
-
-	CoarseGrindResultList(string resultsRootPath)
-{
-	resultsRoot = new File(resultsRootPath);
-	refresh();
-}
-}
 }

@@ -134,5 +134,28 @@ namespace Rockabilly.Common
 			return (Math.Abs(longRand % (max - min)) + min);
 			//return add(min, Foundation.Random..nextLong(new Random(), subtract(max, min)));
 		}
+
+
+	public static string ReadLineFromInputStream(BufferedStream rawInputStream)
+		{
+			StringBuilder result = new StringBuilder();
+			int lastRead = default(int);
+			while (lastRead != -1)
+			{
+				try
+				{
+					if (rawInputStream.Length < 1) break; // Was BufferedInputStream.available()
+					lastRead = rawInputStream.ReadByte();
+					result.Append((char)lastRead);
+					if (((char)lastRead) == '\n') break;
+				}
+				catch (IOException)
+				{
+					break;
+				}
+			}
+
+			return result.ToString().Trim(); // Intentionally trimming off the carriage return at the end.
+		}
 	}
 }

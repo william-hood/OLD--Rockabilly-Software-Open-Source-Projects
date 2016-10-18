@@ -20,6 +20,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Text;
 using Rockabilly.Common;
@@ -27,13 +28,19 @@ using Rockabilly.Common.HtmlEffects;
 
 namespace Rockabilly.CoarseGrind
 {
-	public abstract class TestProgram
+	public abstract class TestProgram : WebInterface_ImgsInStyleSection
 	{
 		private HttpListener httpServer = null;
 		public TestProgram()
 		{
 			httpServer = new HttpListener();
 
+				Title = HtmlTitle;
+			//this.externalStyleSheetName = COARSEGRIND_EXTERNAL_CSS_NAME;
+			this.RefreshIntervalSeconds = RELOAD_SECONDS;
+			controlsInOrder.Add(new RawCodeSegment("<center>"));
+			controlsInOrder.Add(Banner);
+			controlsInOrder.Add(new Divider());
 		}
 
 	internal static readonly InStyleImage ICON_COARSEGRINDLOGO = new Icon_CoarseGrindLogo();
@@ -56,34 +63,28 @@ namespace Rockabilly.CoarseGrind
 	private static readonly InStyleImage ICON_SUBJECTIVERESULT = new Icon_SubjectiveResult();
 	private static readonly InStyleImage ICON_YES = new Icon_YES();
 
-	protected class CoarseGrindInterface : WebInterface_ImgsInStyleSection
-	{
-		private CoarseGrindInterface()
-	{
-				Title = this.HtmlTitle;
-		//this.externalStyleSheetName = COARSEGRIND_EXTERNAL_CSS_NAME;
-				this.RefreshIntervalSeconds = 
-		setRefreshIntervalSeconds(RELOAD_SECONDS());
-		controlsInOrder.Add(new RawCodeSegment("<center>"));
-		controlsInOrder.Add(getBanner(this));
-		controlsInOrder.Add(new Divider());
-	}
+		// Override this to set a custom banner
+protected WebInterfaceControl Banner
+		{
+			get
+			{
+				return new CoarseGrindBanner(this);
 }
+		}
 
-protected WebInterfaceControl getBanner(CoarseGrindInterface ui)
-{
-	return new CoarseGrindBanner(ui);
+		// Override this to change from the default reload frequency
+protected int RELOAD_SECONDS
+		{
+			get
+			{
+				return 5;
 }
-
-protected const int RELOAD_SECONDS()
-{
-	return 5;
-}
+		}
 
 TestCollection tests = null;
 
-protected abstract List<Test> getAllTests();
-protected abstract void processArguments(List<string> args);
+		protected abstract List<Test> AllTests { get; }
+protected abstract void ProcessArguments(List<string> args);
 
 private const string APPLY_CFG_PATH_PART = "apply";
 	private const string RUN_PATH_PART = "run";
@@ -96,36 +97,42 @@ private const string APPLY_CFG_PATH_PART = "apply";
 	private const string CONFIRM_KILL_SERVICE_PATH_PART = "confirm_kill_service";
 	private const string KILL_SERVICE_PATH_PART = "kill_service";
 
-	private const string ZIP_TEMP_FOLDER = Foundation.getUserHomeFolder() + File.separator + "TEMP_DELTHIS";
+		private static readonly string ZIP_TEMP_FOLDER = Foundation.UserHomeFolder + Path.DirectorySeparatorChar + "TEMP_DELTHIS";
 	private const string ZIP_TEMP_NAME = "TEMP_DELTHIS.zip";
-	private const string ZIP_TEMP_FILE = ZIP_TEMP_FOLDER + File.separator + ZIP_TEMP_NAME;
+	private static readonly string ZIP_TEMP_FILE = ZIP_TEMP_FOLDER + Path.DirectorySeparatorChar + ZIP_TEMP_NAME;
 	const int SMALL_SUITE_THRESHOLD = 26;
 const int LARGE_SUITE_THRESHOLD = 99;
 const int ICON_TEXT_SIZE = 175;
-private CoarseGrindResultList resultList = new CoarseGrindResultList(Global.DEFAULT_PARENT_FOLDER);
+private CoarseGrindResultList resultList = new CoarseGrindResultList(CoarseGrind.DEFAULT_PARENT_FOLDER);
 
 int port = 8085;
-InetAddress address = null;
+		IPAddress address = null;
 
 private bool testingContinues = true;
 
-public bool isReady()
-{
-	if (tests == null) return false;
-	return tests.isSetUp;
+public bool IsReady
+		{
+			get
+			{
+				if (tests == null) return false;
+				return tests.IsSetUp;
 }
+		}
 
-public bool isBusy()
-{
-	if (tests == null) return false;
-	return tests.currentlyRunningSuite != null;
+		public bool IsBusy
+		{
+			get {
+				if (tests == null) return false;
+				return tests.CurrentlyRunningSuite != null;
 }
+		}
 
-public int getProgress()
-{
-	if (!isBusy()) return 100;
-	return tests.currentlyRunningSuite.getProgress();
+public int Progress
+		{ get {
+				if (!IsBusy) return 100;
+				return tests.CurrentlyRunningSuite.getProgress();
 }
+		}
 
 // Call this from the static main() entrypoint
 protected void runTestProgram(string[] args)
@@ -136,29 +143,22 @@ protected void runTestProgram(string[] args)
 		Console.WriteLine("Resetting the Test Collection");
 
 		// Create all programmatically declared test suites
-		tests.setAllTests(getAllTests());
+		tests.SetAllTests(AllTests);
 
 		// We can't process config before adding programmatic
 		// Test Suites because DECLARE requires all test
 		// cases to already be defined.
-		tests.processConfigSet(this, args);
-		processArguments(tests.unprocessedArguments);
-		tests.isSetUp = true;
+		tests.ProcessConfigSet(this, args);
+		ProcessArguments(tests.UnprocessedArguments);
+		tests.IsSetUp = true;
 
-		Console.WriteLine(tests.describeAvailableSuites());
+		Console.WriteLine(tests.DescribeAvailableSuites);
 
-		if (!isServing())
+		if (! httpServer.IsListening)
 		{
 			if (address == null)
 			{
-				try
-				{
-					address = InetAddress.getByName("localhost");
-				}
-				catch (UnknownHostException e)
-				{
-					Console.WriteLine("Unable to set local address to localhost. Test Server is offline.");
-				}
+						address = IPAddress.Parse("localhost:" + port);
 			}
 
 			if (address != null)
@@ -166,10 +166,11 @@ protected void runTestProgram(string[] args)
 				// Attempt to start the test server
 				try
 				{
-					//setupService(port, connections, address);
-					setupService(port);
-					start();
-					Console.WriteLine(describeService());
+							httpServer.Prefixes.Add(address.ToString());
+							//setupService(port, connections, address);
+							httpServer.AuthenticationSchemes = AuthenticationSchemes.Anonymous;
+							httpServer.Start();
+							Console.WriteLine("Listening for connections on " + address.ToString());
 				}
 				catch (Exception loggedException)
 				{
@@ -201,8 +202,7 @@ protected void runTestProgram(string[] args)
 	if (isServing()) discontinueService();
 }
 
-@Override
-	public void discontinueService()
+	public void discontinueService() //HTTP Server
 {
 	if (isServing())
 	{
@@ -212,8 +212,7 @@ protected void runTestProgram(string[] args)
 	}
 }
 
-@Override
-	protected HttpResponse handle(HttpRequest incomingRequest)
+	protected HttpResponse handle(HttpRequest incomingRequest) //HTTP Server
 {
 	//NOTE: Requests with null URLs have somehow gotten through.
 	//      How to handle?
@@ -282,7 +281,7 @@ protected void runTestProgram(string[] args)
 
 				if (tmp != null)
 				{
-					tests.kickOffTestSuite(tmp);
+					tests.KickOffTestSuite(tmp);
 				}
 				ui = null;
 				return result;
@@ -293,7 +292,7 @@ protected void runTestProgram(string[] args)
 			case STOP_ALL_TESTING_PATH_PART:
 				try
 				{
-					tests.currentlyRunningSuite.haltAllTesting();
+					tests.CurrentlyRunningSuite.haltAllTesting();
 				}
 				catch (Exception assumedNullRef)
 				{
@@ -319,7 +318,7 @@ protected void runTestProgram(string[] args)
 				ui.controlsInOrder.Add(new LineBreak());
 				ui.controlsInOrder.Add(ui.useInStyleImage(ICON_STOPALL));
 				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new Label("Halting Test Suite: " + tests.currentlyRunningSuite.getName(), 300));
+				ui.controlsInOrder.Add(new Label("Halting Test Suite: " + tests.CurrentlyRunningSuite.getName(), 300));
 				ui.controlsInOrder.Add(new Label("No further tests will be run.", 200));
 				ui.setRefreshIntervalSeconds(4);
 				((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
@@ -328,7 +327,7 @@ protected void runTestProgram(string[] args)
 			case STOP_TEST_CASE_PATH_PART:
 				try
 				{
-					tests.currentlyRunningSuite.interruptCurrentTest();
+					tests.CurrentlyRunningSuite.interruptCurrentTest();
 				}
 				catch (Exception assumedNullRef)
 				{
@@ -361,7 +360,7 @@ protected void runTestProgram(string[] args)
 				ui.controlsInOrder.Add(new LineBreak());
 				ui.controlsInOrder.Add(ui.useInStyleImage(ICON_STOPONE));
 				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new Label("Interrupting Test Case: " + tests.currentlyRunningSuite.getCurrentTest(), 300));
+				ui.controlsInOrder.Add(new Label("Interrupting Test Case: " + tests.CurrentlyRunningSuite.getCurrentTest(), 300));
 				ui.controlsInOrder.Add(new Label("All remaining tests will still run.", 200));
 				ui.setRefreshIntervalSeconds(3);
 				((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
@@ -441,7 +440,7 @@ protected void runTestProgram(string[] args)
 				}
 				finally
 				{
-					Foundation.hardDelete(ZIP_TEMP_FOLDER);
+							Directory.Delete(ZIP_TEMP_FOLDER, true);
 				}
 
 				result.payload = null;
@@ -577,11 +576,9 @@ protected void runTestProgram(string[] args)
 				((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
 				ui = null;
 				return result;
-			default:
-				// DELIBERATE NO-OP
 		}
 	}
-	catch (ArrayIndexOutOfBoundsException expected)
+	catch //(ArrayIndexOutOfBoundsException expected)
 	{
 		// DELIBERATE NO-OP. They want the root page.
 	}
@@ -595,13 +592,13 @@ protected void runTestProgram(string[] args)
 		{
 			//Show progress and options to stop
 			ui.setRefreshIntervalSeconds(3);
-			ui.controlsInOrder.Add(new CaptionedControl(new ProgressBar(getProgress(), 100), new Label("Progress on test suite <b><i>\"" + tests.currentlyRunningSuite.getName() + "\"</i></b>", 150), Orientation.AboveCaption));
+			ui.controlsInOrder.Add(new CaptionedControl(new ProgressBar(getProgress(), 100), new Label("Progress on test suite <b><i>\"" + tests.CurrentlyRunningSuite.getName() + "\"</i></b>", 150), Orientation.AboveCaption));
 			ui.controlsInOrder.Add(new Divider());
 			ui.controlsInOrder.Add(new Label("OPTIONS", 300));
 			ui.controlsInOrder.Add(new LineBreak());
 			ui.controlsInOrder.Add(new RawCodeSegment("</center>"));
-			ui.controlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/' + STOP_TEST_CASE_PATH_PART, ui.useInStyleImage(ICON_STOPONE)), "Stop individual test <b><i>\"" + tests.currentlyRunningSuite.getCurrentTest() + "\"</i></b> and allow the remaining tests to run.", 250, Orientation.LeftOfCaption));
-			ui.controlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/' + STOP_ALL_TESTING_PATH_PART, ui.useInStyleImage(ICON_STOPALL)), "Halt test suite <b><i>\"" + tests.currentlyRunningSuite.getName() + "\"</i></b> completely. No more tests will run.", 250, Orientation.LeftOfCaption));
+			ui.controlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/' + STOP_TEST_CASE_PATH_PART, ui.useInStyleImage(ICON_STOPONE)), "Stop individual test <b><i>\"" + tests.CurrentlyRunningSuite.getCurrentTest() + "\"</i></b> and allow the remaining tests to run.", 250, Orientation.LeftOfCaption));
+			ui.controlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/' + STOP_ALL_TESTING_PATH_PART, ui.useInStyleImage(ICON_STOPALL)), "Halt test suite <b><i>\"" + tests.CurrentlyRunningSuite.getName() + "\"</i></b> completely. No more tests will run.", 250, Orientation.LeftOfCaption));
 		}
 		else {
 			// List available tests
@@ -649,18 +646,21 @@ protected void runTestProgram(string[] args)
 	return result;
 }
 
-private string getHtmlTitle()
-{
-			StringBuilder result = new StringBuilder(this.GetType().Name);
-	result.Append(" - ");
-	if (isBusy())
+private string HtmlTitle
 	{
-		result.Append(tests.currentlyRunningSuite.getName() + " " + getProgress() + "%");
-	}
-	else {
-		result.Append("Ready");
-	}
-	return result.ToString();
+		get
+		{
+			StringBuilder result = new StringBuilder(this.GetType().Name);
+			result.Append(" - ");
+			if (isBusy())
+			{
+				result.Append(tests.CurrentlyRunningSuite.Name + " " + Progress + "%");
+			}
+			else {
+				result.Append("Ready");
+			}
+			return result.ToString();
 }
+		}
 }
 }
