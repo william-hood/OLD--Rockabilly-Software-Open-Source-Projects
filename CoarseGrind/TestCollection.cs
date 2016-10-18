@@ -261,7 +261,7 @@ namespace Rockabilly.CoarseGrind
 			}
 	}
 
-		~TestCollection()
+		internal void destroy()
 	{
 		AllTestSuites.Clear();
 		AllTests.Clear();

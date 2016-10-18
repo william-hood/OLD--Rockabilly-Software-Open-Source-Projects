@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Text;
 using Rockabilly.Common;
@@ -28,6 +29,7 @@ using Rockabilly.Common.HtmlEffects;
 
 namespace Rockabilly.CoarseGrind
 {
+	// Wont work. The webinterface must be HAS A not IS A
 	public abstract class TestProgram : WebInterface_ImgsInStyleSection
 	{
 		private HttpListener httpServer = null;
@@ -174,26 +176,27 @@ protected void runTestProgram(string[] args)
 				}
 				catch (Exception loggedException)
 				{
-					Console.WriteLine(Foundation.depictFailure(loggedException));
+							Console.WriteLine(Foundation.DepictException(loggedException));
 					Console.WriteLine("Test Server is offline");
 				}
 			}
 		}
 
-		if (tests.immediateRun != Values.Defaultstring)
+		if (tests.immediateRun != default(string))
 		{
-			TestSuite tmp = tests.allTestSuites.get(tests.immediateRun);
+			TestSuite tmp = tests.AllTestSuites[tests.immediateRun];
 			if (tmp == null)
 			{
 				Console.WriteLine("No test suite named \"" + tests.immediateRun + "\" exists. Nothing to run so exiting the program.");
 			}
 			else {
 				testingContinues = false;
-				tests.runTestSuite(tmp);
+						tests.CurrentlyRunningSuite = tmp;
+				tests.RunTestSuite();
 			}
 		}
 
-		tests.waitWhileTesting();
+		tests.WaitWhileTesting();
 		tests.destroy();
 		tests = null;
 				GC.Collect();
@@ -212,18 +215,19 @@ protected void runTestProgram(string[] args)
 	}
 }
 
-	protected HttpResponse handle(HttpRequest incomingRequest) //HTTP Server
+	protected void handle(ref HttpListenerContext incomingRequest) //HTTP Server
 {
 	//NOTE: Requests with null URLs have somehow gotten through.
 	//      How to handle?
 
+			// may need to parse the URL as a string
 	string remoteUrlTarget =
-			incomingRequest.getURL().getProtocol() + "://"
+			incomingRequest.Request..getURL().getProtocol() + "://"
 			+ incomingRequest.getURL().getHost() + ":"
 			+ incomingRequest.getURL().getPort();
 
 	TestSuite tmp = null;
-	HttpResponse result = new HttpResponse(new HttpstringPayload());
+	//HttpResponse result = new HttpResponse(new HttpstringPayload());
 
 	CoarseGrindInterface ui = new CoarseGrindInterface();
 	ui.setRedirectionUrl(remoteUrlTarget);
@@ -254,7 +258,7 @@ protected void runTestProgram(string[] args)
 			//((HttpstringPayload)result.payload).getContent().Append(ui.getCssStyle());
 			//return result;
 			case RUN_PATH_PART:
-				tmp = tests.allTestSuites.get(urlParts[1]);
+				tmp = tests.AllTestSuites[urlParts[1]];
 				if (tmp == null)
 				{
 					try
@@ -287,7 +291,7 @@ protected void runTestProgram(string[] args)
 				return result;
 			case APPLY_CFG_PATH_PART:
 				// For RUN and APPLY, the config parameters go in the body
-				tests.processConfigSet(this, incomingRequest.payload.ToString().replace("\r", "").split("\n"));
+				tests.ProcessConfigSet(this, incomingRequest.payload.ToString().replace("\r", "").split("\n"));
 				return result;
 			case STOP_ALL_TESTING_PATH_PART:
 				try
@@ -380,7 +384,7 @@ protected void runTestProgram(string[] args)
 
 				try
 				{
-					tests.block.countDown();
+					tests.block.Signal();
 				}
 				catch (Exception dontCare)
 				{
@@ -392,7 +396,7 @@ protected void runTestProgram(string[] args)
 			case RETRIEVE_DATA_PATH_PART:
 				try
 				{
-					ZipFileCreator.make(Global.DEFAULT_PARENT_FOLDER + File.separator + URLDecoder.decode(urlParts[1].replace(".zip", ""), "UTF-8"), ZIP_TEMP_FILE);
+							ZipFile.CreateFromDirectory(CoarseGrind.DEFAULT_PARENT_FOLDER + Path.DirectorySeparatorChar + URLDecoder.decode(urlParts[1].replace(".zip", ""), "UTF-8"), ZIP_TEMP_FILE, CompressionLevel.Optimal, true);
 				}
 				catch (IOException thisException)
 				{
