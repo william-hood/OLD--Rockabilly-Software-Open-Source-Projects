@@ -186,19 +186,20 @@ namespace Rockabilly.CoarseGrind
 					index++;
 					HandleInclusion(parent, new FileInfo(args[index]));
 					break;
-				case DECLARE_ARG:IsSet
+				case DECLARE_ARG:
 					DoDeclare(args, index + 1);
 					return;
 				case PORT_ARG:
 					index++;
-					if (!parent.IsServing())
+					if (!parent.ContinueService)
 					{
-							parent.Port = int.Parse(args[index]);
+							parent.WEBUI_PORT = int.Parse(args[index]);
 					} // will silently ignore if serving.
 					return;
+						/*
 				case ADDRESS_ARG:
 					index++;
-					if (!parent.isServing())
+					if (!parent.ContinueService)
 					{
 						try
 						{
@@ -210,8 +211,9 @@ namespace Rockabilly.CoarseGrind
 						}
 					} // will silently ignore if serving.
 					return;
+					*/
 				default:
-					unprocessedArguments.Add(args[index]);
+					UnprocessedArguments.Add(args[index]);
 						break;
 			}
 		}

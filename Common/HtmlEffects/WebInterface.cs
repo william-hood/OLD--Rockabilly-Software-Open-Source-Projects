@@ -38,7 +38,7 @@ namespace Rockabilly.Common.HtmlEffects
 		private string pageTitle = "Web Interface";
 		private string redirectionUrl = default(string);
 
-		public readonly List<WebInterfaceControl> controlsInOrder = new List<WebInterfaceControl>();
+		public readonly List<WebInterfaceControl> ControlsInOrder = new List<WebInterfaceControl>();
 		public string externalStyleSheetName = default(string);
 
 		public int RefreshIntervalSeconds
@@ -202,10 +202,10 @@ namespace Rockabilly.Common.HtmlEffects
 		{
 			StringBuilder result = new StringBuilder(HtmlHeader);
 
-			for (int index = 0; index < controlsInOrder.Count; index++)
+			for (int index = 0; index < ControlsInOrder.Count; index++)
 			{
 				result.Append("\t\t");
-				result.Append(controlsInOrder[index].ToString());
+				result.Append(ControlsInOrder[index].ToString());
 				result.Append("<br>");
 				result.Append(Symbols.CarriageReturnLineFeed);
 			}

@@ -93,7 +93,7 @@ namespace Rockabilly.CoarseGrind
 		public abstract string[] TestSuiteMemberships { get; }
 		public abstract string[] TestCategoryMemberships { get; }
 
-		public List<TestResult> Results = new List<TestResult>();
+		public readonly List<TestResult> Results = new List<TestResult>();
 
 		private string getEchelonName()
 		{
@@ -116,7 +116,7 @@ namespace Rockabilly.CoarseGrind
 			}
 		}
 
-		public void AddResult(TestResult thisResult, LoggingLevel requestedLevel = LoggingLevel.Standard)
+		public virtual void AddResult(TestResult thisResult, LoggingLevel requestedLevel = LoggingLevel.Standard)
 		{
 			thisResult.Log(requestedLevel);
 			Results.Add(thisResult);
@@ -142,7 +142,7 @@ namespace Rockabilly.CoarseGrind
 			Log.Header(IdentifiedName);
 		}
 
-		public void RunTest(LoggingLevel preferredLoggingLevel, string rootDirectory)
+		public virtual void RunTest(LoggingLevel preferredLoggingLevel, string rootDirectory)
 		{
 			bool setupResult = true;
 
@@ -240,28 +240,28 @@ namespace Rockabilly.CoarseGrind
 			}
 		}
 
-		public void CheckPrerequisite(string conditionDescription, bool condition)
+		public virtual void CheckPrerequisite(string conditionDescription, bool condition)
 		{
 			TestResult result = TestResult.FromPrerequisite(conditionDescription, condition);
 			AddResult(result, result.Status.ToLoggingLevel());
 			result = null;
 		}
 
-		public void CheckPassCriterion(string conditionDescription, bool condition)
+		public virtual void CheckPassCriterion(string conditionDescription, bool condition)
 		{
 			TestResult result = TestResult.FromPassCriterion(conditionDescription, condition);
 			AddResult(result, result.Status.ToLoggingLevel());
 			result = null;
 		}
 
-		public void CheckCondition(string conditionDescription, bool condition)
+		public virtual void CheckCondition(string conditionDescription, bool condition)
 		{
 			TestResult result = TestResult.FromCondition(conditionDescription, condition);
 			AddResult(result, result.Status.ToLoggingLevel());
 			result = null;
 		}
 
-		public void MakeSubjective()
+		public virtual void MakeSubjective()
 		{
 			AddResult(new TestResult(TestStatus.Subjective, "This test case requires analysis by appropriate personnel to determine pass/fail status"));
 		}
@@ -273,7 +273,7 @@ namespace Rockabilly.CoarseGrind
 			return Regex.Replace(Regex.Replace(it, "[,\r\f\b]", ""), "[\t\n]", " ");
 		}
 
-		public List<String> SummaryDataRow
+		internal List<String> SummaryDataRow
 		{
 			get
 			{
@@ -310,7 +310,7 @@ namespace Rockabilly.CoarseGrind
 			}
 		}
 
-		public string LogFileName
+		public virtual string LogFileName
 		{
 			get
 			{
@@ -319,7 +319,7 @@ namespace Rockabilly.CoarseGrind
 		}
 
 
-		public string ArtifactsDirectory
+		public virtual string ArtifactsDirectory
 		{
 			get
 			{
@@ -327,7 +327,7 @@ namespace Rockabilly.CoarseGrind
 			}
 		}
 
-		public string IdentifiedName
+		public virtual string IdentifiedName
 		{
 			get
 			{
@@ -335,18 +335,17 @@ namespace Rockabilly.CoarseGrind
 			}
 		}
 
-		public TestResult GetResultForFailure(Exception thisFailure, string section = "")
+		public virtual TestResult GetResultForFailure(Exception thisFailure, string section = "")
 		{
 			return GetResultForIncident(TestStatus.Fail, section, thisFailure);
 		}
 
-		public void ReportFailureInCleanup(Exception thisFailure)
+		public virtual void ReportFailureInCleanup(Exception thisFailure)
 		{
 			ReportFailureInCleanup("", thisFailure);
 		}
 
-		public void ReportFailureInCleanup(string additionalMessage,
-				Exception thisFailure)
+		public virtual void ReportFailureInCleanup(string additionalMessage, Exception thisFailure)
 		{
 			if (additionalMessage.Length > 0)
 				additionalMessage = " " + additionalMessage;
@@ -356,12 +355,12 @@ namespace Rockabilly.CoarseGrind
 			Log.ShowException(thisFailure);
 		}
 
-		public TestResult GetResultForPreclusionInSetup(Exception thisPreclusion)
+		public virtual TestResult GetResultForPreclusionInSetup(Exception thisPreclusion)
 		{
 			return GetResultForIncident(TestStatus.Inconclusive, SETUP, thisPreclusion);
 		}
 
-		public TestResult GetResultForPreclusion(Exception thisPreclusion)
+		public virtual TestResult GetResultForPreclusion(Exception thisPreclusion)
 		{
 			return GetResultForIncident(TestStatus.Inconclusive, "", thisPreclusion);
 		}
@@ -376,7 +375,7 @@ namespace Rockabilly.CoarseGrind
 			return result;
 		}
 
-		public string PrefixedName
+		public virtual string PrefixedName
 		{
 			get
 			{

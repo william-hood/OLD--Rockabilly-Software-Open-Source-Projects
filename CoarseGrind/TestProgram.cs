@@ -29,22 +29,21 @@ using Rockabilly.Common.HtmlEffects;
 
 namespace Rockabilly.CoarseGrind
 {
-	// Wont work. The webinterface must be HAS A not IS A
-	public abstract class TestProgram : WebInterface_ImgsInStyleSection
+	internal class CoarseGrindInterface : WebInterface_ImgsInStyleSection
 	{
-		private HttpListener httpServer = null;
-		public TestProgram()
-		{
-			httpServer = new HttpListener();
+		internal CoarseGrindInterface(string htmlTitle, WebInterfaceControl banner, int reloadSeconds = 5)
+	{
+		Title = htmlTitle;
+		//this.externalStyleSheetName = COARSEGRIND_EXTERNAL_CSS_NAME;
+		RefreshIntervalSeconds = reloadSeconds;
+		ControlsInOrder.Add(new RawCodeSegment("<center>"));
+		ControlsInOrder.Add(banner);
+		ControlsInOrder.Add(new Divider());
+	}
+}
 
-				Title = HtmlTitle;
-			//this.externalStyleSheetName = COARSEGRIND_EXTERNAL_CSS_NAME;
-			this.RefreshIntervalSeconds = RELOAD_SECONDS;
-			controlsInOrder.Add(new RawCodeSegment("<center>"));
-			controlsInOrder.Add(Banner);
-			controlsInOrder.Add(new Divider());
-		}
-
+	public abstract class TestProgram : HttpServer
+	{
 	internal static readonly InStyleImage ICON_COARSEGRINDLOGO = new Icon_CoarseGrindLogo();
 	private static readonly InStyleImage ICON_CONFIRMDELETE = new Icon_ConfirmDelete();
 	private static readonly InStyleImage ICON_DECLINEDELETE = new Icon_DeclineDelete();
@@ -107,8 +106,7 @@ const int LARGE_SUITE_THRESHOLD = 99;
 const int ICON_TEXT_SIZE = 175;
 private CoarseGrindResultList resultList = new CoarseGrindResultList(CoarseGrind.DEFAULT_PARENT_FOLDER);
 
-int port = 8085;
-		IPAddress address = null;
+internal int WEBUI_PORT = 8085;
 
 private bool testingContinues = true;
 
@@ -137,7 +135,7 @@ public int Progress
 		}
 
 // Call this from the static main() entrypoint
-protected void runTestProgram(string[] args)
+protected void RunTestProgram(string[] args)
 {
 	while (testingContinues)
 	{
@@ -156,30 +154,19 @@ protected void runTestProgram(string[] args)
 
 		Console.WriteLine(tests.DescribeAvailableSuites);
 
-		if (! httpServer.IsListening)
+		if (! ContinueService)
 		{
-			if (address == null)
-			{
-						address = IPAddress.Parse("localhost:" + port);
-			}
-
-			if (address != null)
-			{
-				// Attempt to start the test server
-				try
-				{
-							httpServer.Prefixes.Add(address.ToString());
-							//setupService(port, connections, address);
-							httpServer.AuthenticationSchemes = AuthenticationSchemes.Anonymous;
-							httpServer.Start();
-							Console.WriteLine("Listening for connections on " + address.ToString());
-				}
-				catch (Exception loggedException)
-				{
-							Console.WriteLine(Foundation.DepictException(loggedException));
-					Console.WriteLine("Test Server is offline");
-				}
-			}
+					// Attempt to start the test server
+					try
+					{
+						SetupService(WEBUI_PORT);
+						Console.WriteLine(DescribeService());
+					}
+					catch (Exception loggedException)
+					{
+						Console.WriteLine(Foundation.DepictException(loggedException));
+						Console.WriteLine("Test Server is offline");
+					}
 		}
 
 		if (tests.immediateRun != default(string))
@@ -202,48 +189,38 @@ protected void runTestProgram(string[] args)
 				GC.Collect();
 	}
 
-	if (isServing()) discontinueService();
+			if (ContinueService) DiscontinueService();
 }
 
-	public void discontinueService() //HTTP Server
+	public override void DiscontinueService() //HTTP Server
 {
-	if (isServing())
+			if (ContinueService)
 	{
-		super.discontinueService();
+		base.DiscontinueService();
 		testingContinues = false;
 		Console.WriteLine("TEST SERVER TAKEN OFFLINE");
 	}
 }
 
-	protected void handle(ref HttpListenerContext incomingRequest) //HTTP Server
+	public override string Handle(HttpListenerRequest incomingRequest) //HTTP Server
 {
+			StringBuilder result = new StringBuilder();
 	//NOTE: Requests with null URLs have somehow gotten through.
 	//      How to handle?
-
-			// may need to parse the URL as a string
-	string remoteUrlTarget =
-			incomingRequest.Request..getURL().getProtocol() + "://"
-			+ incomingRequest.getURL().getHost() + ":"
-			+ incomingRequest.getURL().getPort();
+			/*
+			string remoteUrlTarget =
+				incomingRequest.getURL().getProtocol() + "://"
+				+ incomingRequest.getURL().getHost() + ":"
+				+ incomingRequest.getURL().getPort();
+			*/
 
 	TestSuite tmp = null;
-	//HttpResponse result = new HttpResponse(new HttpstringPayload());
 
-	CoarseGrindInterface ui = new CoarseGrindInterface();
-	ui.setRedirectionUrl(remoteUrlTarget);
-	try
-	{
-		result.setStatusCode(200);
-	}
-	catch (IllegalStatusCodeException e)
-	{
-		// DELIBERATE NO-OP -- SHOULDN'T BE POSSIBLE
-	}
+			CoarseGrindInterface ui = new CoarseGrindInterface(HtmlTitle, Banner);
+	//ui.RedirectionUrl = remoteUrlTarget;
 
-	result.httpContent = new HttpContent(HttpContent.text, HttpContent.html);
-	result.setServer("Rockabilly Coarse Grind Test Server");
 
-	string[] urlParts = incomingRequest.getURL().getPath().substring(1).split("/");
+	string[] urlParts = incomingRequest.RawUrl.Split('/');
 
 	try
 	{
@@ -261,124 +238,96 @@ protected void runTestProgram(string[] args)
 				tmp = tests.AllTestSuites[urlParts[1]];
 				if (tmp == null)
 				{
-					try
-					{
-						result.setStatusCode(404);
-					}
-					catch (IllegalStatusCodeException e)
-					{
-						// DELIBERATE NO-OP -- SHOULDN'T BE POSSIBLE
-					}
-
-					ui.controlsInOrder.Add(new Label("No test suite named \"" + urlParts[1] + "\" exists", 300));
-					((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
+					ui.ControlsInOrder.Add(new Label("No test suite named \"" + urlParts[1] + "\" exists", 300));
+					result.Append(ui.ToString());
 					ui = null;
-					return result;
+							return result.ToString();
 				}
 
 				//We may not support command line arguments over the web for security reasons.
 				//processConfigSet(incomingRequest.body.ToString().replace("\r", "").split("\n"));
 
-				ui.controlsInOrder.Add(new Label("Running: " + urlParts[1], 500));
-				ui.setRefreshIntervalSeconds(1);
-				((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
+				ui.ControlsInOrder.Add(new Label("Running: " + urlParts[1], 500));
+				ui.RefreshIntervalSeconds = 1;
+				result.Append(ui.ToString());
 
 				if (tmp != null)
 				{
 					tests.KickOffTestSuite(tmp);
 				}
 				ui = null;
-				return result;
+					return result.ToString();
 			case APPLY_CFG_PATH_PART:
 				// For RUN and APPLY, the config parameters go in the body
-				tests.ProcessConfigSet(this, incomingRequest.payload.ToString().replace("\r", "").split("\n"));
-				return result;
+						tests.ProcessConfigSet(this, new StreamReader(incomingRequest.InputStream).ReadToEnd().Replace("\r", "").Split('\n'));
+				return "ACK";
 			case STOP_ALL_TESTING_PATH_PART:
 				try
 				{
-					tests.CurrentlyRunningSuite.haltAllTesting();
+							tests.CurrentlyRunningSuite.HaltAllTesting();
 				}
 				catch (Exception assumedNullRef)
 				{
-					try
-					{
-						result.setStatusCode(417);
-					}
-					catch (IllegalStatusCodeException e)
-					{
-						// DELIBERATE NO-OP -- SHOULDN'T BE POSSIBLE
-					}
-
-					ui.controlsInOrder.Add(new Label("No test suite is currently running", 300));
-					((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
+					ui.ControlsInOrder.Add(new Label("No test suite is currently running", 300));
+					result.Append(ui.ToString());
 					ui = null;
-					return result;
+							return result.ToString();
 				}
 
 
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(ui.useInStyleImage(ICON_STOPALL));
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new Label("Halting Test Suite: " + tests.CurrentlyRunningSuite.getName(), 300));
-				ui.controlsInOrder.Add(new Label("No further tests will be run.", 200));
-				ui.setRefreshIntervalSeconds(4);
-				((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(ui.useInStyleImage(ICON_STOPALL));
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new Label("Halting Test Suite: " + tests.CurrentlyRunningSuite.Name, 300));
+				ui.ControlsInOrder.Add(new Label("No further tests will be run.", 200));
+				ui.RefreshIntervalSeconds = 4;
+				result.Append(ui.ToString());
 				ui = null;
-				return result;
+					return result.ToString();
 			case STOP_TEST_CASE_PATH_PART:
 				try
 				{
-					tests.CurrentlyRunningSuite.interruptCurrentTest();
+					tests.CurrentlyRunningSuite.InterruptCurrentTest();
 				}
-				catch (Exception assumedNullRef)
+				catch (Exception)
 				{
-					try
-					{
-						result.setStatusCode(417);
-					}
-					catch (IllegalStatusCodeException e)
-					{
-						// DELIBERATE NO-OP -- SHOULDN'T BE POSSIBLE
-					}
-
-
-					ui.controlsInOrder.Add(new LineBreak());
-					ui.controlsInOrder.Add(new LineBreak());
-					ui.controlsInOrder.Add(new LineBreak());
-					ui.controlsInOrder.Add(new LineBreak());
-					ui.controlsInOrder.Add(ui.useInStyleImage(ICON_NO));
-					ui.controlsInOrder.Add(new LineBreak());
-					ui.controlsInOrder.Add(new Label("No test suite is currently running", 300));
-					ui.setRefreshIntervalSeconds(2);
-					((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
+					ui.ControlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(ui.useInStyleImage(ICON_NO));
+					ui.ControlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(new Label("No test suite is currently running", 300));
+					ui.RefreshIntervalSeconds = 2;
+					result.Append(ui.ToString());
 					ui = null;
-					return result;
+					return result.ToString();
 				}
 
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(ui.useInStyleImage(ICON_STOPONE));
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new Label("Interrupting Test Case: " + tests.CurrentlyRunningSuite.getCurrentTest(), 300));
-				ui.controlsInOrder.Add(new Label("All remaining tests will still run.", 200));
-				ui.setRefreshIntervalSeconds(3);
-				((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(ui.useInStyleImage(ICON_STOPONE));
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new Label("Interrupting Test Case: " + tests.CurrentlyRunningSuite.CurrentTest, 300));
+				ui.ControlsInOrder.Add(new Label("All remaining tests will still run.", 200));
+				ui.RefreshIntervalSeconds = 3;
+				result.Append(ui.ToString());
 				ui = null;
-				return result;
+					return result.ToString();
 			case KILL_SERVICE_PATH_PART:
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(ui.useInStyleImage(ICON_EXIT));
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new Label("Test Server Taken Offline", 300));
-				((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(ui.useInStyleImage(ICON_EXIT));
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new Label("Test Server Taken Offline", 300));
+				result.Append(ui.ToString());
 				ui = null;
 				testingContinues = false;
 
@@ -391,28 +340,30 @@ protected void runTestProgram(string[] args)
 					// Deliberate NO-OP
 				}
 
-				discontinueService();
-				return result;
+				DiscontinueService();
+					return result.ToString();
 			case RETRIEVE_DATA_PATH_PART:
+						ui.ControlsInOrder.Add(new LineBreak());
+						ui.ControlsInOrder.Add(new LineBreak());
+						ui.ControlsInOrder.Add(new LineBreak());
+						ui.ControlsInOrder.Add(new LineBreak());
+						ui.ControlsInOrder.Add(ui.useInStyleImage(ICON_NO));
+						ui.ControlsInOrder.Add(new LineBreak());
+						ui.ControlsInOrder.Add(new Label("NOT YET IMPLEMENTED", 300));
+						result.Append(ui.ToString());
+						ui = null;
+						/*
+						
 				try
 				{
 							ZipFile.CreateFromDirectory(CoarseGrind.DEFAULT_PARENT_FOLDER + Path.DirectorySeparatorChar + URLDecoder.decode(urlParts[1].replace(".zip", ""), "UTF-8"), ZIP_TEMP_FILE, CompressionLevel.Optimal, true);
 				}
-				catch (IOException thisException)
+				catch
 				{
-					try
-					{
-						result.setStatusCode(500);
-					}
-					catch (IllegalStatusCodeException e)
-					{
-						// DELIBERATE NO-OP -- SHOULDN'T BE POSSIBLE
-					}
-
-					ui.controlsInOrder.Add(new CaptionedControl(ui.useInStyleImage(ICON_NO), new Label("Unable to create ZIP file for transfer", 300), Orientation.LeftOfCaption));
-					((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
+					ui.ControlsInOrder.Add(new CaptionedControl(ui.useInStyleImage(ICON_NO), new Label("Unable to create ZIP file for transfer", 300), CaptionedControlOrientation.LeftOfCaption));
+					result.Append(ui.ToString());
 					ui = null;
-					return result;
+							return result.ToString();
 				}
 				result.headers.clear();
 				result.httpContent = new HttpContent(HttpContent.application, HttpContent.zip);
@@ -437,7 +388,7 @@ protected void runTestProgram(string[] args)
 						// DELIBERATE NO-OP -- SHOULDN'T BE POSSIBLE
 					}
 
-					ui.controlsInOrder.Add(new CaptionedControl(ui.useInStyleImage(ICON_NO), new Label("Unable to encode ZIP file into HTTP message", 300), Orientation.LeftOfCaption));
+					ui.ControlsInOrder.Add(new CaptionedControl(ui.useInStyleImage(ICON_NO), new Label("Unable to encode ZIP file into HTTP message", 300), Orientation.LeftOfCaption));
 					((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
 					ui = null;
 					return result;
@@ -451,65 +402,67 @@ protected void runTestProgram(string[] args)
 				result.payload = new HttpBinaryPayload();
 				((HttpBinaryPayload)result.payload).setContent(bytes);
 				//result.binaryBody = bytes;
-				return result;
+					*/
+						return result.ToString();
 			case DELETE_DATA_PATH_PART:
-				if (isBusy())
+						if (IsBusy)
 				{
-					ui.controlsInOrder.Add(new LineBreak());
-					ui.controlsInOrder.Add(new LineBreak());
-					ui.controlsInOrder.Add(new LineBreak());
-					ui.controlsInOrder.Add(new LineBreak());
-					ui.controlsInOrder.Add(ui.useInStyleImage(ICON_DECLINEDELETE));
-					ui.controlsInOrder.Add(new LineBreak());
-					ui.controlsInOrder.Add(new Label("DELETE COUNTERMANDED", 400));
-					ui.controlsInOrder.Add(new Label("The server has become busy. You must wait until testing is finished before trying to delete again.", 300));
-					((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
+					ui.ControlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(ui.useInStyleImage(ICON_DECLINEDELETE));
+					ui.ControlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(new Label("DELETE COUNTERMANDED", 400));
+					ui.ControlsInOrder.Add(new Label("The server has become busy. You must wait until testing is finished before trying to delete again.", 300));
+					result.Append(ui.ToString());
 					ui = null;
-					return result;
+							return result.ToString();
 				}
 
-				Foundation.hardDelete(Global.DEFAULT_PARENT_FOLDER);
-				Foundation.forceDirectoryExistence(Global.DEFAULT_PARENT_FOLDER);
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(ui.useInStyleImage(ICON_CONFIRMDELETE));
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new Label("ALL TEST DATA DELETED", 300));
-				ui.setRefreshIntervalSeconds(3);
-				((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
+						Directory.Delete(CoarseGrind.DEFAULT_PARENT_FOLDER, true);
+						Directory.CreateDirectory(CoarseGrind.DEFAULT_PARENT_FOLDER);
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(ui.useInStyleImage(ICON_CONFIRMDELETE));
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new Label("ALL TEST DATA DELETED", 300));
+				ui.RefreshIntervalSeconds = 3;
+				result.Append(ui.ToString());
 				ui = null;
-				return result;
+					return result.ToString();
 			case LIST_DATA_PATH_PART:
 				resultList.refresh();
-				ui.clearRefreshInterval();
-				ui.clearRedirectionUrl();
-				ui.setRedirectionUrl(remoteUrlTarget + '/' + LIST_DATA_PATH_PART);
-				ui.setRefreshIntervalSeconds(30);
-				ui.controlsInOrder.Add(new Label("TEST RESULTS", 400));
-				ui.controlsInOrder.Add(new LineBreak());
+				ui.ClearRefreshInterval();
+				ui.ClearRedirectionUrl();
+				ui.RedirectionUrl = /*remoteUrlTarget + '/' + */LIST_DATA_PATH_PART;
+				ui.RefreshIntervalSeconds = 30;
+				ui.ControlsInOrder.Add(new Label("TEST RESULTS", 400));
+				ui.ControlsInOrder.Add(new LineBreak());
 
-				if (resultList.resultFolders.size() < 1)
+						if (resultList.resultFolders.Count < 1)
 				{
-					ui.controlsInOrder.Add(new LineBreak());
-					ui.controlsInOrder.Add(new LineBreak());
-					ui.controlsInOrder.Add(ui.useInStyleImage(ICON_NO));
-					ui.controlsInOrder.Add(new LineBreak());
-					ui.controlsInOrder.Add(new Label("(none)", 350));
-					ui.controlsInOrder.Add(new LineBreak());
-					ui.controlsInOrder.Add(new LineBreak());
-					ui.controlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(ui.useInStyleImage(ICON_NO));
+					ui.ControlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(new Label("(none)", 350));
+					ui.ControlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(new LineBreak());
+					ui.ControlsInOrder.Add(new LineBreak());
 				}
 				else {
 					ControlCluster cluster = new ControlCluster();
 					cluster.columns = 2;
-					for (string thisTestResult : resultList.resultFolders)
+					foreach (DirectoryInfo thisTestResult in resultList.resultFolders)
 					{
 						WebInterfaceControl icon = null;
 						// Global.DEFAULT_PARENT_FOLDER + File.separator + 
 						try
 						{
+									/*
 							string demeanor = new string(Files.readAllBytes(Paths.get(Global.DEFAULT_PARENT_FOLDER + File.separator + thisTestResult + File.separator + Global.SUMMARY_TEXTFILE_NAME)));
 							switch (demeanor.toUpperCase().charAt(0))
 							{
@@ -525,61 +478,57 @@ protected void runTestProgram(string[] args)
 								default:
 									icon = ui.useInStyleImage(ICON_INCONCLUSIVERESULT);
 							}
+							*/
+									icon = ui.useInStyleImage(ICON_INCONCLUSIVERESULT);
 						}
 						catch (IOException e)
 						{
 							icon = ui.useInStyleImage(ICON_LOADRESULT);
 						}
-						try
-						{
-							cluster.Add(new Link(remoteUrlTarget + '/' + RETRIEVE_DATA_PATH_PART + '/' + URLEncoder.encode(thisTestResult, "UTF-8") + ".zip", new CaptionedControl(icon, thisTestResult, ICON_TEXT_SIZE, Orientation.AboveCaption)));
-						}
-						catch (UnsupportedEncodingException thisException)
-						{
-							// NO-OP: Ignored for now.
-						}
+
+									cluster.Add(new Link(/*remoteUrlTarget + '/' + */RETRIEVE_DATA_PATH_PART + '/' + /*URLEncoder.encode(thisTestResult, "UTF-8") + */ "NotImplemented.zip", new CaptionedControl(icon, thisTestResult.Name, CaptionedControlOrientation.AboveCaption, ICON_TEXT_SIZE)));
 					}
-					ui.controlsInOrder.Add(cluster);
+					ui.ControlsInOrder.Add(cluster);
 					cluster = null;
 				}
 
 
-				ui.controlsInOrder.Add(new RawCodeSegment("</center>"));
-				ui.controlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/', ui.useInStyleImage(ICON_GOBACK)), "Cancel results download and go back to the list of tests to run.", 250, Orientation.LeftOfCaption));
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new Divider());
-				ui.controlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/' + CONFIRM_DELETE_DATA_PATH_PART, ui.useInStyleImage(ICON_DELETE)), "Clear the server of all test data.", 250, Orientation.LeftOfCaption));
-				((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
+				ui.ControlsInOrder.Add(new RawCodeSegment("</center>"));
+				ui.ControlsInOrder.Add(new CaptionedControl(new Link(/*remoteUrlTarget + */"/" ,ui.useInStyleImage(ICON_GOBACK)), "Cancel results download and go back to the list of tests to run.", CaptionedControlOrientation.LeftOfCaption, 250));
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new Divider());
+				ui.ControlsInOrder.Add(new CaptionedControl(new Link(/*remoteUrlTarget + */"/" + CONFIRM_DELETE_DATA_PATH_PART, ui.useInStyleImage(ICON_DELETE)), "Clear the server of all test data.", CaptionedControlOrientation.LeftOfCaption, 250));
+				result.Append(ui.ToString());
 				ui = null;
-				return result;
+					return result.ToString();
 			case CONFIRM_DELETE_DATA_PATH_PART:
-				ui.clearRefreshInterval();
-				ui.clearRedirectionUrl();
-				ui.controlsInOrder.Add(new Label("REALLY DELETE TEST DATA?<br><br>", 400));
+				ui.ClearRefreshInterval();
+				ui.ClearRedirectionUrl();
+				ui.ControlsInOrder.Add(new Label("REALLY DELETE TEST DATA?<br><br>", 400));
 
-				ui.controlsInOrder.Add(new RawCodeSegment("</center>"));
-				ui.controlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/' + LIST_DATA_PATH_PART, ui.useInStyleImage(ICON_DECLINEDELETE)), "<b><i>NO!</i></b> What was I thinking? Do <b><i>NOT</i></b> delete any of the test data.", 250, Orientation.LeftOfCaption));
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/' + DELETE_DATA_PATH_PART, ui.useInStyleImage(ICON_CONFIRMDELETE)), "<b><i>YES</i></b>, I really do want to delete all of the test data on the server. <b><i>I understand that it can't be undone and I will lose any data I did not download and save elsewhere.</i></b>", 250, Orientation.LeftOfCaption));
-				((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
+				ui.ControlsInOrder.Add(new RawCodeSegment("</center>"));
+				ui.ControlsInOrder.Add(new CaptionedControl(new Link(/*remoteUrlTarget + */"/" + LIST_DATA_PATH_PART, ui.useInStyleImage(ICON_DECLINEDELETE)), "<b><i>NO!</i></b> What was I thinking? Do <b><i>NOT</i></b> delete any of the test data.", CaptionedControlOrientation.LeftOfCaption, 250));
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new CaptionedControl(new Link(/*remoteUrlTarget + */"/" + DELETE_DATA_PATH_PART, ui.useInStyleImage(ICON_CONFIRMDELETE)), "<b><i>YES</i></b>, I really do want to delete all of the test data on the server. <b><i>I understand that it can't be undone and I will lose any data I did not download and save elsewhere.</i></b>", CaptionedControlOrientation.LeftOfCaption, 250));
+				result.Append(ui.ToString());
 				ui = null;
-				return result;
+					return result.ToString();
 			case CONFIRM_KILL_SERVICE_PATH_PART:
-				ui.clearRefreshInterval();
-				ui.clearRedirectionUrl();
-				ui.controlsInOrder.Add(new Label("REALLY TERMINATE THE SERVICE?<br><br>", 400));
+				ui.ClearRefreshInterval();
+				ui.ClearRedirectionUrl();
+				ui.ControlsInOrder.Add(new Label("REALLY TERMINATE THE SERVICE?<br><br>", 400));
 
-				ui.controlsInOrder.Add(new RawCodeSegment("</center>"));
-				ui.controlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/', ui.useInStyleImage(ICON_NO)), "<b><i>NO</i></b>, --back to testing please.", 300, Orientation.LeftOfCaption));
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new LineBreak());
-				ui.controlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/' + KILL_SERVICE_PATH_PART, ui.useInStyleImage(ICON_YES)), "<b><i>YES</i></b>, --terminate the test server program. <b><i>The web interface will not be available until the server program is restarted manually.</i></b>", 250, Orientation.LeftOfCaption));
-				((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
+				ui.ControlsInOrder.Add(new RawCodeSegment("</center>"));
+				ui.ControlsInOrder.Add(new CaptionedControl(new Link(/*remoteUrlTarget + */"/", ui.useInStyleImage(ICON_NO)), "<b><i>NO</i></b>, --back to testing please.", CaptionedControlOrientation.LeftOfCaption, 300));
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new LineBreak());
+				ui.ControlsInOrder.Add(new CaptionedControl(new Link(/*remoteUrlTarget + */"/" + KILL_SERVICE_PATH_PART, ui.useInStyleImage(ICON_YES)), "<b><i>YES</i></b>, --terminate the test server program. <b><i>The web interface will not be available until the server program is restarted manually.</i></b>", CaptionedControlOrientation.LeftOfCaption, 250));
+				result.Append(ui.ToString());
 				ui = null;
-				return result;
+					return result.ToString();
 		}
 	}
 	catch //(ArrayIndexOutOfBoundsException expected)
@@ -588,33 +537,33 @@ protected void runTestProgram(string[] args)
 	}
 
 
-	ui.controlsInOrder.Add(new Label(this.getClass().getSimpleName(), 500));
+			ui.ControlsInOrder.Add(new Label(this.GetType().Name, 500));
 
-	if (isReady())
+	if (IsReady)
 	{
-		if (isBusy())
+		if (IsBusy)
 		{
 			//Show progress and options to stop
-			ui.setRefreshIntervalSeconds(3);
-			ui.controlsInOrder.Add(new CaptionedControl(new ProgressBar(getProgress(), 100), new Label("Progress on test suite <b><i>\"" + tests.CurrentlyRunningSuite.getName() + "\"</i></b>", 150), Orientation.AboveCaption));
-			ui.controlsInOrder.Add(new Divider());
-			ui.controlsInOrder.Add(new Label("OPTIONS", 300));
-			ui.controlsInOrder.Add(new LineBreak());
-			ui.controlsInOrder.Add(new RawCodeSegment("</center>"));
-			ui.controlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/' + STOP_TEST_CASE_PATH_PART, ui.useInStyleImage(ICON_STOPONE)), "Stop individual test <b><i>\"" + tests.CurrentlyRunningSuite.getCurrentTest() + "\"</i></b> and allow the remaining tests to run.", 250, Orientation.LeftOfCaption));
-			ui.controlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/' + STOP_ALL_TESTING_PATH_PART, ui.useInStyleImage(ICON_STOPALL)), "Halt test suite <b><i>\"" + tests.CurrentlyRunningSuite.getName() + "\"</i></b> completely. No more tests will run.", 250, Orientation.LeftOfCaption));
+			ui.RefreshIntervalSeconds = 3;
+			ui.ControlsInOrder.Add(new CaptionedControl(new ProgressBar(Progress, 100), new Label("Progress on test suite <b><i>\"" + tests.CurrentlyRunningSuite.Name + "\"</i></b>", 150), CaptionedControlOrientation.AboveCaption));
+			ui.ControlsInOrder.Add(new Divider());
+			ui.ControlsInOrder.Add(new Label("OPTIONS", 300));
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(new RawCodeSegment("</center>"));
+			ui.ControlsInOrder.Add(new CaptionedControl(new Link(/*remoteUrlTarget + */"/" + STOP_TEST_CASE_PATH_PART, ui.useInStyleImage(ICON_STOPONE)), "Stop individual test <b><i>\"" + tests.CurrentlyRunningSuite.CurrentTest + "\"</i></b> and allow the remaining tests to run.", CaptionedControlOrientation.LeftOfCaption, 250));
+			ui.ControlsInOrder.Add(new CaptionedControl(new Link(/*remoteUrlTarget + */"/" + STOP_ALL_TESTING_PATH_PART, ui.useInStyleImage(ICON_STOPALL)), "Halt test suite <b><i>\"" + tests.CurrentlyRunningSuite.Name + "\"</i></b> completely. No more tests will run.", CaptionedControlOrientation.LeftOfCaption, 250));
 		}
 		else {
 			// List available tests
-			ui.controlsInOrder.Add(new Label("<br>AVAILABLE TEST SUITES", 200));
+			ui.ControlsInOrder.Add(new Label("<br>AVAILABLE TEST SUITES", 200));
 
 
 			ControlCluster cluster = new ControlCluster();
 			cluster.columns = 4;
-			for (string thisTestSuite : tests.allTestSuites.keySet())
+					foreach (string thisTestSuite in tests.AllTestSuites.Keys)
 			{
 				WebInterfaceControl icon = null;
-				int size = tests.allTestSuites.get(thisTestSuite).size();
+				int size = tests.AllTestSuites[thisTestSuite].Count;
 				if (size < SMALL_SUITE_THRESHOLD)
 				{
 					icon = ui.useInStyleImage(ICON_SMALLTEST);
@@ -626,28 +575,28 @@ protected void runTestProgram(string[] args)
 				else {
 					icon = ui.useInStyleImage(ICON_MEDIUMTEST);
 				}
-				cluster.Add(new Link(remoteUrlTarget + '/' + RUN_PATH_PART + '/' + thisTestSuite, new CaptionedControl(icon, thisTestSuite, ICON_TEXT_SIZE, Orientation.AboveCaption)));
+				cluster.Add(new Link(/*remoteUrlTarget + */"/" + RUN_PATH_PART + '/' + thisTestSuite, new CaptionedControl(icon, thisTestSuite, CaptionedControlOrientation.AboveCaption, ICON_TEXT_SIZE)));
 				icon = null;
 			}
-			ui.controlsInOrder.Add(cluster);
+			ui.ControlsInOrder.Add(cluster);
 			cluster = null;
 
-			ui.controlsInOrder.Add(new RawCodeSegment("</center>"));
-			ui.controlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/' + LIST_DATA_PATH_PART, ui.useInStyleImage(ICON_DOWNLOAD)), "Download individual test results or clear the server of result data.", 250, Orientation.LeftOfCaption));
-			ui.controlsInOrder.Add(new LineBreak());
-			ui.controlsInOrder.Add(new Divider());
-			ui.controlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/' + CONFIRM_KILL_SERVICE_PATH_PART, ui.useInStyleImage(ICON_EXIT)), "Stop the test program completely. It will need to be restarted manually.", 250, Orientation.LeftOfCaption));
+			ui.ControlsInOrder.Add(new RawCodeSegment("</center>"));
+			ui.ControlsInOrder.Add(new CaptionedControl(new Link(/*remoteUrlTarget + */"/" + LIST_DATA_PATH_PART, ui.useInStyleImage(ICON_DOWNLOAD)), "Download individual test results or clear the server of result data.", CaptionedControlOrientation.LeftOfCaption, 250));
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(new Divider());
+			ui.ControlsInOrder.Add(new CaptionedControl(new Link(/*remoteUrlTarget + */"/" + CONFIRM_KILL_SERVICE_PATH_PART, ui.useInStyleImage(ICON_EXIT)), "Stop the test program completely. It will need to be restarted manually.", CaptionedControlOrientation.LeftOfCaption, 250));
 		}
 	}
 	else {
-		ui.controlsInOrder.Add(new RawCodeSegment("</center>"));
-		ui.controlsInOrder.Add(new Label("Tests are setting up...", 300));
+		ui.ControlsInOrder.Add(new RawCodeSegment("</center>"));
+		ui.ControlsInOrder.Add(new Label("Tests are setting up...", 300));
 	}
 
-		((HttpstringPayload)result.payload).getContent().Append(ui.ToString());
+		result.Append(ui.ToString());
 
 	ui = null;
-	return result;
+			return result.ToString();
 }
 
 private string HtmlTitle
@@ -656,7 +605,7 @@ private string HtmlTitle
 		{
 			StringBuilder result = new StringBuilder(this.GetType().Name);
 			result.Append(" - ");
-			if (isBusy())
+			if (IsBusy)
 			{
 				result.Append(tests.CurrentlyRunningSuite.Name + " " + Progress + "%");
 			}
