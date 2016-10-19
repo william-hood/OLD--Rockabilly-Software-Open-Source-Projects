@@ -27,199 +27,200 @@ using Rockabilly.Common;
 
 namespace Rockabilly.CoarseGrind
 {
-	internal class TestCollection{
+	internal class TestCollection
+	{
 
-	private const string RUN_ARG = "RUN";
-	private const string INCLUDE_ARG = "INCLUDE";
-	private const string EXCLUDE_ARG = "EXCLUDE";
-	private const string DECLARE_ARG = "DECLARE";
-	private const string PORT_ARG = "PORT";
-	private const string ADDRESS_ARG = "ADDRESS";
+		private const string RUN_ARG = "RUN";
+		private const string INCLUDE_ARG = "INCLUDE";
+		private const string EXCLUDE_ARG = "EXCLUDE";
+		private const string DECLARE_ARG = "DECLARE";
+		private const string PORT_ARG = "PORT";
+		private const string ADDRESS_ARG = "ADDRESS";
 
 
-	internal Dictionary<string, TestSuite> AllTestSuites = new Dictionary<string, TestSuite>();
-	internal TestSuite CurrentlyRunningSuite = null;
+		internal Dictionary<string, TestSuite> AllTestSuites = new Dictionary<string, TestSuite>();
+		internal TestSuite CurrentlyRunningSuite = null;
 		//private ExecutionThread executionThread = null;
 		private Thread executionThread = null;
-	private MatchList exclusions = new MatchList();
-	private List<Test> AllTests = null;
-	internal List<string> UnprocessedArguments = new List<string>();
-	internal string immediateRun = default(string);
-	internal CountdownEvent block = new CountdownEvent(1);
-	internal bool IsSetUp = false;
+		private MatchList exclusions = new MatchList();
+		private List<Test> AllTests = null;
+		internal List<string> UnprocessedArguments = new List<string>();
+		internal string immediateRun = default(string);
+		internal CountdownEvent block = new CountdownEvent(1);
+		internal bool IsSetUp = false;
 
 
-	public void WaitWhileTesting()
-	{
+		public void WaitWhileTesting()
+		{
 			block.Wait();
-	}
-
-	// Create all programmatically declared test suites
-	internal void SetAllTests(List<Test> testCasesFromProgrammer)
-	{
-		AllTests = testCasesFromProgrammer;
-		foreach (Test thisTest in AllTests)
-		{
-			AddProgrammaticTestSuites(thisTest.TestSuiteMemberships, thisTest);
-			AddProgrammaticTestSuites(thisTest.TestCategoryMemberships, thisTest);
 		}
-	}
 
-	private void AddProgrammaticTestSuites(string[] memberships, Test thisTest)
-	{
-		if (memberships == null) return;
-
-		foreach (string thisMembership in memberships)
+		// Create all programmatically declared test suites
+		internal void SetAllTests(List<Test> testCasesFromProgrammer)
 		{
-			string thisMembership_UpperCase = thisMembership.ToUpper();
-			TestSuite tmp = AllTestSuites[thisMembership_UpperCase];
-			if (tmp == null) tmp = new TestSuite(thisMembership);
-			tmp.Add(thisTest);
-			AllTestSuites[thisMembership_UpperCase] = tmp;
-			thisMembership_UpperCase = null;
+			AllTests = testCasesFromProgrammer;
+			foreach (Test thisTest in AllTests)
+			{
+				AddProgrammaticTestSuites(thisTest.TestSuiteMemberships, thisTest);
+				AddProgrammaticTestSuites(thisTest.TestCategoryMemberships, thisTest);
+			}
+		}
+
+		private void AddProgrammaticTestSuites(string[] memberships, Test thisTest)
+		{
+			if (memberships == null) return;
+
+			foreach (string thisMembership in memberships)
+			{
+				string thisMembership_UpperCase = thisMembership.ToUpper();
+				TestSuite tmp = AllTestSuites[thisMembership_UpperCase];
+				if (tmp == null) tmp = new TestSuite(thisMembership);
+				tmp.Add(thisTest);
+				AllTestSuites[thisMembership_UpperCase] = tmp;
+				thisMembership_UpperCase = null;
+				tmp = null;
+			}
+
+		}
+
+		private Test FindTest(string identifier)
+		{
+			foreach (Test thisTest in AllTests)
+			{
+				if (thisTest.Identifier.MatchesCaseInspecific(identifier)) return thisTest;
+			}
+			return null;
+		}
+
+		private void DoDeclare(string[] args, int startIndex)
+		{
+			string suiteName = args[startIndex].ToUpper();
+			TestSuite tmp = AllTestSuites[suiteName];
+			if (tmp == null) tmp = new TestSuite(suiteName);
+
+			for (int index = startIndex + 1; index < args.Length; index++)
+			{
+				Test foundTest = FindTest(args[index]);
+				if (foundTest == null)
+				{
+					Console.WriteLine("No test case named " + args[index] + " exists. Not adding to " + suiteName);
+				}
+				else {
+					tmp.Add(foundTest);
+				}
+			}
+
+			if (tmp.Count < 1)
+			{
+				Console.WriteLine("Declining to add empty test suite " + suiteName);
+			}
+			else {
+				Console.WriteLine("Added declared test suite " + suiteName);
+				AllTestSuites[suiteName] = tmp;
+			}
+
+			suiteName = null;
 			tmp = null;
 		}
 
-	}
-
-	private Test FindTest(string identifier)
-	{
-		foreach (Test thisTest in AllTests)
+		private void IncludeFile(TestProgram parent, FileInfo includedFile)
 		{
-				if (thisTest.Identifier.MatchesCaseInspecific(identifier)) return thisTest;
-		}
-		return null;
-	}
+			string[] args = null;
 
-	private void DoDeclare(string[] args, int startIndex)
-	{
-		string suiteName = args[startIndex].ToUpper();
-		TestSuite tmp = AllTestSuites[suiteName];
-		if (tmp == null) tmp = new TestSuite(suiteName);
-
-			for (int index = startIndex + 1; index < args.Length; index++)
-		{
-			Test foundTest = FindTest(args[index]);
-			if (foundTest == null)
+			Console.WriteLine("Handling included file " + includedFile.FullName);
+			try
 			{
-				Console.WriteLine("No test case named " + args[index] + " exists. Not adding to " + suiteName);
-			}
-			else {
-				tmp.Add(foundTest);
-			}
-		}
-
-			if (tmp.Count < 1)
-		{
-			Console.WriteLine("Declining to add empty test suite " + suiteName);
-		}
-		else {
-			Console.WriteLine("Added declared test suite " + suiteName);
-			AllTestSuites[suiteName] = tmp;
-		}
-
-		suiteName = null;
-		tmp = null;
-	}
-
-	private void IncludeFile(TestProgram parent, FileInfo includedFile)
-	{
-		string[] args = null;
-
-		Console.WriteLine("Handling included file " + includedFile.FullName);
-		try
-		{
 				args = File.ReadAllLines(includedFile.FullName);
-		}
-		catch (IOException)
-		{
+			}
+			catch (IOException)
+			{
 				Console.WriteLine("Unable to read included file " + includedFile.FullName);
+			}
+
+			if (args != null)
+			{
+				ProcessConfigSet(parent, args);
+			}
 		}
 
-		if (args != null)
+		private void IncludeDirectory(TestProgram parent, DirectoryInfo includedDirectory)
 		{
-			ProcessConfigSet(parent, args);
-		}
-	}
-
-	private void IncludeDirectory(TestProgram parent, DirectoryInfo includedDirectory)
-	{
 			Console.WriteLine("Handling included directory " + includedDirectory.FullName);
 			foreach (FileInfo thisListing in includedDirectory.GetFiles())
-		{
-			HandleInclusion(parent, thisListing);
-		}
-	}
-
-	private void HandleInclusion(TestProgram parent, FileInfo inclusion)
-	{
-			if (inclusion.Exists)
-		{
-				if (inclusion.Attributes.HasFlag(FileAttributes.Directory))
 			{
+				HandleInclusion(parent, thisListing);
+			}
+		}
+
+		private void HandleInclusion(TestProgram parent, FileInfo inclusion)
+		{
+			if (inclusion.Exists)
+			{
+				if (inclusion.Attributes.HasFlag(FileAttributes.Directory))
+				{
 					IncludeDirectory(parent, new DirectoryInfo(inclusion.DirectoryName));
+				}
+				else {
+					IncludeFile(parent, inclusion);
+				}
 			}
 			else {
-				IncludeFile(parent, inclusion);
-			}
-		}
-		else {
 				Console.WriteLine("Ignoring non-existent inclusion " + inclusion.FullName);
-		}
-	}
-
-	internal void ProcessConfigSet(TestProgram parent, string[] args)
-	{
-		for (int index = 0; index < args.Length; index++)
-		{
-			switch (args[index].ToUpper())
-			{
-				case RUN_ARG:
-					index++;
-					immediateRun = args[index].ToUpper();
-					break;
-				case EXCLUDE_ARG:
-					index++;
-					exclusions.Add(args[index]);
-					break;
-				case INCLUDE_ARG:
-					index++;
-					HandleInclusion(parent, new FileInfo(args[index]));
-					break;
-				case DECLARE_ARG:
-					DoDeclare(args, index + 1);
-					return;
-				case PORT_ARG:
-					index++;
-					if (!parent.ContinueService)
-					{
-							parent.WEBUI_PORT = int.Parse(args[index]);
-					} // will silently ignore if serving.
-					return;
-						/*
-				case ADDRESS_ARG:
-					index++;
-					if (!parent.ContinueService)
-					{
-						try
-						{
-							parent.address = InetAddress.getByName(args[index]);
-						}
-						catch (UnknownHostException e)
-						{
-							Console.WriteLine("Unable to set local address to " + args[index]);
-						}
-					} // will silently ignore if serving.
-					return;
-					*/
-				default:
-					UnprocessedArguments.Add(args[index]);
-						break;
 			}
 		}
-	}
 
-	internal string DescribeAvailableSuites
+		internal void ProcessConfigSet(TestProgram parent, string[] args)
+		{
+			for (int index = 0; index < args.Length; index++)
+			{
+				switch (args[index].ToUpper())
+				{
+					case RUN_ARG:
+						index++;
+						immediateRun = args[index].ToUpper();
+						break;
+					case EXCLUDE_ARG:
+						index++;
+						exclusions.Add(args[index]);
+						break;
+					case INCLUDE_ARG:
+						index++;
+						HandleInclusion(parent, new FileInfo(args[index]));
+						break;
+					case DECLARE_ARG:
+						DoDeclare(args, index + 1);
+						return;
+					case PORT_ARG:
+						index++;
+						if (!parent.ContinueService)
+						{
+							parent.WEBUI_PORT = int.Parse(args[index]);
+						} // will silently ignore if serving.
+						return;
+					/*
+			case ADDRESS_ARG:
+				index++;
+				if (!parent.ContinueService)
+				{
+					try
+					{
+						parent.address = InetAddress.getByName(args[index]);
+					}
+					catch (UnknownHostException e)
+					{
+						Console.WriteLine("Unable to set local address to " + args[index]);
+					}
+				} // will silently ignore if serving.
+				return;
+				*/
+					default:
+						UnprocessedArguments.Add(args[index]);
+						break;
+				}
+			}
+		}
+
+		internal string DescribeAvailableSuites
 		{
 			get
 			{
@@ -233,20 +234,20 @@ namespace Rockabilly.CoarseGrind
 				}
 
 				return result.ToString();
-	}
+			}
 		}
 
-	internal void KickOffTestSuite(TestSuite thisTestSuite)
-	{
+		internal void KickOffTestSuite(TestSuite thisTestSuite)
+		{
 
 			CurrentlyRunningSuite = thisTestSuite;
 			executionThread = new Thread(RunTestSuite);
 			executionThread.Start();
 			executionThread.Join();
-	}
+		}
 
-	internal void RunTestSuite()
-	{
+		internal void RunTestSuite()
+		{
 			try
 			{
 				Console.WriteLine("Test Suite: " + CurrentlyRunningSuite.Name + Symbols.CarriageReturnLineFeed + Symbols.Divider());
@@ -261,16 +262,16 @@ namespace Rockabilly.CoarseGrind
 				block.Signal();
 				CurrentlyRunningSuite = null;
 			}
-	}
+		}
 
 		internal void destroy()
-	{
-		AllTestSuites.Clear();
-		AllTests.Clear();
-		UnprocessedArguments.Clear();
-		AllTestSuites = null;
-		AllTests = null;
-		UnprocessedArguments = null;
+		{
+			AllTestSuites.Clear();
+			AllTests.Clear();
+			UnprocessedArguments.Clear();
+			AllTestSuites = null;
+			AllTests = null;
+			UnprocessedArguments = null;
+		}
 	}
-}
 }
