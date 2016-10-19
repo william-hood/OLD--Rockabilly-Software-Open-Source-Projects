@@ -1,65 +1,65 @@
-package rockabilly.coarsegrind.examples.descriptions;
 
-import java.util.Vector;
+using System;
+using System.Collections.Generic;
+using Rockabilly.CoarseGrind.Descriptions;
+using Rockabilly.Common;
 
-import rockabilly.coarsegrind.core.Global;
-import rockabilly.coarsegrind.core.TestPriorityType;
-import rockabilly.coarsegrind.core.TestResult;
-import rockabilly.coarsegrind.core.TestStatus;
-import rockabilly.coarsegrind.descriptions.FailureDescription;
-import rockabilly.coarsegrind.descriptions.InappropriateDescriptionException;
-import rockabilly.coarsegrind.descriptions.NoValueException;
-import rockabilly.coarsegrind.descriptions.ValueFieldTargets;
-import rockabilly.common.Symbols;
-import rockabilly.common.Values;
-
-public class Descriptions__IntField extends Descriptions__Test_Case_BASE
+namespace Rockabilly.CoarseGrind.Examples
 {
-	private String subNameGiven = Values.DefaultString;
-	public Descriptions__IntField(String subName, ValueFieldTargets target)
+	public class Descriptions__IntField : Descriptions__Test_Case_BASE
 	{
-		ExpectedFailures = new Vector<FailureDescription>();
-		testCaseDescription = new TestCaseDescription();
-		testCaseDescription.intField.target = target;
-		if (testCaseDescription.intField.target == ValueFieldTargets.HAPPY_PATH) priorityType = TestPriorityType.HappyPath;
-		subNameGiven = subName;
-	}
-
-	@Override
-	public String getTestCaseDetailedDescription()
-	{
-		return "Constructs an object meeting the following description:" + Symbols.NewLine + testCaseDescription.toString();
-	}
-
-	@Override
-	public void performTest()
-	{
-		SampleObject testDatum = null;
-		Global.Log.message("Constructing the object as described above...");
-		try
+		private string subNameGiven = default(string);
+		public Descriptions__IntField(string subName, ValueFieldTargets target)
 		{
-			testDatum = testCaseDescription.getDescribedObject();
-			Global.Log.message("Constructed the following object:" + testDatum.toString());
-		} catch (NoValueException | InappropriateDescriptionException thisException)
-		{
-			Global.Log.message(Global.Log.getWarningIcon(), "Exception was thrown...");
-			Global.Log.showFailure(thisException);
+			ExpectedFailures = new List<ExceptionDescription>();
+			testCaseDescription = new TestCaseDescription();
+			testCaseDescription.intField.Target = target;
+			if (testCaseDescription.intField.Target == ValueFieldTargets.HAPPY_PATH) Priority = TestPriority.HappyPath;
+			subNameGiven = subName;
 		}
-		if (secondsToWait > 0) waitSeconds(secondsToWait);
 
-		addResult(new TestResult(TestStatus.Pass, "Test executed through to the end."));
+		public override string DetailedDescription
+		{
+			get
+			{
+				return "Constructs an object meeting the following description:" + Symbols.CarriageReturnLineFeed + testCaseDescription.ToString();
+			}
+		}
+
+		public override void PerformTest()
+		{
+			SampleObject testDatum = null;
+			Log.Message("Constructing the object as described above...");
+			try
+			{
+				testDatum = testCaseDescription.DescribedObject;
+				Log.Message("Constructed the following object:" + testDatum.ToString());
+			}
+			catch (Exception thisException)
+			{
+				Log.Message("Exception was thrown...", icon: Log.WarningIcon);
+				Log.ShowException(thisException);
+			}
+			if (secondsToWait > 0) WaitSeconds(secondsToWait);
+
+			AddResult(new TestResult(TestStatus.Pass, "Test executed through to the end."));
+		}
+
+		public override string Identifier
+		{
+			get
+			{
+				return "IntField" + subNameGiven;
+			}
+		}
+
+		public override string Name
+		{
+			get
+			{
+				return "Limited Value Field - " + testCaseDescription.intField.Target.ToString();
+			}
+		}
+
 	}
-
-	@Override
-	public String getIdentifier()
-	{
-		return "IntField" + subNameGiven;
-	}
-
-	@Override
-	public String getName()
-	{
-		return "Limited Value Field - " + testCaseDescription.intField.target.toString();
-	}
-
 }

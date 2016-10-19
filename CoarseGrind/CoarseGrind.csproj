@@ -73,6 +73,8 @@
     <Compile Include="TestSuite.cs" />
     <Compile Include="TestCollection.cs" />
     <Compile Include="TestProgram.cs" />
+    <Compile Include="Descriptions\IntLimitsDescription.cs" />
+    <Compile Include="Descriptions\IntFieldDescription.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">

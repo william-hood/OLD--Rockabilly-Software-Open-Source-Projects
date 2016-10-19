@@ -1,35 +1,39 @@
-package rockabilly.coarsegrind.examples.descriptions;
 
-import java.util.Vector;
+using System.Collections.Generic;
+using Rockabilly.CoarseGrind.Descriptions;
 
-import rockabilly.coarsegrind.core.TestCase;
-import rockabilly.coarsegrind.descriptions.FailureDescription;
-
-public abstract class Descriptions__Test_Case_BASE extends TestCase
-{	
-	protected Vector<FailureDescription> ExpectedFailures = null;
-	protected TestCaseDescription testCaseDescription = null;
-	protected int secondsToWait = 1;
-		
-	@Override
-	public boolean setup()
+namespace Rockabilly.CoarseGrind.Examples
+{
+	public abstract class Descriptions__Test_Case_BASE : Test
 	{
-		return testCaseDescription != null;
-	}
+		protected List<ExceptionDescription> ExpectedFailures = null;
+		protected TestCaseDescription testCaseDescription = null;
+		protected int secondsToWait = 1;
 
-	@Override
-	public boolean cleanup()
-	{
-		return true;
-	}
+		public override bool Setup()
+		{
+			return testCaseDescription != null;
+		}
 
-	@Override
-	public String[] getTestSuiteMemberships() {
-		return new String[] {"Descriptions", "All"};
-	}
+		public override bool Cleanup()
+		{
+			return true;
+		}
 
-	@Override
-	public String[] getTestCategoryMemberships() {
-		return new String[] {"Example", "Generated"};
+		public override string[] TestSuiteMemberships
+		{
+			get
+			{
+				return new string[] { "Descriptions", "All" };
+			}
+		}
+
+		public override string[] TestCategoryMemberships
+		{
+			get
+			{
+				return new string[] { "Example", "Generated" };
+			}
+		}
 	}
 }

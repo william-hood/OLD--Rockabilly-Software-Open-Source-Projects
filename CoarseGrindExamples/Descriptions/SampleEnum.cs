@@ -1,5 +1,6 @@
-package rockabilly.coarsegrind.examples.descriptions;
+namespace Rockabilly.CoarseGrind.Examples
+{
+	
+	public enum SampleEnum { ONE, TWO, THREE, FOUR, FIVE }
 
-public enum SampleEnum { ONE, TWO, THREE, FOUR, FIVE; }
-
-
+}

@@ -1,22 +1,29 @@
-package rockabilly.coarsegrind.examples.descriptions;
+using System;
+using Rockabilly.CoarseGrind.Descriptions;
+using Rockabilly.Common;
 
-import rockabilly.coarsegrind.descriptions.IntLimitsDescription;
-
-public class IntFieldLimits extends IntLimitsDescription
+namespace Rockabilly.CoarseGrind.Examples
 {
-	@Override
-	// In most cases the field may need to retrieve the limit
-	// from an external source, rather than hard-code it.
-	public Integer getUpperLimit()
+	public class IntFieldLimits : IntLimitsDescription
 	{
-		return 250;
-	}
+		// In most cases the field may need to retrieve the limit
+		// from an external source, rather than hard-code it.
+		public override int UpperLimit
+		{
+			get
+			{
+				return 250;
+			}
+		}
 
-	@Override
-	// In most cases the field may need to retrieve the limit
-	// from an external source, rather than hard-code it.
-	public Integer getLowerLimit()
-	{
-		return -250;
+		// In most cases the field may need to retrieve the limit
+		// from an external source, rather than hard-code it.
+		public override int LowerLimit
+		{
+			get
+			{
+				return -250;
+			}
+		}
 	}
 }

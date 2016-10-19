@@ -1,27 +1,28 @@
-package rockabilly.coarsegrind.examples.descriptions;
 
-import rockabilly.common.Foundation;
-import rockabilly.common.Values;
+using System.Text;
+using Rockabilly.Common;
 
-public class SampleObject
+namespace Rockabilly.CoarseGrind.Examples
 {
-	int intField = Values.DefaultInt;
-	float floatField = Values.DefaultFloat;
-	String stringField = Values.DefaultString;
-	boolean boolField = false;
-	char charField = 'x';
-	SampleEnum enumField = null;
-	
-	@Override
-	public String toString()
+	public class SampleObject
 	{
-		StringBuilder result = new StringBuilder();
-		result.append("intField == " + Foundation.robustGetString(intField));
-		result.append("; floatField == " + Foundation.robustGetString(floatField));
-		result.append("; stringField == " + Foundation.robustGetString(stringField));
-		result.append("; boolField == " + Foundation.robustGetString(boolField));
-		result.append("; charField == " + Foundation.robustGetString(charField));
-		result.append("; enumField == " + Foundation.robustGetString(enumField));
-		return result.toString();
+		public int intField = default(int);
+		public float floatField = default(float);
+		public string stringField = default(string);
+		public bool boolField = false;
+		public char charField = 'x';
+		public SampleEnum enumField = default(SampleEnum);
+
+		public override string ToString()
+		{
+			StringBuilder result = new StringBuilder();
+			result.Append("intField == " + Foundation.RobustGetString(intField));
+			result.Append("; floatField == " + Foundation.RobustGetString(floatField));
+			result.Append("; stringField == " + Foundation.RobustGetString(stringField));
+			result.Append("; boolField == " + Foundation.RobustGetString(boolField));
+			result.Append("; charField == " + Foundation.RobustGetString(charField));
+			result.Append("; enumField == " + Foundation.RobustGetString(enumField));
+			return result.ToString();
+		}
 	}
 }

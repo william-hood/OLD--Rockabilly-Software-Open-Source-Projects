@@ -1,4 +1,4 @@
-// Copyright (c) 2016 William Arthur Hood
+﻿// Copyright (c) 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -18,14 +18,23 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-
-namespace Rockabilly.Common.HtmlEffects
+using System;
+namespace Rockabilly.CoarseGrind.Descriptions
 {
-
-	public interface WebImage
+	public abstract class IntLimitsDescription : LimitsDescription<int>
 	{
-		/// A recommended site for this: http://jpillora.com/base64-encoder/
-		string Base64ImageData { get; }
-		string ImageType { get; }
+
+		public override bool HasThisWithinLimits(int candidate)
+		{
+			return ((candidate <= UpperLimit) && candidate >= LowerLimit);
+		}
+
+		public override bool HasZeroInLimits
+		{
+			get
+			{
+				return HasThisWithinLimits(0);
+			}
+		}
 	}
 }

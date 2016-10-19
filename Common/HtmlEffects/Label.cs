@@ -59,3 +59,4 @@ namespace Rockabilly.Common.HtmlEffects
 			return result.ToString();
 		}
 	}
+}
