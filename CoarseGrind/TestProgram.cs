@@ -29,9 +29,9 @@ using Rockabilly.Common.HtmlEffects;
 
 namespace Rockabilly.CoarseGrind
 {
-	internal class CoarseGrindInterface : WebInterface_ImgsInStyleSection
+	public class CoarseGrindInterface : WebInterface_ImgsInStyleSection
 	{
-		internal CoarseGrindInterface(string htmlTitle, WebInterfaceControl banner, int reloadSeconds = 5)
+		public CoarseGrindInterface(string htmlTitle, WebInterfaceControl banner, int reloadSeconds = 5)
 		{
 			Title = htmlTitle;
 			//this.externalStyleSheetName = COARSEGRIND_EXTERNAL_CSS_NAME;
@@ -65,12 +65,9 @@ namespace Rockabilly.CoarseGrind
 		private static readonly InStyleImage ICON_YES = new Icon_YES();
 
 		// Override this to set a custom banner
-		protected WebInterfaceControl Banner
+		protected virtual WebInterfaceControl GetBanner()
 		{
-			get
-			{
-				return new CoarseGrindBanner(this);
-			}
+			return new CoarseGrindBanner();
 		}
 
 		// Override this to change from the default reload frequency
@@ -109,6 +106,17 @@ namespace Rockabilly.CoarseGrind
 		internal int WEBUI_PORT = 8085;
 
 		private bool testingContinues = true;
+
+		private CoarseGrindInterface NewUiInstance
+		{
+			get
+			{
+
+				CoarseGrindInterface ui = NewUiInstance;
+				ui.useInStyleImage(TestProgram.ICON_COARSEGRINDLOGO);
+				return ui;
+			}
+		}
 
 		public bool IsReady
 		{
@@ -219,7 +227,7 @@ namespace Rockabilly.CoarseGrind
 
 			TestSuite tmp = null;
 
-			CoarseGrindInterface ui = new CoarseGrindInterface(HtmlTitle, Banner);
+			CoarseGrindInterface ui = NewUiInstance;
 			//ui.RedirectionUrl = remoteUrlTarget;
 
 

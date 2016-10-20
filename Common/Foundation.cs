@@ -27,7 +27,7 @@ namespace Rockabilly.Common
 {
 	public static class Foundation
 	{
-		private static string quickDateFormatString = "yyyy-MM-dd kk-mm-ss.SSS";
+		private static string quickDateFormatString = "yyyy-MM-dd hh-mm-ss.ffff";
 
 		public static Random Random = new Random();
 
@@ -95,7 +95,7 @@ namespace Rockabilly.Common
 		{
 			get
 			{
-				return Environment.SpecialFolder.UserProfile.ToString();
+				return Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 			}
 		}
 
@@ -112,14 +112,14 @@ namespace Rockabilly.Common
 			FileAttributes check = File.GetAttributes(sourcePath);
 			if (check.HasFlag(FileAttributes.Directory))
 			{
-				List<string> contents = new List<string>(Directory.EnumerateFileSystemEntries(sourcePath));
+				List<string> contents = new List<string>(Directory.EnumerateFileSystemEntries(sourcePath, "*"));
 				foreach (string thisFile in contents)
 				{
-					CopyCompletely(sourcePath + Path.DirectorySeparatorChar + thisFile, destinationPath + Path.DirectorySeparatorChar + thisFile);
+					CopyCompletely(sourcePath + Path.DirectorySeparatorChar + Path.GetFileName(thisFile), destinationPath + Path.DirectorySeparatorChar + Path.GetFileName(thisFile));
 				}
 			}
 			else {
-				Directory.CreateDirectory(destinationPath);
+				Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
 				File.Copy(sourcePath, destinationPath);
 			}
 		}

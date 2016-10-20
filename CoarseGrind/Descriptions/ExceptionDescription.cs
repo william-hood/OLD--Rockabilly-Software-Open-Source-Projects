@@ -25,22 +25,17 @@ namespace Rockabilly.CoarseGrind.Descriptions
 {
 	public class ExceptionDescription
 	{
-		private Type<T> where T : Exception ExceptionType = null;
+		private Type ExceptionType = null;
 		public string MessageSubstring = "";
-		public ExceptionDescription Cause = null;
-		private string ExceptionTypePartialName = Values.Defaultstring;
+		public ExceptionDescription InnerException = null;
+		private string ExceptionTypePartialName = default(string);
 
-		public ExceptionDescription(Class<? extends Exception> failureType, string messageSubstring)
+		public ExceptionDescription(Type exceptionType, string messageSubstring, ExceptionDescription inner = null)
 		{
-			ExceptionType = failureType;
+			if (!exceptionType.IsSubclassOf(typeof(Exception))) throw new InappropriateDescriptionException();
+			ExceptionType = exceptionType;
 			MessageSubstring = messageSubstring;
-		}
-
-		public ExceptionDescription(Class<? extends Exception> failureType,
-				string messageSubstring, ExceptionDescription cause)
-		{
-			this(failureType, messageSubstring);
-			Cause = cause;
+			InnerException = inner;
 		}
 
 		public ExceptionDescription(string failureTypePartial, string messageSubstring)
@@ -53,8 +48,7 @@ namespace Rockabilly.CoarseGrind.Descriptions
 		{
 			if (MessageSubstring.Length > 0)
 			{
-				if (!candidate.Contains(MessageSubstring))
-					return false;
+				if (!candidate.Contains(MessageSubstring)) return false;
 			}
 
 			return true;
@@ -62,24 +56,19 @@ namespace Rockabilly.CoarseGrind.Descriptions
 
 		public bool IsMatchTo(Exception candidateException)
 		{
+			if (candidateException == null) return false;
 			if (ExceptionTypePartialName != default(string))
-				return IsMatchTo(candidateException.GetType().FullName,
-						candidateException.getMessage());
-			if (candidateException.getClass() != ExceptionType)
-				return false;
-			if (!MessageMatches(candidateException.Message))
-				return false;
-			if (Cause != null)
-				return Cause.IsMatchTo(candidateException);
+				return IsMatchTo(candidateException.GetType().FullName, candidateException.Message);
+			if (! candidateException.GetType().Equals(ExceptionType)) return false;
+			if (!MessageMatches(candidateException.Message)) return false;
+			if (InnerException != null) return InnerException.IsMatchTo(candidateException.InnerException);
 			return true;
 		}
 
 		public bool IsMatchTo(string candidateExceptionName, string candidateExceptionMessage)
 		{
-			if (!candidateExceptionName.Contains(ExceptionTypePartialName))
-				return false;
-			if (!MessageMatches(candidateExceptionMessage))
-				return false;
+			if (!candidateExceptionName.Contains(ExceptionTypePartialName)) return false;
+			if (!MessageMatches(candidateExceptionMessage)) return false;
 			return true;
 		}
 
@@ -92,16 +81,12 @@ namespace Rockabilly.CoarseGrind.Descriptions
 				result.Append("failure of type " + ExceptionType.ToString());
 			}
 			else {
-				result.Append("failure with type name containing \""
-						+ ExceptionTypePartialName + "\"");
+				result.Append("failure with type name containing \"" + ExceptionTypePartialName + "\"");
 			}
 
-			if (MessageSubstring.Length > 0)
-				result.Append(" with message containing \"" + MessageSubstring
-						+ "\"");
+			if (MessageSubstring.Length > 0) result.Append(" with message containing \"" + MessageSubstring + "\"");
 
-			if (Cause != null)
-				result.Append("; Caused by " + Cause.ToString());
+			if (InnerException != null) result.Append("; Inner " + InnerException.ToString());
 			return result.ToString();
 		}
 	}

@@ -27,7 +27,7 @@ namespace Rockabilly.CoarseGrind
 	public static class CoarseGrind
 	{
 		internal const LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.Warning;
-		internal static string DateFormatString = "yyyy-MM-dd kk-mm-ss.SSS";
+		internal static string DateFormatString = "yyyy-MM-dd hh-mm-ss.ffff";
 		internal static readonly string DEFAULT_PARENT_FOLDER = Foundation.UserHomeFolder + Path.DirectorySeparatorChar + "Documents" + Path.DirectorySeparatorChar + "Test Results";
 		internal const string SUMMARY_FILE = "SUMMARY";
 		internal const string SUMMARY_FILE_EXTENSION = ".csv";

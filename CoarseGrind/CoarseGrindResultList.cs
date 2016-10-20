@@ -36,6 +36,7 @@ namespace Rockabilly.CoarseGrind
 		internal void refresh()
 		{
 			resultFolders.Clear();
+			Directory.CreateDirectory(resultsRoot.FullName);
 			resultFolders.AddRange(resultsRoot.EnumerateDirectories());
 		}
 

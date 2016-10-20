@@ -73,7 +73,16 @@ namespace Rockabilly.CoarseGrind
 			foreach (string thisMembership in memberships)
 			{
 				string thisMembership_UpperCase = thisMembership.ToUpper();
-				TestSuite tmp = AllTestSuites[thisMembership_UpperCase];
+				TestSuite tmp = null;
+
+				try
+				{
+					tmp = AllTestSuites[thisMembership_UpperCase];
+				}
+				catch
+				{
+				}
+
 				if (tmp == null) tmp = new TestSuite(thisMembership);
 				tmp.Add(thisTest);
 				AllTestSuites[thisMembership_UpperCase] = tmp;
