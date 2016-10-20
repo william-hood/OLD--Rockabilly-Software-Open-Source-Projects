@@ -27,7 +27,7 @@ namespace Rockabilly.Common
 	public abstract class HttpServer
 	{
 		private int port = 80;
-		private HttpListener listener;
+		private HttpListener listener = new HttpListener();
 		public abstract string Handle(HttpListenerRequest httpRequest);
 		private Thread executionThread = null;
 		public bool ContinueService = false;
@@ -39,6 +39,7 @@ namespace Rockabilly.Common
 		{
 			port = portToListenOn;
 			listener.Prefixes.Add("http://localhost:" + port + "/");
+			listener.Start();
 			ContinueService = true;
 			executionThread = new Thread(Run);
 			executionThread.Start();
