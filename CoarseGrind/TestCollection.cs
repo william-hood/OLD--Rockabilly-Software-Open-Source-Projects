@@ -104,7 +104,15 @@ namespace Rockabilly.CoarseGrind
 		private void DoDeclare(string[] args, int startIndex)
 		{
 			string suiteName = args[startIndex].ToUpper();
-			TestSuite tmp = AllTestSuites[suiteName];
+			TestSuite tmp = null;
+			try
+			{
+				tmp = AllTestSuites[suiteName];
+			}
+			catch
+			{
+			}
+
 			if (tmp == null) tmp = new TestSuite(suiteName);
 
 			for (int index = startIndex + 1; index < args.Length; index++)

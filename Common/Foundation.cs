@@ -77,6 +77,7 @@ namespace Rockabilly.Common
 
 			if (thisException.InnerException != null)
 			{
+				result.Append(Symbols.CarriageReturnLineFeed);
 				result.Append(("Inner " + DepictException(thisException.InnerException)).IndentEveryLineBy(8));
 			}
 

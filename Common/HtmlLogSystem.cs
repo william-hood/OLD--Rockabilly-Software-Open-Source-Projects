@@ -337,127 +337,134 @@ namespace Rockabilly.Common
 
 				for (int cursor = 0; cursor < lines.Length; cursor++)
 				{
-					result.Append(HTML__ROW_START);
-
 					currentLine = lines[cursor].Trim();
-					if (currentLine.StartsWith("at"))
+
+					if (currentLine != null)
 					{
-						string[] parts = currentLine.Replace("at ", "").Replace(':', '(').Replace(")", "").Split("\\(".ToCharArray());
-
-						if (parts.Length > 2)
+						if (currentLine.Trim().Length > 0)
 						{
-							result.Append(HTML__TABLE_BEGIN_DATA_CELL);
-							result.Append("<small>");
-							result.Append(HTML__SPACE);
-							result.Append(HTML__SPACE);
-							result.Append(parts[0].Trim());
-							result.Append("()</small>");
-							result.Append(HTML__TABLE_END_DATA_CELL);
-							result.Append(HTML__TABLE_BEGIN_DATA_CELL);
-							result.Append(HTML__SPACE);
-							result.Append(HTML__TABLE_END_DATA_CELL);
-							result.Append(HTML__TABLE_BEGIN_DATA_CELL);
-							result.Append("<b>");
-							result.Append(parts[1].Trim());
-							result.Append("</b>");
-							result.Append(HTML__TABLE_END_DATA_CELL);
-							result.Append(HTML__TABLE_BEGIN_DATA_CELL);
-							result.Append(HTML__SPACE);
-							result.Append("<small><i>at line</i></small>");
-							result.Append(HTML__SPACE);
-							result.Append(HTML__TABLE_END_DATA_CELL);
-							result.Append(HTML__TABLE_BEGIN_RIGHT_ALIGN_DATA_CELL);
-							result.Append("<b>");
-							result.Append(parts[2].Trim());
-							result.Append(HTML__SPACE);
-							result.Append(HTML__SPACE);
-							result.Append("</b>");
-						}
-						else if (parts.Length > 1)
-						{
-							result.Append(HTML__TABLE_BEGIN_DATA_CELL);
-							result.Append("<small>");
-							result.Append(HTML__SPACE);
-							result.Append(HTML__SPACE);
-							result.Append(parts[0].Trim());
-							result.Append("()</small>");
-							result.Append(HTML__TABLE_END_DATA_CELL);
-							result.Append(HTML__TABLE_BEGIN_DATA_CELL);
-							result.Append(HTML__SPACE);
-							result.Append(HTML__TABLE_END_DATA_CELL);
-							result.Append(HTML__TABLE_BEGIN_WIDE_DATA_CELL);
-							result.Append("<b>");
-							result.Append(parts[1].Trim());
-							result.Append("</b>");
-							result.Append(HTML__TABLE_END_DATA_CELL);
-						}
-						else {
-							result.Append(HTML__TABLE_BEGIN_WIDE_DATA_CELL);
-							result.Append(singleFailureLine(currentLine.Replace("at ", HTML__SPACE + HTML__SPACE)));
-						}
+							result.Append(HTML__ROW_START);
 
-					}
-					else if (currentLine.ToLower().StartsWith("cause"))
-					{
-						string[] parts = currentLine.Split(':');
+							if (currentLine.StartsWith("at"))
+							{
+								string[] parts = currentLine.Trim().Replace("at ", "").Replace(':', '|').Replace(" in ", "|").Split('|');
 
-						if (parts.Length > 1)
-						{
-							result.Append(HTML__TABLE_BEGIN_WIDE_DATA_CELL);
-							result.Append(HTML__SPACE);
+								if (parts.Length > 2)
+								{
+									result.Append(HTML__TABLE_BEGIN_DATA_CELL);
+									result.Append("<small>");
+									result.Append(HTML__SPACE);
+									result.Append(HTML__SPACE);
+									result.Append(parts[0].Trim());
+									result.Append("()</small>");
+									result.Append(HTML__TABLE_END_DATA_CELL);
+									result.Append(HTML__TABLE_BEGIN_DATA_CELL);
+									result.Append(HTML__SPACE);
+									result.Append(HTML__TABLE_END_DATA_CELL);
+									result.Append(HTML__TABLE_BEGIN_DATA_CELL);
+									result.Append("<b>");
+									result.Append(parts[1].Trim());
+									result.Append("</b>");
+									result.Append(HTML__TABLE_END_DATA_CELL);
+									result.Append(HTML__TABLE_BEGIN_DATA_CELL);
+									result.Append(HTML__SPACE);
+									result.Append("<small><i>at line</i></small>");
+									result.Append(HTML__SPACE);
+									result.Append(HTML__TABLE_END_DATA_CELL);
+									result.Append(HTML__TABLE_BEGIN_RIGHT_ALIGN_DATA_CELL);
+									result.Append("<b>");
+									result.Append(parts[2].Trim());
+									result.Append(HTML__SPACE);
+									result.Append(HTML__SPACE);
+									result.Append("</b>");
+								}
+								else if (parts.Length > 1)
+								{
+									result.Append(HTML__TABLE_BEGIN_DATA_CELL);
+									result.Append("<small>");
+									result.Append(HTML__SPACE);
+									result.Append(HTML__SPACE);
+									result.Append(parts[0].Trim());
+									result.Append("()</small>");
+									result.Append(HTML__TABLE_END_DATA_CELL);
+									result.Append(HTML__TABLE_BEGIN_DATA_CELL);
+									result.Append(HTML__SPACE);
+									result.Append(HTML__TABLE_END_DATA_CELL);
+									result.Append(HTML__TABLE_BEGIN_WIDE_DATA_CELL);
+									result.Append("<b>");
+									result.Append(parts[1].Trim());
+									result.Append("</b>");
+									result.Append(HTML__TABLE_END_DATA_CELL);
+								}
+								else {
+									result.Append(HTML__TABLE_BEGIN_WIDE_DATA_CELL);
+									result.Append(singleFailureLine(currentLine.Replace("at ", HTML__SPACE + HTML__SPACE)));
+								}
+
+							}
+							else if (currentLine.ToLower().StartsWith("inner"))
+							{
+								string[] parts = currentLine.Replace("Inner ", "").Split(':');
+
+								if (parts.Length > 1)
+								{
+									result.Append(HTML__TABLE_BEGIN_WIDE_DATA_CELL);
+									result.Append(HTML__SPACE);
+									result.Append(HTML__TABLE_END_DATA_CELL);
+									result.Append(HTML__ROW_END);
+									result.Append(HTML__ROW_START);
+									result.Append(HTML__TABLE_BEGIN_WIDE_DATA_CELL);
+									result.Append("<small>...caused by...</small><center><b>");
+									result.Append(parts[0].Trim());
+									result.Append("</b>");
+									if (parts.Length > 1)
+									{
+										result.Append("<br><small><i>");
+										result.Append(parts[1].Trim());
+										result.Append("</i></small>");
+									}
+									result.Append("</center><br>");
+								}
+								else {
+									result.Append(HTML__TABLE_BEGIN_WIDE_DATA_CELL);
+									result.Append(singleFailureLine(currentLine));
+								}
+							}
+							else if (currentLine.StartsWith("..."))
+							{
+								result.Append(HTML__TABLE_BEGIN_WIDE_DATA_CELL);
+								result.Append("<small><i>(");
+								result.Append(currentLine.Replace("... ", ""));
+								result.Append(")</i></small>");
+							}
+							else {
+								result.Append(HTML__TABLE_BEGIN_WIDE_DATA_CELL);
+								string[] parts = currentLine.Split(':');
+								if (currentLine.Contains(loggedException.GetType().Name))
+								{
+									result.Append("<center><h3>");
+									result.Append(parts[0]);
+									result.Append("</h3>");
+
+									if (parts.Length > 1)
+									{
+										result.Append("<small><i>");
+										result.Append(parts[1].Trim());
+										result.Append("</i></small>");
+									}
+									result.Append("</center><br>");
+								}
+								else {
+									//use regex
+									// FIXED
+									result.Append(singleFailureLine(Regex.Replace(currentLine, Symbols.CarriageReturnLineFeed, " ")));
+								}
+							}
+
 							result.Append(HTML__TABLE_END_DATA_CELL);
 							result.Append(HTML__ROW_END);
-							result.Append(HTML__ROW_START);
-							result.Append(HTML__TABLE_BEGIN_WIDE_DATA_CELL);
-							result.Append("<small>...caused by...</small><center><b>");
-							result.Append(parts[1].Trim());
-							result.Append("</b>");
-							if (parts.Length > 2)
-							{
-								result.Append("<br><small><i>");
-								result.Append(parts[2].Trim());
-								result.Append("</i></small>");
-							}
-							result.Append("</center><br>");
-						}
-						else {
-							result.Append(HTML__TABLE_BEGIN_WIDE_DATA_CELL);
-							result.Append(singleFailureLine(currentLine));
 						}
 					}
-					else if (currentLine.StartsWith("..."))
-					{
-						result.Append(HTML__TABLE_BEGIN_WIDE_DATA_CELL);
-						result.Append("<small><i>(");
-						result.Append(currentLine.Replace("... ", ""));
-						result.Append(")</i></small>");
-					}
-					else {
-						result.Append(HTML__TABLE_BEGIN_WIDE_DATA_CELL);
-						string[] parts = currentLine.Split(':');
-						if (currentLine.Contains(loggedException.GetType().Name))
-						{
-							result.Append("<center><h3>");
-							result.Append(parts[0]);
-							result.Append("</h3>");
-
-							if (parts.Length > 1)
-							{
-								result.Append("<small><i>");
-								result.Append(parts[1].Trim());
-								result.Append("</i></small>");
-							}
-							result.Append("</center><br>");
-						}
-						else {
-							//use regex
-							// FIXED
-							result.Append(singleFailureLine(Regex.Replace(currentLine, Symbols.CarriageReturnLineFeed, " ")));
-						}
-					}
-
-					result.Append(HTML__TABLE_END_DATA_CELL);
-					result.Append(HTML__ROW_END);
 				}
 
 				result.Append(HTML__TABLE_BEGIN_WIDE_DATA_CELL);
