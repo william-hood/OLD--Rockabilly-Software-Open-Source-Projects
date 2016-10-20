@@ -165,6 +165,12 @@ namespace Rockabilly.CoarseGrind
 
 				Console.WriteLine(tests.DescribeAvailableSuites);
 
+
+				// DEBUG: GET RID OF THIS
+				ContinueService = false;
+				Console.WriteLine("Declining to run the Web interface. Console use ONLY.");
+
+				/*
 				if (!ContinueService)
 				{
 					// Attempt to start the test server
@@ -179,6 +185,7 @@ namespace Rockabilly.CoarseGrind
 						Console.WriteLine("Test Server is offline");
 					}
 				}
+				*/
 
 				if (tests.immediateRun != default(string))
 				{
