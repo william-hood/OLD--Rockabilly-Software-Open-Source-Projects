@@ -347,7 +347,7 @@ namespace Rockabilly.Common
 
 							if (currentLine.StartsWith("at"))
 							{
-								string[] parts = currentLine.Trim().Replace("at ", "").Replace(':', '|').Replace(" in ", "|").Split('|');
+								string[] parts = Regex.Replace(currentLine.Trim().Replace("at ", ""), "([a-z]):", "").Replace("line", "").Replace(':', '|').Replace(" in ", "|").Split('|');
 
 								if (parts.Length > 2)
 								{
