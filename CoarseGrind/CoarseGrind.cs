@@ -28,12 +28,34 @@ namespace Rockabilly.CoarseGrind
 	{
 		internal const LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.Warning;
 		internal static string DateFormatString = "yyyy-MM-dd hh-mm-ss.ffff";
-		internal static readonly string DEFAULT_PARENT_FOLDER = Foundation.UserHomeFolder + Path.DirectorySeparatorChar + "Documents" + Path.DirectorySeparatorChar + "Test Results";
 		internal const string SUMMARY_FILE = "SUMMARY";
 		internal const string SUMMARY_FILE_EXTENSION = ".csv";
 		internal const string SUMMARY_FILE_NAME = SUMMARY_FILE + SUMMARY_FILE_EXTENSION;
 		internal static readonly string SUMMARY_TEXTFILE_NAME = '.' + SUMMARY_FILE;
 
+
+
+		private static string defaultParentFolder = default(string);
+		internal static string DEFAULT_PARENT_FOLDER// = Foundation.UserHomeFolder + Path.DirectorySeparatorChar + "Documents" + Path.DirectorySeparatorChar + "Test Results";
+		{
+			get
+			{
+				if (defaultParentFolder == default(string))
+				{
+					string rootShortName = Path.DirectorySeparatorChar + "Test Results";
+					if (Foundation.OperatingSystemName.ToUpper().Contains("WIN"))
+					{
+						defaultParentFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + rootShortName;
+					}
+					else
+					{
+						defaultParentFolder = Foundation.UserHomeFolder + Path.DirectorySeparatorChar + "Documents" + rootShortName;
+					}
+				}
+
+				return defaultParentFolder;
+			}
+		}
 
 		public static TestPriority TestPriorityFromString(String statusString)
 		{

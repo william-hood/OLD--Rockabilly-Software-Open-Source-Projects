@@ -18,3 +18,21 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
+
+
+// http://www.javascriptkit.com/frame2.shtml
+
+using System.Net;
+using Rockabilly.Common;
+
+namespace Rockabilly.CoarseGrind
+{
+	public abstract partial class TestProgram : HttpServer
+	{
+		public override string Handle(HttpListenerRequest incomingRequest) //HTTP Server
+		{
+			//string[] urlParts = incomingRequest.RawUrl.Split('/');
+			return "UNDER CONSTRUCTION";
+	}
+}
+}

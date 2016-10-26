@@ -19,22 +19,42 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
+
+using Rockabilly.CoarseGrind;
+using Rockabilly.Common;
 using Rockabilly.Common.HtmlEffects;
 
 namespace Rockabilly.CoarseGrind
 {
-	[Obsolete]
-	public class CoarseGrindInterface : WebInterface_ImgsInStyleSection
+	public abstract partial class TestProgram : HttpServer
 	{
-		public CoarseGrindInterface(string htmlTitle, WebInterfaceControl banner, int reloadSeconds = 5)
+		private static string controlFrame = default(string);
+		public string ControlFrame
 		{
-			Title = htmlTitle;
-			//this.externalStyleSheetName = COARSEGRIND_EXTERNAL_CSS_NAME;
-			RefreshIntervalSeconds = reloadSeconds;
-			ControlsInOrder.Add(new RawCodeSegment("<center>"));
-			ControlsInOrder.Add(banner);
-			ControlsInOrder.Add(new Divider());
+			get
+			{
+				if (controlFrame == default(string))
+				{
+					WebInterface ui = new WebInterface();
+					ControlCluster cluster = new ControlCluster();
+					cluster.columns = 1;
+					ui.Title = "Control Frame";
+
+					// These will have to be made into links
+					cluster.Add(ICON_SUITES);
+					cluster.Add(ICON_ALLTESTS);
+					cluster.Add(ICON_RESULTS);
+					cluster.Add(ICON_EXIT);
+
+					ui.ControlsInOrder.Add(cluster);
+					controlFrame = ui.ToString();
+
+					cluster = null;
+					ui = null;
+				}
+
+				return controlFrame;
+			}
 		}
 	}
 }

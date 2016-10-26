@@ -34,7 +34,7 @@ namespace Rockabilly.Common.HtmlEffects
 		internal WebInterfaceControl content = null;
 		private HorizontalJustification textAlignment = HorizontalJustification.CENTER;
 
-		public CaptionedControl(WebInterfaceControl control, Label caption, CaptionedControlOrientation position)
+		public CaptionedControl(WebInterfaceControl control, Label caption, CaptionedControlOrientation position = CaptionedControlOrientation.AboveCaption)
 		{
 			content = control;
 			text = caption;
@@ -42,7 +42,7 @@ namespace Rockabilly.Common.HtmlEffects
 			GuessJustification();
 		}
 
-		public CaptionedControl(WebInterfaceControl control, string caption, CaptionedControlOrientation position, int fontSize = 100) : this(control, new Label(caption, fontSize), position)
+		public CaptionedControl(WebInterfaceControl control, string caption, CaptionedControlOrientation position = CaptionedControlOrientation.AboveCaption, int fontSize = 100) : this(control, new Label(caption, fontSize), position)
 		{
 		}
 

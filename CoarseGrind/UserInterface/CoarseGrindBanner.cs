@@ -25,10 +25,11 @@ namespace Rockabilly.CoarseGrind
 {
 	internal class CoarseGrindBanner : ConjoinedControls
 	{
-		internal CoarseGrindBanner() :
+		internal CoarseGrindBanner(string programName) :
 		base(TestProgram.ICON_COARSEGRINDLOGO, new CaptionedControl(
-			new Label("Coarse Grind Test Server", 350),
-			new Label("For performance reasons, the Coarse Grind web interface is optimized for browsers that support images defined in the HTML style section.<br>This includes Chrome, Safari, and other WebKit-based browsers. Images may not show in other browsers.", 35),
+			new Label("Coarse Grind Test Server", 200),
+			//new Label(this.GetType().Name, 500),
+			new Label(programName, 100),
 			CaptionedControlOrientation.AboveCaption), ConjoinedControlsOrientation.AlphaLeft)
 		{
 		}

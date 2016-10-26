@@ -43,8 +43,6 @@
     <Compile Include="CoarseGrindLogSystem.cs" />
     <Compile Include="TestStatus.cs" />
     <Compile Include="TestResult.cs" />
-    <Compile Include="CoarseGrindBanner.cs" />
-    <Compile Include="CoarseGrindUserInterface.cs" />
     <Compile Include="LoadTesting\LoadGenerationOrder.cs" />
     <Compile Include="LoadTesting\LoadSequenceOrder.cs" />
     <Compile Include="Descriptions\ObjectDescription.cs" />
@@ -75,6 +73,13 @@
     <Compile Include="TestProgram.cs" />
     <Compile Include="Descriptions\IntLimitsDescription.cs" />
     <Compile Include="Descriptions\IntFieldDescription.cs" />
+    <Compile Include="UserInterface\Handle.cs" />
+    <Compile Include="UserInterface\CoarseGrindInterface.cs" />
+    <Compile Include="UserInterface\BannerFrame.cs" />
+    <Compile Include="UserInterface\CoarseGrindBanner.cs" />
+    <Compile Include="UserInterface\ControlFrame.cs" />
+    <Compile Include="UserInterface\UnderConstruction.cs" />
+    <Compile Include="UserInterface\CoarseGrindUserInterface.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
@@ -85,6 +90,7 @@
   <ItemGroup>
     <Folder Include="LoadTesting\" />
     <Folder Include="Descriptions\" />
+    <Folder Include="UserInterface\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -19,22 +19,23 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
+
+using Rockabilly.Common;
 using Rockabilly.Common.HtmlEffects;
 
 namespace Rockabilly.CoarseGrind
 {
-	[Obsolete]
-	public class CoarseGrindInterface : WebInterface_ImgsInStyleSection
+	public abstract partial class TestProgram : HttpServer
 	{
-		public CoarseGrindInterface(string htmlTitle, WebInterfaceControl banner, int reloadSeconds = 5)
+		private static string result = default(string);
+		public string UnderConstruction(string name)
 		{
-			Title = htmlTitle;
-			//this.externalStyleSheetName = COARSEGRIND_EXTERNAL_CSS_NAME;
-			RefreshIntervalSeconds = reloadSeconds;
-			ControlsInOrder.Add(new RawCodeSegment("<center>"));
-			ControlsInOrder.Add(banner);
-			ControlsInOrder.Add(new Divider());
+			if (result == default(string))
+			{
+				result = new CaptionedControl(ICON_CONSTRUCTION, name + " is still under construction.").ToString();
+			}
+
+			return result;
 		}
 	}
 }

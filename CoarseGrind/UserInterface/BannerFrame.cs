@@ -18,3 +18,29 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
+
+
+using Rockabilly.CoarseGrind;
+using Rockabilly.Common;
+using Rockabilly.Common.HtmlEffects;
+
+public abstract partial class TestProgram : HttpServer
+{
+	private static string bannerFrame = default(string);
+	public string BannerFrame
+	{
+		get
+		{
+			if (bannerFrame == default(string))
+			{
+				WebInterface ui = new WebInterface();
+				ui.Title = "Banner Frame";
+				ui.ControlsInOrder.Add(new CoarseGrindBanner(this.GetType().Name));
+				bannerFrame = ui.ToString();
+				ui = null;
+			}
+
+			return bannerFrame;
+		}
+	}
+}
