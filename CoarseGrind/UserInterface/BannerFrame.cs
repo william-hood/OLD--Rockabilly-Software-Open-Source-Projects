@@ -23,24 +23,26 @@
 using Rockabilly.CoarseGrind;
 using Rockabilly.Common;
 using Rockabilly.Common.HtmlEffects;
-
-public abstract partial class TestProgram : HttpServer
+namespace Rockabilly.CoarseGrind
 {
-	private static string bannerFrame = default(string);
-	public string BannerFrame
+	public abstract partial class TestProgram : HttpServer
 	{
-		get
+		private static string bannerFrame = default(string);
+		public string BannerFrame
 		{
-			if (bannerFrame == default(string))
+			get
 			{
-				WebInterface ui = new WebInterface();
-				ui.Title = "Banner Frame";
-				ui.ControlsInOrder.Add(new CoarseGrindBanner(this.GetType().Name));
-				bannerFrame = ui.ToString();
-				ui = null;
-			}
+				if (bannerFrame == default(string))
+				{
+					WebInterface ui = new WebInterface();
+					ui.Title = "Banner Frame";
+					ui.ControlsInOrder.Add(new CoarseGrindBanner(this.GetType().Name));
+					bannerFrame = ui.ToString();
+					ui = null;
+				}
 
-			return bannerFrame;
+				return bannerFrame;
+			}
 		}
 	}
 }
