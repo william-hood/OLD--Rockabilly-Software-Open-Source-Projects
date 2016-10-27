@@ -61,8 +61,6 @@ namespace Rockabilly.CoarseGrind
 		private static readonly string ZIP_TEMP_FOLDER = Foundation.UserHomeFolder + Path.DirectorySeparatorChar + "TEMP_DELTHIS";
 		private const string ZIP_TEMP_NAME = "TEMP_DELTHIS.zip";
 		private static readonly string ZIP_TEMP_FILE = ZIP_TEMP_FOLDER + Path.DirectorySeparatorChar + ZIP_TEMP_NAME;
-		const int SMALL_SUITE_THRESHOLD = 26;
-		const int LARGE_SUITE_THRESHOLD = 99;
 		const int ICON_TEXT_SIZE = 175;
 		private CoarseGrindResultList resultList = new CoarseGrindResultList(CoarseGrind.DEFAULT_PARENT_FOLDER);
 
