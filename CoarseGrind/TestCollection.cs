@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016 William Arthur Hood
+// Copyright (c) 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -56,9 +56,9 @@ namespace Rockabilly.CoarseGrind
 		}
 
 		// Create all programmatically declared test suites
-		internal void SetAllTests(List<Test> testCasesFromProgrammer)
+		internal void SetAllTests(List<Test> testsFromProgrammer)
 		{
-			AllTests = testCasesFromProgrammer;
+			AllTests = testsFromProgrammer;
 			foreach (Test thisTest in AllTests)
 			{
 				AddProgrammaticTestSuites(thisTest.TestSuiteMemberships, thisTest);

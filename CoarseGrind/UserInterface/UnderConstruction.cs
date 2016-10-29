@@ -27,15 +27,9 @@ namespace Rockabilly.CoarseGrind
 {
 	public abstract partial class TestProgram : HttpServer
 	{
-		private static string result = default(string);
 		public string UnderConstruction(string name)
 		{
-			if (result == default(string))
-			{
-				result = new CaptionedControl(ICON_CONSTRUCTION, name + " is still under construction.").ToString();
-			}
-
-			return result;
+			return new CaptionedControl(ICON_CONSTRUCTION, name + " is still under construction.").ToString();
 		}
 	}
 }

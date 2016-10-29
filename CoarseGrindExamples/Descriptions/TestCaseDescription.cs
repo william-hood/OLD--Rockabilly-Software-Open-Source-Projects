@@ -5,7 +5,7 @@ using Rockabilly.Common;
 namespace Rockabilly.CoarseGrind.Examples
 {
 
-	public class TestCaseDescription : ObjectDescription<SampleObject>
+	public class TestDescription : ObjectDescription<SampleObject>
 	{
 		public SimpleFieldDescription<SampleEnum> enumField = new SimpleFieldDescription<SampleEnum>(SampleEnum.THREE);
 		public SimpleFieldDescription<char> charField = new SimpleFieldDescription<char>('=');

@@ -34,7 +34,7 @@ namespace Rockabilly.CoarseGrind
 	{
 
 		// Override this to change from the default reload frequency
-		protected int RELOAD_SECONDS
+		protected virtual int RELOAD_SECONDS
 		{
 			get
 			{

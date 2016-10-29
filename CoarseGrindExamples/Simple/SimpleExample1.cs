@@ -82,7 +82,7 @@ namespace Rockabilly.CoarseGrind.Examples
 		{
 			// Perform any test case specific setup.
 			// If this does not return true, performTest() will never be run.
-			// You may wish to make an abstract class that extends TestCase.
+			// You may wish to make an abstract class that extends Test.
 			// Lots of testcases could extend that and share the same setup(),
 			// cleanup(), and other common methods.
 			return true;

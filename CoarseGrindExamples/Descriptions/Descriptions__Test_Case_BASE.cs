@@ -7,12 +7,12 @@ namespace Rockabilly.CoarseGrind.Examples
 	public abstract class Descriptions__Test_Case_BASE : Test
 	{
 		protected List<ExceptionDescription> ExpectedFailures = null;
-		protected TestCaseDescription testCaseDescription = null;
+		protected TestDescription testDescription = null;
 		protected int secondsToWait = 1;
 
 		public override bool Setup()
 		{
-			return testCaseDescription != null;
+			return testDescription != null;
 		}
 
 		public override bool Cleanup()

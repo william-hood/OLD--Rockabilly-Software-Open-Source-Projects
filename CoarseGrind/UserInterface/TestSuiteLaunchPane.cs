@@ -29,55 +29,52 @@ namespace Rockabilly.CoarseGrind
 	{
 		const int SMALL_SUITE_THRESHOLD = 26;
 		const int LARGE_SUITE_THRESHOLD = 99;
-		private WebInterface testSuiteLaunchPane = null;
 
-		public string TestSuiteLaunchPane
+		public string TestSuiteLaunchPane(string remoteUrlTarget)
 		{
-			get
+			WebInterface testSuiteLaunchPane = null;
+			testSuiteLaunchPane.ControlsInOrder.Add(new RawCodeSegment("<center>"));
+			if (IsReady)
 			{
-				testSuiteLaunchPane.ControlsInOrder.Add(new RawCodeSegment("<center>"));
-				if (IsReady)
+				testSuiteLaunchPane = null;
+				testSuiteLaunchPane = new WebInterface();
+				testSuiteLaunchPane.Title = "Test Suites";
+
+				// List available tests
+				testSuiteLaunchPane.ControlsInOrder.Add(new Label("AVAILABLE TEST SUITES", 200));
+
+
+				ControlCluster cluster = new ControlCluster();
+				cluster.columns = 4;
+				foreach (string thisTestSuite in tests.AllTestSuites.Keys)
 				{
-					testSuiteLaunchPane = null;
-					testSuiteLaunchPane = new WebInterface();
-					testSuiteLaunchPane.Title = "Test Suites";
-
-					// List available tests
-					testSuiteLaunchPane.ControlsInOrder.Add(new Label("AVAILABLE TEST SUITES", 200));
-
-
-					ControlCluster cluster = new ControlCluster();
-					cluster.columns = 4;
-					foreach (string thisTestSuite in tests.AllTestSuites.Keys)
+					WebInterfaceControl icon = null;
+					int size = tests.AllTestSuites[thisTestSuite].Count;
+					if (size < SMALL_SUITE_THRESHOLD)
 					{
-						WebInterfaceControl icon = null;
-						int size = tests.AllTestSuites[thisTestSuite].Count;
-						if (size < SMALL_SUITE_THRESHOLD)
-						{
-							icon = ICON_SMALLTEST;
-						}
-						else if (size > LARGE_SUITE_THRESHOLD)
-						{
-							icon = ICON_LARGETEST;
-						}
-						else {
-							icon = ICON_MEDIUMTEST;
-						}
-						cluster.Add(new Link(/*remoteUrlTarget + */"/" + RUN_PATH_PART + '/' + thisTestSuite, new CaptionedControl(icon, thisTestSuite, CaptionedControlOrientation.AboveCaption, ICON_TEXT_SIZE)));
-						icon = null;
+						icon = ICON_SMALLTEST;
 					}
-					testSuiteLaunchPane.ControlsInOrder.Add(cluster);
-					cluster = null;
+					else if (size > LARGE_SUITE_THRESHOLD)
+					{
+						icon = ICON_LARGETEST;
+					}
+					else {
+						icon = ICON_MEDIUMTEST;
+					}
+					cluster.Add(new Link(remoteUrlTarget + "/" + RUN_PATH_PART + '/' + thisTestSuite, new CaptionedControl(icon, thisTestSuite, CaptionedControlOrientation.AboveCaption, ICON_TEXT_SIZE)));
+					icon = null;
 				}
-				else {
-					testSuiteLaunchPane.RefreshIntervalSeconds = 3;
-					testSuiteLaunchPane.ControlsInOrder.Add(new Label("Tests are setting up...", 300));
-				}
-
-
-				testSuiteLaunchPane.ControlsInOrder.Add(new RawCodeSegment("</center>"));
-				return testSuiteLaunchPane.ToString();
+				testSuiteLaunchPane.ControlsInOrder.Add(cluster);
+				cluster = null;
 			}
+			else {
+				testSuiteLaunchPane.RefreshIntervalSeconds = 3;
+				testSuiteLaunchPane.ControlsInOrder.Add(new Label("Tests are setting up...", 300));
+			}
+
+
+			testSuiteLaunchPane.ControlsInOrder.Add(new RawCodeSegment("</center>"));
+			return testSuiteLaunchPane.ToString();
 		}
 	}
 }

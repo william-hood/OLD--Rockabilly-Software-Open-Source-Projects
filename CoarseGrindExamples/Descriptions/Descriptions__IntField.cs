@@ -12,9 +12,9 @@ namespace Rockabilly.CoarseGrind.Examples
 		public Descriptions__IntField(string subName, ValueFieldTargets target)
 		{
 			ExpectedFailures = new List<ExceptionDescription>();
-			testCaseDescription = new TestCaseDescription();
-			testCaseDescription.intField.Target = target;
-			if (testCaseDescription.intField.Target == ValueFieldTargets.HAPPY_PATH) Priority = TestPriority.HappyPath;
+			testDescription = new TestDescription();
+			testDescription.intField.Target = target;
+			if (testDescription.intField.Target == ValueFieldTargets.HAPPY_PATH) Priority = TestPriority.HappyPath;
 			subNameGiven = subName;
 		}
 
@@ -22,7 +22,7 @@ namespace Rockabilly.CoarseGrind.Examples
 		{
 			get
 			{
-				return "Constructs an object meeting the following description:" + Symbols.CarriageReturnLineFeed + testCaseDescription.ToString();
+				return "Constructs an object meeting the following description:" + Symbols.CarriageReturnLineFeed + testDescription.ToString();
 			}
 		}
 
@@ -32,7 +32,7 @@ namespace Rockabilly.CoarseGrind.Examples
 			Log.Message("Constructing the object as described above...");
 			try
 			{
-				testDatum = testCaseDescription.DescribedObject;
+				testDatum = testDescription.DescribedObject;
 				Log.Message("Constructed the following object:" + testDatum.ToString());
 			}
 			catch (Exception thisException)
@@ -57,7 +57,7 @@ namespace Rockabilly.CoarseGrind.Examples
 		{
 			get
 			{
-				return "Limited Value Field - " + testCaseDescription.intField.Target.ToString();
+				return "Limited Value Field - " + testDescription.intField.Target.ToString();
 			}
 		}
 

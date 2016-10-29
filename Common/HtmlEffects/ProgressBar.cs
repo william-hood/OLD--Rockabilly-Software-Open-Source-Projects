@@ -29,6 +29,8 @@ namespace Rockabilly.Common.HtmlEffects
 	{
 		private int value = default(int);
 		private int max = default(int);
+		public int widthPixels = 600;
+		public int heightPixels = 50;
 
 		public ProgressBar()
 		{
@@ -45,30 +47,14 @@ namespace Rockabilly.Common.HtmlEffects
 			if (max < currentProgress) max = currentProgress;
 		}
 
-		public int WidthPixels
-		{
-			get
-			{
-				return 600;
-			}
-		}
-
-		public int HeightPixels
-		{
-			get
-			{
-				return 50;
-			}
-		}
-
 		public override string ToString()
 		{
 			StringBuilder result = new StringBuilder("<progress ");
 
 			result.Append("style=\"border:0; width:");
-			result.Append(WidthPixels);
+			result.Append(widthPixels);
 			result.Append("px; height:");
-			result.Append(HeightPixels);
+			result.Append(heightPixels);
 			result.Append("px;\" ");
 
 			if (value != default(int))

@@ -29,14 +29,16 @@ namespace Rockabilly.Common.HtmlEffects
 	{
 		private string content = default(string);
 		private string destUrl = default(string);
+		private string targetFrameName = default(string);
 
-		public Link(string destinationUrl, string text)
+		public Link(string destinationUrl, string text, string targetFrame = default(string))
 		{
 			destUrl = destinationUrl;
 			content = text;
+			targetFrameName = targetFrame;
 		}
 
-		public Link(string destinationUrl, WebInterfaceControl innerControl) : this(destinationUrl, innerControl.ToString())
+		public Link(string destinationUrl, WebInterfaceControl innerControl, string targetFrame = default(string)) : this(destinationUrl, innerControl.ToString(), targetFrame)
 		{
 		}
 
@@ -51,6 +53,13 @@ namespace Rockabilly.Common.HtmlEffects
 			result.Append("href=\"");
 			result.Append(destUrl);
 			result.Append("\"");
+
+			if (targetFrameName != default(string))
+			{
+				result.Append(" target=\"");
+				result.Append(targetFrameName);
+				result.Append("\"");
+			}
 
 			string style = getStyle();
 			if (style != default(string))

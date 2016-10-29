@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016 William Arthur Hood
+// Copyright (c) 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -182,7 +182,7 @@ namespace Rockabilly.CoarseGrind
 			InterruptCurrentTest();
 		}
 
-		static string[] SUMMARY_HEADERS = { "Categorization", "Test Case Priority", "Test Case ID", "Name", "Description", "Status", "Reasons" };
+		static string[] SUMMARY_HEADERS = { "Categorization", "Test Priority", "Test ID", "Name", "Description", "Status", "Reasons" };
 
 		public void CreateSummaryReport(string rootDirectory)
 		{

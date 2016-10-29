@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016 William Arthur Hood
+// Copyright (c) 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -97,7 +97,7 @@ namespace Rockabilly.CoarseGrind
 
 		private string getEchelonName()
 		{
-			return "Test Case";
+			return "Test";
 		}
 
 		private string DescribeCategorization
@@ -137,7 +137,7 @@ namespace Rockabilly.CoarseGrind
 			}
 		}
 
-		private void LogTestCaseHeader()
+		private void LogTestHeader()
 		{
 			Log.Header(IdentifiedName);
 		}
@@ -150,7 +150,7 @@ namespace Rockabilly.CoarseGrind
 			Guid thisOutputIdentifier = Log.AddOutput(new TextOutputManager(
 					ArtifactsDirectory + Path.DirectorySeparatorChar + LogFileName),
 					preferredLoggingLevel, LoggingMode.Minimum);
-			LogTestCaseHeader();
+			LogTestHeader();
 
 			SetupEnforcement before = null;
 
