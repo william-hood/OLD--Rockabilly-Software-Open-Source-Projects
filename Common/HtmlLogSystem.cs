@@ -71,7 +71,7 @@ namespace Rockabilly.Common
 
 
 
-		private static string LogDateFormatstring = "[yyyy-MM-dd] [hh:mm:ss.ffff]";
+		private static string LogDateFormatstring = "[yyyy-MM-dd] [HH:mm:ss.ffff]";
 		//private static SimpleDateFormat LogDateFormat = new SimpleDateFormat(LogDateFormatstring);
 
 		public bool SHOW_TIME_STAMPS = true;

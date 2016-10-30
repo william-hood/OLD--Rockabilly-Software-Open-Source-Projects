@@ -27,7 +27,7 @@ namespace Rockabilly.Common
 {
 	public static class Foundation
 	{
-		private static string quickDateFormatString = "yyyy-MM-dd hh-mm-ss.ffff";
+		private static string quickDateFormatString = "yyyy-MM-dd HH-mm-ss.ffff";
 
 		public static Random Random = new Random();
 
