@@ -24,14 +24,20 @@ using System.Text;
 
 namespace Rockabilly.Common.HtmlEffects
 {
+	public enum ButtonTypes
+	{
+		button, submit, reset
+	}
 
 	public class Button : WebInterfaceControl
 	{
 		private string content = default(string);
+		public ButtonTypes type = ButtonTypes.button;
 
-		public Button(string text)
+		public Button(string text, ButtonTypes buttonType = ButtonTypes.button)
 		{
 			content = text;
+			type = buttonType;
 		}
 
 		public string CssStyle
@@ -42,15 +48,12 @@ namespace Rockabilly.Common.HtmlEffects
 			}
 		}
 
-		// Can override to "submit" or "reset"
-		public string ButtonType { get { return "button"; } }
-
 
 		public override string ToString()
 		{
 			StringBuilder result = new StringBuilder("<button ");
 			result.Append("type=\"");
-			result.Append(ButtonType);
+			result.Append(type);
 			result.Append("\"");
 
 			string style = CssStyle;

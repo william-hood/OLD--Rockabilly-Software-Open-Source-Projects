@@ -27,25 +27,22 @@ namespace Rockabilly.CoarseGrind
 {
 	public abstract partial class TestProgram : HttpServer
 	{
-		const int SMALL_SUITE_THRESHOLD = 26;
-		const int LARGE_SUITE_THRESHOLD = 99;
-
-		public string TestSuiteLaunchPane(string remoteUrlTarget)
+		public string GetTestSuiteLaunchPane(string remoteUrlTarget)
 		{
-			WebInterface testSuiteLaunchPane = null;
+			WebInterface testSuiteLaunchPane = new WebInterface();
+			testSuiteLaunchPane = null;
+			testSuiteLaunchPane = new WebInterface();
+			testSuiteLaunchPane.Title = "Test Suites";
 			testSuiteLaunchPane.ControlsInOrder.Add(new RawCodeSegment("<center>"));
-			if (IsReady)
+			if (this.IsReady)
 			{
-				testSuiteLaunchPane = null;
-				testSuiteLaunchPane = new WebInterface();
-				testSuiteLaunchPane.Title = "Test Suites";
 
 				// List available tests
 				testSuiteLaunchPane.ControlsInOrder.Add(new Label("AVAILABLE TEST SUITES", 200));
 
 
 				ControlCluster cluster = new ControlCluster();
-				cluster.columns = 4;
+				cluster.columns = 3;
 				foreach (string thisTestSuite in tests.AllTestSuites.Keys)
 				{
 					WebInterfaceControl icon = null;
@@ -61,7 +58,7 @@ namespace Rockabilly.CoarseGrind
 					else {
 						icon = ICON_MEDIUMTEST;
 					}
-					cluster.Add(new Link(remoteUrlTarget + "/" + RUN_PATH_PART + '/' + thisTestSuite, new CaptionedControl(icon, thisTestSuite, CaptionedControlOrientation.AboveCaption, ICON_TEXT_SIZE)));
+					cluster.Add(new Link(remoteUrlTarget + "/" + RUN_SUITE_PATH + '/' + thisTestSuite, new CaptionedControl(icon, thisTestSuite, CaptionedControlOrientation.AboveCaption, ICON_TEXT_SIZE).ToString()));
 					icon = null;
 				}
 				testSuiteLaunchPane.ControlsInOrder.Add(cluster);

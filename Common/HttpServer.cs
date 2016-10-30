@@ -43,7 +43,7 @@ namespace Rockabilly.Common
 			ContinueService = true;
 			executionThread = new Thread(Run);
 			executionThread.Start();
-			executionThread.Join();
+			//executionThread.Join();
 		}
 
 
@@ -51,8 +51,18 @@ namespace Rockabilly.Common
 		{
 			Console.WriteLine("HTTP SERVER DISCONTINUING SERVICE");
 			ContinueService = false;
-			executionThread.Abort();
-			executionThread = null;
+
+			try
+			{
+				executionThread.Abort();
+				executionThread.Abort();
+				executionThread.Abort();
+			}
+			catch { }
+			finally
+			{
+				executionThread = null;
+			}
 		}
 
 

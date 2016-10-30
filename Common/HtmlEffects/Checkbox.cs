@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016 William Arthur Hood
+// Copyright (c) 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,28 +19,53 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-
 using System.Text;
-using Rockabilly.Common;
-using Rockabilly.Common.HtmlEffects;
 
-namespace Rockabilly.CoarseGrind
+
+namespace Rockabilly.Common.HtmlEffects
 {
-	public abstract partial class TestProgram : HttpServer
+	public class Checkbox : WebInterfaceControl
 	{
-		public string GetUnderConstructionWarning(string name)
+		private string name = default(string);
+		private string value = default(string);
+		private string style = "";
+
+		public Checkbox(string checkboxName, string checkboxValue, string cssStyle = "")
 		{
-			StringBuilder code = new StringBuilder();
-			code.Append(new LineBreak());
-			code.Append(new LineBreak());
-			code.Append(new LineBreak());
-			code.Append(new LineBreak());
-			code.Append(new LineBreak());
-			code.Append(new LineBreak());
-			code.Append(new RawCodeSegment("<center>"));
-			code.Append(new CaptionedControl(ICON_CONSTRUCTION, name + " is still under construction.", CaptionedControlOrientation.AboveCaption));
-			code.Append(new RawCodeSegment("</center>"));
-			return code.ToString();
+			name = checkboxName;
+			value = checkboxValue;
+			style = cssStyle;
+		}
+
+		public string CssStyle
+		{
+			get
+			{
+				return style;
+			}
+		}
+
+
+		public override string ToString()
+		{
+			StringBuilder result = new StringBuilder("<input type=\"checkbox\"");
+			result.Append(" name=\"");
+			result.Append(name);
+			result.Append("\"");
+			result.Append(" value=\"");
+			result.Append(value);
+			result.Append("\"");
+
+			string style = CssStyle;
+			if (style != "")
+			{
+				result.Append(" style=\"");
+				result.Append(style);
+				result.Append(";\"");
+			}
+
+			result.Append('>');
+			return result.ToString();
 		}
 	}
 }

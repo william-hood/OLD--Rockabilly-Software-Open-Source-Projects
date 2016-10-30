@@ -25,6 +25,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Collections.Generic;
+using System.Security.Policy;
 
 namespace Rockabilly.Common
 {
@@ -360,6 +361,26 @@ namespace Rockabilly.Common
 			{
 				result.Add(thisString.ToString());
 				thisString = new StringBuilder();
+			}
+
+			return result;
+		}
+
+
+
+		// Based on http://stackoverflow.com/questions/13592236/parse-a-uri-string-into-name-value-collection
+		public static List<KeyValuePair<string, string>> GetUrlParameters(this string urlQuery)
+		{
+			List<KeyValuePair<string, string>> result = new List<KeyValuePair<string, string>>();
+			string[] parameters = urlQuery.Split("?&".ToCharArray());
+
+			foreach (string thisParam in parameters)
+			{
+				if (thisParam.Contains("="))
+				{
+					string[] keyValuePair = thisParam.Split('=');
+					result.Add(new KeyValuePair<string, string>(keyValuePair[0], keyValuePair[1]));
+				}
 			}
 
 			return result;

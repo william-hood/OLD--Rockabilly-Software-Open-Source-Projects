@@ -20,7 +20,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 
-using System.Text;
 using Rockabilly.Common;
 using Rockabilly.Common.HtmlEffects;
 
@@ -28,19 +27,44 @@ namespace Rockabilly.CoarseGrind
 {
 	public abstract partial class TestProgram : HttpServer
 	{
-		public string GetUnderConstructionWarning(string name)
+		private string CarryOutKillService(string remoteUrlTarget)
 		{
-			StringBuilder code = new StringBuilder();
-			code.Append(new LineBreak());
-			code.Append(new LineBreak());
-			code.Append(new LineBreak());
-			code.Append(new LineBreak());
-			code.Append(new LineBreak());
-			code.Append(new LineBreak());
-			code.Append(new RawCodeSegment("<center>"));
-			code.Append(new CaptionedControl(ICON_CONSTRUCTION, name + " is still under construction.", CaptionedControlOrientation.AboveCaption));
-			code.Append(new RawCodeSegment("</center>"));
-			return code.ToString();
+			WebInterface ui = new WebInterface();
+			ui.RefreshIntervalSeconds = 7;
+			ui.RedirectionUrl = remoteUrlTarget;
+			ui.ControlsInOrder.Add(new RawCodeSegment("<center>"));
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(ICON_EXIT);
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(new Label("Test Server Taken Offline", 300));
+			ui.ControlsInOrder.Add(new RawCodeSegment("</center>"));
+			testingContinues = false;
+
+			try
+			{
+				CoarseGrind.KILL_SWITCH = true;
+				tests.CurrentlyRunningSuite.InterruptCurrentTest();
+			}
+			catch
+			{
+				// Deliberate NO-OP
+			}
+
+			try
+			{
+				tests.block.Signal();
+			}
+			catch
+			{
+				// Deliberate NO-OP
+			}
+
+			DiscontinueService();
+
+			return ui.ToString();
 		}
 	}
 }

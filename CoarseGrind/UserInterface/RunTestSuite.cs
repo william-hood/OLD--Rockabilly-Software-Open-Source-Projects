@@ -20,7 +20,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 
-using System.Text;
 using Rockabilly.Common;
 using Rockabilly.Common.HtmlEffects;
 
@@ -28,19 +27,48 @@ namespace Rockabilly.CoarseGrind
 {
 	public abstract partial class TestProgram : HttpServer
 	{
-		public string GetUnderConstructionWarning(string name)
+		private string RunTestSuite(string remoteUrlTarget, string testSuiteName)
 		{
-			StringBuilder code = new StringBuilder();
-			code.Append(new LineBreak());
-			code.Append(new LineBreak());
-			code.Append(new LineBreak());
-			code.Append(new LineBreak());
-			code.Append(new LineBreak());
-			code.Append(new LineBreak());
-			code.Append(new RawCodeSegment("<center>"));
-			code.Append(new CaptionedControl(ICON_CONSTRUCTION, name + " is still under construction.", CaptionedControlOrientation.AboveCaption));
-			code.Append(new RawCodeSegment("</center>"));
-			return code.ToString();
+			WebInterface ui = new WebInterface();
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(new RawCodeSegment("<center>"));
+			if (IsBusy)
+			{
+				ui.ControlsInOrder.Add(InProgressWarning);
+			}
+			else {
+				TestSuite tmp = null;
+
+				try
+				{
+					tmp = tests.AllTestSuites[testSuiteName];
+				}
+				catch { }
+
+				if (tmp == null)
+				{
+					ui.ControlsInOrder.Add(new Label("No test suite named \"" + testSuiteName + "\" exists", 300));
+				}
+				else {
+					//We may not support command line arguments over the web for security reasons.
+					//processConfigSet(incomingRequest.body.toString().replace("\r", "").split("\n"));
+
+					ui.ControlsInOrder.Add(new Label("Running: " + testSuiteName, 500));
+
+					tests.KickOffTestSuite(tmp);
+				}
+			}
+
+			ui.ControlsInOrder.Add(new RawCodeSegment("</center>"));
+			ui.RedirectionUrl = remoteUrlTarget + "/" + TEST_SUITES_PATH;
+			ui.RefreshIntervalSeconds = 3;
+
+			return ui.ToString();
 		}
 	}
 }

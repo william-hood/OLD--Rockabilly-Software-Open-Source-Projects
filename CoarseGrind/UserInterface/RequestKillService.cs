@@ -19,22 +19,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
+
+using Rockabilly.Common;
 using Rockabilly.Common.HtmlEffects;
 
 namespace Rockabilly.CoarseGrind
 {
-	[Obsolete]
-	public class CoarseGrindInterface : WebInterface_ImgsInStyleSection
+	public abstract partial class TestProgram : HttpServer
 	{
-		public CoarseGrindInterface(string htmlTitle, WebInterfaceControl banner, int reloadSeconds = 5)
+		private string RequestKillService(string remoteUrlTarget)
 		{
-			Title = htmlTitle;
-			//this.externalStyleSheetName = COARSEGRIND_EXTERNAL_CSS_NAME;
-			RefreshIntervalSeconds = reloadSeconds;
-			ControlsInOrder.Add(new RawCodeSegment("<center>"));
-			ControlsInOrder.Add(banner);
-			ControlsInOrder.Add(new Divider());
+			WebInterface ui = new WebInterface();
+			ui.ControlsInOrder.Add(new RawCodeSegment("<center>"));
+
+			ui.ControlsInOrder.Add(new Label("Do you want to stop the test server?<br><br>", 300));
+
+			ui.ControlsInOrder.Add(new RawCodeSegment("</center>"));
+			ui.ControlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/' + TEST_SUITES_PATH, ICON_NO), "<b><i>NO</i></b>, --back to testing please.", CaptionedControlOrientation.LeftOfCaption, 250));
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(new LineBreak());
+			ui.ControlsInOrder.Add(new CaptionedControl(new Link(remoteUrlTarget + '/' + CARRY_OUT_KILL_SERVICE_PATH, ICON_YES, "_top"), "<b><i>YES</i></b>, --terminate the test server program. <b><i>The web interface will not be available until the server program is restarted manually.</i></b>", CaptionedControlOrientation.LeftOfCaption, 200));
+
+			return ui.ToString();
 		}
 	}
 }

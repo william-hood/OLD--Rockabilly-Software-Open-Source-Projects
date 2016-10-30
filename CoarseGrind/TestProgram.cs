@@ -24,6 +24,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Text;
+using System.Threading;
 using Rockabilly.Common;
 using Rockabilly.Common.HtmlEffects;
 
@@ -47,37 +48,32 @@ namespace Rockabilly.CoarseGrind
 		protected abstract List<Test> AllTests { get; }
 		protected abstract void ProcessArguments(List<string> args);
 
-		private const string APPLY_CFG_PATH_PART = "apply";
-		private const string RUN_PATH_PART = "run";
+		private const string RUN_SUITE_PATH = "run";
 		private const string STOP_TEST_CASE_PATH_PART = "interrupt";
 		private const string STOP_ALL_TESTING_PATH_PART = "halt";
-		private const string DELETE_DATA_PATH_PART = "delete_data";
-		private const string CONFIRM_DELETE_DATA_PATH_PART = "confirm";
-		private const string RETRIEVE_DATA_PATH_PART = "get_data";
-		private const string LIST_DATA_PATH_PART = "list_data";
-		private const string CONFIRM_KILL_SERVICE_PATH_PART = "confirm_kill_service";
-		private const string KILL_SERVICE_PATH_PART = "kill_service";
+		private const string REQUEST_KILL_SERVICE_PATH = "confirm_kill_service";
+		private const string CARRY_OUT_KILL_SERVICE_PATH = "kill_service";
+		private const string BANNER_FRAME_PATH = "banner";
+		private const string STATUS_FRAME_PATH = "status";
+		private const string CONTROL_FRAME_PATH = "controls";
+		private const string TEST_SUITES_PATH = "suites";
+		private const string TEST_RESULTS_PATH = "results";
+		private const string SELECT_CUSTOM_SUITE_PATH = "select_custom";
+		private const string RUN_CUSTOM_SUITE_PATH = "run_custom";
 
-		private static readonly string ZIP_TEMP_FOLDER = Foundation.UserHomeFolder + Path.DirectorySeparatorChar + "TEMP_DELTHIS";
-		private const string ZIP_TEMP_NAME = "TEMP_DELTHIS.zip";
-		private static readonly string ZIP_TEMP_FILE = ZIP_TEMP_FOLDER + Path.DirectorySeparatorChar + ZIP_TEMP_NAME;
-		const int ICON_TEXT_SIZE = 175;
-		private CoarseGrindResultList resultList = new CoarseGrindResultList(CoarseGrind.DEFAULT_PARENT_FOLDER);
+
+		private const string BANNER_FRAME_NAME = "BANNER_FRAME";
+		private const string STATUS_FRAME_NAME = "STATUS_FRAME";
+		private const string CONTROL_FRAME_NAME = "CONTROLS_FRAME";
+		private const string VIEW_FRAME_NAME = "VIEW_FRAME";
+
+		internal const int SMALL_SUITE_THRESHOLD = 26;
+		internal const int LARGE_SUITE_THRESHOLD = 99;
+		internal const int ICON_TEXT_SIZE = 175;
 
 		internal int WEBUI_PORT = 8085;
 
 		private bool testingContinues = true;
-
-		private CoarseGrindInterface NewUiInstance
-		{
-			get
-			{
-
-				//CoarseGrindInterface ui = NewUiInstance;
-				//ui.useInStyleImage(TestProgram.ICON_COARSEGRINDLOGO);
-				return new CoarseGrindInterface("Obsolete", null);
-			}
-		}
 
 		public bool IsReady
 		{
@@ -111,6 +107,7 @@ namespace Rockabilly.CoarseGrind
 		{
 			while (testingContinues)
 			{
+				CoarseGrind.KILL_SWITCH = false;
 				tests = new TestCollection();
 				Console.WriteLine("Resetting the Test Collection");
 
@@ -127,11 +124,6 @@ namespace Rockabilly.CoarseGrind
 				Console.WriteLine(tests.DescribeAvailableSuites);
 
 
-				// DEBUG: GET RID OF THIS
-				ContinueService = false;
-				Console.WriteLine("Declining to run the Web interface. Console use ONLY.");
-
-				/*
 				if (!ContinueService)
 				{
 					// Attempt to start the test server
@@ -146,7 +138,6 @@ namespace Rockabilly.CoarseGrind
 						Console.WriteLine("Test Server is offline");
 					}
 				}
-				*/
 
 				if (tests.immediateRun != default(string))
 				{
@@ -161,6 +152,7 @@ namespace Rockabilly.CoarseGrind
 					if (tmp == null)
 					{
 						Console.WriteLine("No test suite named \"" + tests.immediateRun + "\" exists. Nothing to run so exiting the program.");
+						System.Environment.Exit(1);
 					}
 					else {
 						testingContinues = false;
@@ -182,10 +174,16 @@ namespace Rockabilly.CoarseGrind
 		{
 			if (ContinueService)
 			{
-				base.DiscontinueService();
 				testingContinues = false;
-				Console.WriteLine("TEST SERVER TAKEN OFFLINE");
+				new Thread(effectDiscontinue).Start();
 			}
+		}
+
+		private void effectDiscontinue()
+		{
+			Thread.Sleep(2000);
+			base.DiscontinueService();
+			Console.WriteLine("TEST SERVER TAKEN OFFLINE");
 		}
 	}
 }

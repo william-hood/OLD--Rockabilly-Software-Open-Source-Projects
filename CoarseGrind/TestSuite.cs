@@ -43,7 +43,13 @@ namespace Rockabilly.CoarseGrind
 			currentTest = null;
 			if (executionThread != null)
 			{
-				executionThread.Abort();
+				try
+				{
+					executionThread.Abort();
+					executionThread.Abort();
+					executionThread.Abort();
+				}
+				catch { }
 			}
 			executionThread = null;
 			currentArtifactsDirectory = default(string);
@@ -83,7 +89,7 @@ namespace Rockabilly.CoarseGrind
 			{
 				effectiveCount += (1 * currentTest.getProgress());
 			}
-			catch (Exception dontCare)
+			catch
 			{
 				// DELIBERATE NO-OP
 			}
@@ -142,23 +148,31 @@ namespace Rockabilly.CoarseGrind
 			currentCount = 0;
 			for (currentCount = 0; currentCount < Count; currentCount++)
 			{
-				currentTest = this[(int)currentCount];
-				if (!exclusions.MatchesCaseInspecific(currentTest.IdentifiedName))
+				if (CoarseGrind.KILL_SWITCH)
 				{
-					try
+					// Decline to run
+					break;
+				}
+				else
+				{
+					currentTest = this[(int)currentCount];
+					if (!exclusions.MatchesCaseInspecific(currentTest.IdentifiedName))
 					{
-						executionThread = new Thread(Run);
-						executionThread.Start();
-						executionThread.Join();
-					}
-					catch (Exception thisFailure)
-					{
-						currentTest.AddResult(currentTest.GetResultForPreclusionInSetup(thisFailure));
-					}
-					finally
-					{
-						executionThread = null;
-						CopyResultsToCategories();
+						try
+						{
+							executionThread = new Thread(Run);
+							executionThread.Start();
+							executionThread.Join();
+						}
+						catch (Exception thisFailure)
+						{
+							currentTest.AddResult(currentTest.GetResultForPreclusionInSetup(thisFailure));
+						}
+						finally
+						{
+							executionThread = null;
+							CopyResultsToCategories();
+						}
 					}
 				}
 			}
@@ -178,8 +192,23 @@ namespace Rockabilly.CoarseGrind
 
 		public void HaltAllTesting()
 		{
+			CoarseGrind.KILL_SWITCH = true;
+
 			currentCount = float.MaxValue;
 			InterruptCurrentTest();
+
+			try
+			{
+				executionThread.Interrupt();
+				executionThread.Abort();
+				executionThread.Abort();
+				executionThread.Abort();
+			}
+			catch { }
+			finally
+			{
+				executionThread = null;
+			}
 		}
 
 		static string[] SUMMARY_HEADERS = { "Categorization", "Test Priority", "Test ID", "Name", "Description", "Status", "Reasons" };
@@ -195,7 +224,7 @@ namespace Rockabilly.CoarseGrind
 			{
 				summaryReport = DelimitedDataManager<string>.FromFile(fullyQulaifiedSummaryFileName, new StringParser());
 			}
-			catch (Exception thisException)
+			catch
 			{
 				summaryReport = new DelimitedDataManager<string>(columnNames: SUMMARY_HEADERS);
 			}
@@ -216,7 +245,7 @@ namespace Rockabilly.CoarseGrind
 				textFile.Flush();
 				textFile.Close();
 			}
-			catch (Exception dontCare)
+			catch
 			{
 				// DELIBERATE NO-OP
 			}

@@ -32,6 +32,7 @@ namespace Rockabilly.CoarseGrind
 		internal const string SUMMARY_FILE_EXTENSION = ".csv";
 		internal const string SUMMARY_FILE_NAME = SUMMARY_FILE + SUMMARY_FILE_EXTENSION;
 		internal static readonly string SUMMARY_TEXTFILE_NAME = '.' + SUMMARY_FILE;
+		internal static bool KILL_SWITCH = false;
 
 
 

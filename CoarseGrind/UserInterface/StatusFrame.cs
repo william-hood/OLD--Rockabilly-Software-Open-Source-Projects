@@ -36,59 +36,34 @@ namespace Rockabilly.CoarseGrind
 			statusFrame.RefreshIntervalSeconds = 1;
 		}
 
-		public string StatusFrameNormal
+		private string GetStatusFrameNormal(string remoteUrlTarget)
 		{
-			get
-			{
-				renewFrame();
-				if (IsBusy) return ProgressBar;
+			renewFrame();
+			if (IsBusy) return ProgressBar(remoteUrlTarget);
 
-				statusFrame.ControlsInOrder.Add(new Label("Stub: System Ready"));
-				return statusFrame.ToString();
-			}
+			//statusFrame.controlsInOrder.add(new Label("Stub: System Ready"));
+			return statusFrame.ToString();
 		}
 
-		public string StatusFrameStartTests
+		private string ProgressBar(string remoteUrlTarget)
 		{
-			get
-			{
-				renewFrame();
-				if (IsBusy) return ProgressBar;
+			//Show progress and options to stop
+			ControlCluster cluster = new ControlCluster();
+			cluster.columns = 1;
+			cluster.Add(new RawCodeSegment("<center>"));
+			ProgressBar progress = new ProgressBar(Progress, 100);
+			progress.heightPixels = 20;
+			progress.widthPixels = 450;
+			cluster.Add(progress);
+			cluster.Add(new RawCodeSegment("</center>"));
+			cluster.Add(new CaptionedControl(new Link(remoteUrlTarget + "/" + STOP_TEST_CASE_PATH_PART, ICON_STOPONE, VIEW_FRAME_NAME), "Stop individual test <b><i>\"" + tests.CurrentlyRunningSuite.CurrentTest + "\"</i></b> and allow the remaining tests to run.", CaptionedControlOrientation.LeftOfCaption, 75));
+			cluster.Add(new CaptionedControl(new Link(remoteUrlTarget + "/" + STOP_ALL_TESTING_PATH_PART, ICON_STOPALL, VIEW_FRAME_NAME), "Halt test suite <b><i>\"" + tests.CurrentlyRunningSuite.Name + "\"</i></b> completely. No more tests will run.", CaptionedControlOrientation.LeftOfCaption, 75));
 
-				statusFrame.ControlsInOrder.Add(new Label("Stub: Start Custom Test"));
-				return statusFrame.ToString();
-			}
-		}
+			statusFrame.ControlsInOrder.Add(cluster);
 
-		public string StatusFrameExit
-		{
-			get
-			{
-				renewFrame();
-				if (IsBusy) return ProgressBar;
-
-				statusFrame.ControlsInOrder.Add(new Label("Stub: Exit"));
-				return statusFrame.ToString();
-			}
-		}
-
-
-	private string ProgressBar
-		{
-			get
-			{
-				//Show progress and options to stop
-				statusFrame.ControlsInOrder.Add(new CaptionedControl(new ProgressBar(Progress, 100), new Label("Progress on test suite <b><i>\"" + tests.CurrentlyRunningSuite.Name + "\"</i></b>", 150), CaptionedControlOrientation.AboveCaption));
-				statusFrame.ControlsInOrder.Add(new Divider());
-				statusFrame.ControlsInOrder.Add(new Label("OPTIONS", 300));
-				statusFrame.ControlsInOrder.Add(new LineBreak());
-				statusFrame.ControlsInOrder.Add(new RawCodeSegment("</center>"));
-				statusFrame.ControlsInOrder.Add(new CaptionedControl(new Link(/*remoteUrlTarget + */"/" + STOP_TEST_CASE_PATH_PART, ICON_STOPONE), "Stop individual test <b><i>\"" + tests.CurrentlyRunningSuite.CurrentTest + "\"</i></b> and allow the remaining tests to run.", CaptionedControlOrientation.LeftOfCaption, 250));
-				statusFrame.ControlsInOrder.Add(new CaptionedControl(new Link(/*remoteUrlTarget + */"/" + STOP_ALL_TESTING_PATH_PART, ICON_STOPALL), "Halt test suite <b><i>\"" + tests.CurrentlyRunningSuite.Name + "\"</i></b> completely. No more tests will run.", CaptionedControlOrientation.LeftOfCaption, 250));
-
-
-				return statusFrame.ToString();
-			}
+			progress = null;
+			cluster = null;
+			return statusFrame.ToString();
 		}
 	}
 }

@@ -144,97 +144,107 @@ namespace Rockabilly.CoarseGrind
 
 		public virtual void RunTest(LoggingLevel preferredLoggingLevel, string rootDirectory)
 		{
-			bool setupResult = true;
-
-			parentArtifactsDirectory = rootDirectory;
-			Guid thisOutputIdentifier = Log.AddOutput(new TextOutputManager(
-					ArtifactsDirectory + Path.DirectorySeparatorChar + LogFileName),
-					preferredLoggingLevel, LoggingMode.Minimum);
-			LogTestHeader();
-
-			SetupEnforcement before = null;
-
-			try
+			if (CoarseGrind.KILL_SWITCH)
 			{
-				IndicateSetup();
-				before = new SetupEnforcement(this);
+				// Decline to run
+			}
+			else
+			{
+				bool setupResult = true;
+
+				parentArtifactsDirectory = rootDirectory;
+				Guid thisOutputIdentifier = Log.AddOutput(new TextOutputManager(
+						ArtifactsDirectory + Path.DirectorySeparatorChar + LogFileName),
+						preferredLoggingLevel, LoggingMode.Minimum);
+				LogTestHeader();
+
+				SetupEnforcement before = null;
+
 				try
 				{
-					setupResult = Setup();
-				}
-				finally
-				{
-					WasSetup = true;
-				}
-			}
-			catch (Exception thisFailure)
-			{
-				setupResult = false;
-				AddResult(GetResultForPreclusionInSetup(thisFailure));
-			}
-			finally
-			{
-				if (!new SetupEnforcement(this).matches(before))
-				{
-					setupResult = false;
-					AddResult(new TestResult(TestStatus.Inconclusive, "PROGRAMMING ERROR: It is illegal to change the identifier, name, or priority in Setup.  This must happen in the constructor."));
-				}
-				IndicateSectionEnd();
-			}
-
-			if (setupResult)
-			{
-				try
-				{
-					IndicateBody();
-					executionThread = new Thread(PerformTest);
-					executionThread.Start();
-					executionThread.Join();
+					IndicateSetup();
+					before = new SetupEnforcement(this);
+					try
+					{
+						setupResult = Setup();
+					}
+					finally
+					{
+						WasSetup = true;
+					}
 				}
 				catch (Exception thisFailure)
 				{
-					AddResult(GetResultForFailure(thisFailure));
+					setupResult = false;
+					AddResult(GetResultForPreclusionInSetup(thisFailure));
 				}
 				finally
 				{
-					WasRun = true;
-					executionThread = null;
+					if (!new SetupEnforcement(this).matches(before))
+					{
+						setupResult = false;
+						AddResult(new TestResult(TestStatus.Inconclusive, "PROGRAMMING ERROR: It is illegal to change the identifier, name, or priority in Setup.  This must happen in the constructor."));
+					}
 					IndicateSectionEnd();
 				}
-			}
-			else {
-				AddResult(new TestResult(TestStatus.Inconclusive,
-						"Declining to perform test case " + IdentifiedName
-								+ " because setup method failed."));
-			}
 
-			try
-			{
-				IndicateCleanup();
-				Cleanup();
-				WasCleanedUp = true;
-			}
-			catch (Exception thisFailure)
-			{
-				ReportFailureInCleanup(thisFailure);
-			}
-			finally
-			{
-				IndicateSectionEnd();
-			}
+				if (setupResult && (CoarseGrind.KILL_SWITCH == false))
+				{
+					try
+					{
+						IndicateBody();
+						executionThread = new Thread(PerformTest);
+						executionThread.Start();
+						executionThread.Join();
+					}
+					catch (Exception thisFailure)
+					{
+						AddResult(GetResultForFailure(thisFailure));
+					}
+					finally
+					{
+						WasRun = true;
+						executionThread = null;
+						IndicateSectionEnd();
+					}
+				}
+				else {
+					AddResult(new TestResult(TestStatus.Inconclusive,
+							"Declining to perform test case " + IdentifiedName
+									+ " because setup method failed."));
+				}
 
-			TestStatus overall = OverallStatus;
-			Log.Message("<h1>Overall Status: " + overall.ToString() + "</h1>", overall.ToLoggingLevel(), overall.ToHtmlLogIcon());
-			Log.ClearSpecificOutput(thisOutputIdentifier);
+				try
+				{
+					IndicateCleanup();
+					Cleanup();
+					WasCleanedUp = true;
+				}
+				catch (Exception thisFailure)
+				{
+					ReportFailureInCleanup(thisFailure);
+				}
+				finally
+				{
+					IndicateSectionEnd();
+				}
+
+				TestStatus overall = OverallStatus;
+				Log.Message("<h1>Overall Status: " + overall.ToString() + "</h1>", overall.ToLoggingLevel(), overall.ToHtmlLogIcon());
+				Log.ClearSpecificOutput(thisOutputIdentifier);
+			}
 		}
 
 		public void Interrupt()
 		{
 			try
 			{
+				executionThread.Interrupt();
+				executionThread.Abort();
+				executionThread.Abort();
 				executionThread.Abort();
 			}
-			catch (Exception dontCare)
+			catch
 			{
 				// DELIBERATE NO-OP
 			}
@@ -433,7 +443,11 @@ namespace Rockabilly.CoarseGrind
 
 		private static void DoWait(int howManyMilliseconds, LoggingLevel requestedLevel = LoggingLevel.Standard)
 		{
-			Thread.Sleep(howManyMilliseconds);
+			try
+			{
+				Thread.Sleep(howManyMilliseconds);
+			}
+			catch (ThreadInterruptedException) { }
 		}
 	}
 }

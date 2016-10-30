@@ -206,7 +206,7 @@ namespace Rockabilly.Common.HtmlEffects
 			{
 				result.Append("\t\t");
 				result.Append(ControlsInOrder[index].ToString());
-				result.Append("<br>");
+				//result.Append("<br>");
 				result.Append(Symbols.CarriageReturnLineFeed);
 			}
 

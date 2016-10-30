@@ -29,32 +29,35 @@ namespace Rockabilly.CoarseGrind
 	public abstract partial class TestProgram : HttpServer
 	{
 		private static string controlFrame = default(string);
-		public string ControlFrame
+		public string GetControlFrame(string remoteUrlTarget)
 		{
-			get
+			if (controlFrame == default(string))
 			{
-				if (controlFrame == default(string))
-				{
-					WebInterface ui = new WebInterface();
-					ControlCluster cluster = new ControlCluster();
-					cluster.columns = 1;
-					ui.Title = "Control Frame";
+				WebInterface ui = new WebInterface();
+				ControlCluster cluster = new ControlCluster();
+				cluster.columns = 1;
+				ui.Title = "Control Frame";
 
-					// These will have to be made into links
-					cluster.Add(ICON_SUITES);
-					cluster.Add(ICON_ALLTESTS);
-					cluster.Add(ICON_RESULTS);
-					cluster.Add(ICON_EXIT);
+				cluster.Add(new Link(remoteUrlTarget + '/' + TEST_SUITES_PATH, ICON_SUITES.ToString(), VIEW_FRAME_NAME));
+				cluster.Add(new Link(remoteUrlTarget + '/' + SELECT_CUSTOM_SUITE_PATH, ICON_ALLTESTS.ToString(), VIEW_FRAME_NAME));
+				cluster.Add(new LineBreak());
+				cluster.Add(new LineBreak());
+				cluster.Add(new LineBreak());
+				cluster.Add(new LineBreak());
+				cluster.Add(new LineBreak());
+				cluster.Add(new LineBreak());
+				//cluster.Add(new Link(remoteUrlTarget + '/' + TEST_RESULTS_PATH, ICON_RESULTS.ToString(), VIEW_FRAME_NAME));
+				cluster.Add(new Link(remoteUrlTarget + '/' + REQUEST_KILL_SERVICE_PATH, ICON_EXIT.ToString(), VIEW_FRAME_NAME));
 
-					ui.ControlsInOrder.Add(cluster);
-					controlFrame = ui.ToString();
 
-					cluster = null;
-					ui = null;
-				}
+				ui.ControlsInOrder.Add(cluster);
+				controlFrame = ui.ToString();
 
-				return controlFrame;
+				cluster = null;
+				ui = null;
 			}
+
+			return controlFrame;
 		}
 	}
 }

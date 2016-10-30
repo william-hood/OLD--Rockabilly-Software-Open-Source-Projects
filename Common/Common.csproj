@@ -66,6 +66,7 @@
     <Compile Include="HtmlEffects\WebInterface_ImgsInStyleSection.cs" />
     <Compile Include="HtmlEffects\WebInterface.cs" />
     <Compile Include="HttpServer.cs" />
+    <Compile Include="HtmlEffects\Checkbox.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="HtmlEffects\" />

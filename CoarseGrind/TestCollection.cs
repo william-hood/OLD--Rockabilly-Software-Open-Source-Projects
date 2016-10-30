@@ -260,7 +260,7 @@ namespace Rockabilly.CoarseGrind
 			CurrentlyRunningSuite = thisTestSuite;
 			executionThread = new Thread(RunTestSuite);
 			executionThread.Start();
-			executionThread.Join();
+			//executionThread.Join();
 		}
 
 		internal void RunTestSuite()
@@ -276,7 +276,11 @@ namespace Rockabilly.CoarseGrind
 			}
 			finally
 			{
-				block.Signal();
+				try
+				{
+					block.Signal();
+				}
+				catch { }
 				CurrentlyRunningSuite = null;
 			}
 		}

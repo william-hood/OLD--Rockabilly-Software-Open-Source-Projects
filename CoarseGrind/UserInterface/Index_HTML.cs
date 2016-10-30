@@ -19,6 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Text;
 using Rockabilly.Common;
 using Rockabilly.Common.HtmlEffects;
 
@@ -33,12 +34,51 @@ namespace Rockabilly.CoarseGrind
 		{
 			get
 			{
-				if (bannerFrame == default(string))
+				if (index_Html == default(string))
 				{
 					WebInterface ui = new WebInterface();
-					ui.Title = this.GetType().Name + " - Coarse Grind Test Server";
-					ui.ControlsInOrder.Add(new CoarseGrindBanner(this.GetType().Name));
+					ui.Title = "Coarse Grind Test Server - " + this.GetType().Name;
+
+					StringBuilder code = new StringBuilder();
+
+					code.Append("<div class=\"");
+					code.Append(BANNER_FRAME_NAME);
+					code.Append("\"><iframe src=\"");
+					code.Append(BANNER_FRAME_PATH);
+					code.Append("\" height=\"200\" width=\"49%\" align=\"left\" name=\"");
+					code.Append(BANNER_FRAME_NAME);
+					code.Append("\" style=\"border:none;\"></iframe></div>");
+
+					code.Append("<div class=\"");
+					code.Append(STATUS_FRAME_NAME);
+					code.Append("\"><iframe src=\"");
+					code.Append(STATUS_FRAME_PATH);
+					code.Append("\" height=\"200\" width=\"49%\" align=\"right\" name=\"");
+					code.Append(STATUS_FRAME_NAME);
+					code.Append("\" style=\"border:none;\"></iframe></div>");
+
+					code.Append(new LineBreak());
+
+					code.Append("<div class=\"");
+					code.Append(CONTROL_FRAME_NAME);
+					code.Append("\"><iframe src=\"");
+					code.Append(CONTROL_FRAME_PATH);
+					code.Append("\" height=\"800\" width=\"24%\" align=\"left\" name=\"");
+					code.Append(CONTROL_FRAME_NAME);
+					code.Append("\" style=\"border:none;\"></iframe></div>");
+
+					code.Append("<div class=\"");
+					code.Append(VIEW_FRAME_NAME);
+					code.Append("\"><iframe src=\"");
+					code.Append(TEST_SUITES_PATH);
+					code.Append("\" height=\"800\" width=\"75%\" align=\"right\" name=\"");
+					code.Append(VIEW_FRAME_NAME);
+					code.Append("\" style=\"border:1px solid black;\"></iframe></div>");
+
+
+					ui.ControlsInOrder.Add(new RawCodeSegment(code.ToString()));
 					index_Html = ui.ToString();
+
 					ui = null;
 				}
 
