@@ -142,6 +142,7 @@ namespace Rockabilly.CoarseGrind
 				if (tests.immediateRun != default(string))
 				{
 					TestSuite tmp = null;
+					testingContinues = false;
 
 					try
 					{
@@ -155,10 +156,15 @@ namespace Rockabilly.CoarseGrind
 						System.Environment.Exit(1);
 					}
 					else {
-						testingContinues = false;
 						tests.CurrentlyRunningSuite = tmp;
 						tests.RunTestSuite();
+						tests.WaitWhileTesting();
 					}
+					if (ContinueService) DiscontinueService();
+					CoarseGrind.KILL_SWITCH = true;
+					tests.destroy();
+					tests = null;
+					System.Environment.Exit(0);
 				}
 
 				tests.WaitWhileTesting();
