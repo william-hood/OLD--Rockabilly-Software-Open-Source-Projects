@@ -44,14 +44,18 @@ namespace Rockabilly.CoarseGrind
 				if (defaultParentFolder == default(string))
 				{
 					string rootShortName = Path.DirectorySeparatorChar + "Test Results";
-					if (Foundation.OperatingSystemName.ToUpper().Contains("WIN"))
+					string rootPath = Foundation.UserHomeFolder + Path.DirectorySeparatorChar + "Documents";
+
+					if (Directory.Exists(rootPath))
 					{
-						defaultParentFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + rootShortName;
+						// Deliberate NO-OP
 					}
 					else
 					{
-						defaultParentFolder = Foundation.UserHomeFolder + Path.DirectorySeparatorChar + "Documents" + rootShortName;
+						rootPath = Foundation.UserHomeFolder;
 					}
+
+					defaultParentFolder = rootPath + rootShortName;
 				}
 
 				return defaultParentFolder;

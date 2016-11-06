@@ -19,7 +19,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 
 namespace Rockabilly.Common
@@ -33,17 +35,15 @@ namespace Rockabilly.Common
 		public bool ContinueService = false;
 
 
-
-
 		public virtual void SetupService(int portToListenOn = 80)
 		{
 			port = portToListenOn;
-			listener.Prefixes.Add("http://localhost:" + port + "/");
+			listener.Prefixes.Add(String.Format("http://*:{0}/", port));
+
 			listener.Start();
 			ContinueService = true;
 			executionThread = new Thread(Run);
 			executionThread.Start();
-			//executionThread.Join();
 		}
 
 
