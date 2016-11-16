@@ -30,7 +30,13 @@ to C# extensions of the stock string class.
 noticeably faster than the Java version on macOS Sierra. The same appeared to be true running on .NET in Windows. (C’mon, Oracle, --get off your you-know-what and show Java some love.)
 
 ## Sounds neat, but figuring out code written by someone else can be difficult. How can I reach you?
-I've provided some example code, and at-least minimal documentation. (...and I will never criticize a developer again for not documenting their code now that I know what it's like.) Unfortunately, I only have so much time and it's called “code” for good reason. You are welcome to contact me with questions related to Coarse Grind [via email](william.arthur.hood@gmail.com)
+
+I've provided some example code, and at-least minimal documentation. (...and I will never criticize a developer again for not documenting their code now that I know what it's like.) The written documentation provided addresses the following subjects:
+- [Running Tests](RunningTests.md)
+- [Command Line Arguments](CommandLineArguments.md)
+- [Using The C# Source Code](UsingTheCSharpSourceCode.md)
+
+Unfortunately, I only have so much time and it's called “code” for good reason. You are welcome to contact me with questions related to Coarse Grind [via email](william.arthur.hood@gmail.com)
 
 ## Version 5.0
 
