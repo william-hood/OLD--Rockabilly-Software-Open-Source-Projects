@@ -1,4 +1,4 @@
-# Coarse Grind<img align="right" src="Common/Icons/CoarseGrindLogo.gif"/>
+# Coarse Grind<img align="right" src="Common/Icons/Header.gif"/>
 
 Coarse Grind was created by William Hood, who since 1998 has been a professional “SDET” (a software developer who creates programs to test other programs). Special thanks go to Richard Johnson for feedback and suggestions.
        
