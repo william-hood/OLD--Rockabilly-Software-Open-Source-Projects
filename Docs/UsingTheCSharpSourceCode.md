@@ -1,4 +1,4 @@
-# Using The C# Source Code<img align="right" src="Common/Icons/ALL_TESTS.gif"/>
+# Using The C# Source Code<img align="right" src="Icons/ALL_TESTS.gif"/>
 
 The C# version of Coarse Grind should work with any IDE that uses a standard Visual Studio solution file.
 

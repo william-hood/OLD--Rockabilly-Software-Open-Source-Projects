@@ -1,4 +1,4 @@
-# Running Tests<img align="right" src="Common/Icons/Exit.gif"/>
+# Running Tests<img align="right" src="Icons/Exit.gif"/>
 
 The recommended way to run tests is to start your test program with appropriate command line arguments and use the web interface. If you know the exact name of the suite you want, add “run \<suite name>” to the command line arguments which will cause the test program to immediately run the suite and exit. If you know the exact test case identifiers, as returned by their getIdentifier() methods, you may run individual tests by creating a custom test suite on the command line: “run CUSTOM declare CUSTOM \<test1> \<test2> \<test3> ... \<testN>. When running from the command line, the web interface will still be available if the suite needs to be terminated prematurely.
 
