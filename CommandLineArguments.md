@@ -1,4 +1,4 @@
-# Command Line Arguments
+# Command Line Arguments<img align="right" src="Common/Icons/CONSTRUCTION.gif"/>
 
 If your test program is constructed properly (See the document “Setting Up the Example Code”) it will process the following arguments before passing any remaining arguments to your own code. These command line arguments are not case-specific, except for the names of files, directories, test suites, and test cases.
 
