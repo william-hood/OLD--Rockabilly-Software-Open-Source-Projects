@@ -15,18 +15,18 @@ Coarse Grind was created by William Hood, who since 1998 has been a professional
 
 ## Why did you find it necessary to create another Test Framework?
 
-Because xUnit falls short of the needs of the testing I typically do, and because I got sick of re-coding new versions of the same tools every time I started a new job or contract. Coarse Grind represents a “reference implementation” of what I would code for an employer (and have many times) when asked to create a test framework. It is released under the terms of the MIT License. This allows an employer to fork the code of Coarse Grind and keep the fork as their own should they choose. A large part of my reasoning in creating Coarse Grind, Rockabilly Common, and my other open source test tools, was that I wanted insurance that my basic tools would come with me in the event something happened to my job (this is the tech industry). Because of the sensitivities of working on my own open source projects while employed to write code for someone else, Coarse Grind, Rockabilly Common Library, and all my other open source projects are developed on my own time and contain no intellectual property of any current or former employer.
+<img align="left" src="Docs/Icons/check.png"/> Because xUnit falls short of the needs of the testing I typically do, and because I got sick of re-coding new versions of the same tools every time I started a new job or contract. Coarse Grind represents a “reference implementation” of what I would code for an employer (and have many times) when asked to create a test framework. It is released under the terms of the MIT License. This allows an employer to fork the code of Coarse Grind and keep the fork as their own should they choose. A large part of my reasoning in creating Coarse Grind, Rockabilly Common, and my other open source test tools, was that I wanted insurance that my basic tools would come with me in the event something happened to my job (this is the tech industry). Because of the sensitivities of working on my own open source projects while employed to write code for someone else, **Coarse Grind, Rockabilly Common Library, and all my other open source projects are developed on my own time and contain no intellectual property of any current or former employer.**
 
 ## What's wrong with Junit? (..or Nunit, or other xUnit implementations?)
 
-xUnit is designed for Unit Testing and that's not what I do. I typically test an API over the network, or a software product that must be installed and configured first. Some examples of the differences:
+<img align="left" src="Docs/Icons/check.png"/> xUnit is designed for Unit Testing and that's not what I do. I typically test an API over the network, or a software product that must be installed and configured first. Some examples of the differences:
 - xUnit is designed to halt the test at the first sign of trouble. Typically “everything,” including passing the test, is implemented by throwing an exception. My work usually requires multiple points-of-failure within a single test.
 - Unless things have changed in recent years, xUnit frameworks usually compile the tests to a JAR/DLL that requires a separate program to run. It has often been non-trivial to get xUnit running from the command line as a script requires. Coarse Grind currently has a web-based user interface, but has always been designed with running as a console program as the top priority.
 - Every time I've used xUnit, I've had to extend it to do many things I typically need, such as adding a log system, saving test artifacts to a designated place, forcing a test system to allow “Inconclusive” or “Subjective” in addition to “Pass” and “Fail,” implementing the “multiple points-of-failure” work-around described above, extending the objects under test to provide the easy variation that software testing requires, etc. Coarse Grind is not xUnit, does not attempt to implement it, and meets all those needs out-of-the-box.
 
 ## What's the difference between the Java and C# versions?
 
-The C# version was created as a nearly line-for-line and class-for-class port of the Java source code (my employer needed some testing in C# and I always wanted an excuse to make “Sharp Grind” from Coarse Grind). While changes were necessary to take employ certain language-advantages C# has over Java, as well as making proper use of the .NET counterparts to stock Java classes, the two versions are nearly identical pieces of software.
+<img align="left" src="Docs/Icons/check.png"/> The C# version was created as a nearly line-for-line and class-for-class port of the Java source code (my employer needed some testing in C# and I always wanted an excuse to make “Sharp Grind” from Coarse Grind). While changes were necessary to take employ certain language-advantages C# has over Java, as well as making proper use of the .NET counterparts to stock Java classes, the two versions are nearly identical pieces of software.
 - The casing/bracing of most of the code was changed to be consistent with what is considered standard in C#.
 - Many getter/setter methods were changed to true C# properties.
 - Certain method signatures had parameters moved to the back to take advantage of
@@ -38,7 +38,7 @@ noticeably faster than the Java version on macOS Sierra. The same appeared to be
 
 ## Sounds neat, but figuring out code written by someone else can be difficult. How can I reach you?
 
-I've provided some example code, and at-least minimal documentation. (...and I will never criticize a developer again for not documenting their code now that I know what it's like.) The written documentation provided addresses the following subjects:
+<img align="left" src="Docs/Icons/check.png"/> I've provided some example code, and at-least minimal documentation. (...and I will never criticize a developer again for not documenting their code now that I know what it's like.) The written documentation provided addresses the following subjects:
 - [Running Tests](Docs/RunningTests.md)
 - [Command Line Arguments](Docs/CommandLineArguments.md)
 - [Using The C# Source Code](Docs/UsingTheCSharpSourceCode.md)
