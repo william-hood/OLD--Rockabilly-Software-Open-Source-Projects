@@ -1,10 +1,17 @@
-# Coarse Grind<img align="right" src="Docs/Icons/Header.gif"/>
+# Coarse Grind
 
 Coarse Grind was created by William Hood, who since 1998 has been a professional “SDET” (a software developer who creates programs to test other programs). Special thanks go to Richard Johnson for feedback and suggestions.
+
+<p align="center">
+	<img height=100 src="Docs/Icons/coffee_bag.png"/>
+	<img height=100 src="Docs/Icons/coffee_pot.png"/>
+	<img height=100 src="Docs/Icons/coffee_cup.png"/>
+	<img height=100 src="Docs/Icons/coffee_beans.png"/>
+</p>
        
 ## What is Coarse Grind?
 
-Coarse Grind is a C# and Java Test Automation Framework targeted at “large grained” (or “coarse grained”) testing. This is a level above Unit Testing and typically is run against an installed copy of a software product, rather than the product's class objects. Its Java-binaries require a Java 8 JVM. The C# version is recommended to be used from source code, but platform-independent (Mono-compatible off Windows) binaries are provided. The Java source code and examples require Eclipse Neon, but there's no reason the distributed JAR library for Coarse Grind could not be used with Netbeans or IntelliJ. The C# source code works with both Xamarin Studio (Monodevelop) and Visual Studio.
+<img align="left" src="Docs/Icons/check.png"/> Coarse Grind is a C# and Java Test Automation Framework targeted at “large grained” (or “coarse grained”) testing. This is a level above Unit Testing and typically is run against an installed copy of a software product, rather than the product's class objects. Its Java-binaries require a Java 8 JVM. The C# version is recommended to be used from source code, but platform-independent (Mono-compatible off Windows) binaries are provided. The Java source code and examples require Eclipse Neon, but there's no reason the distributed JAR library for Coarse Grind could not be used with Netbeans or IntelliJ. The C# source code works with both Xamarin Studio (Monodevelop) and Visual Studio.
 
 ## Why did you find it necessary to create another Test Framework?
 
