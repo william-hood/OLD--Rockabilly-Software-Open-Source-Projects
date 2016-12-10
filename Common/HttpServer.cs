@@ -20,6 +20,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -38,9 +39,39 @@ namespace Rockabilly.Common
 		public virtual void SetupService(int portToListenOn = 80)
 		{
 			port = portToListenOn;
-			listener.Prefixes.Add(String.Format("http://*:{0}/", port));
+			string url = String.Format("http://*:{0}/", port);
+			listener.Prefixes.Add(url);
 
-			listener.Start();
+			try
+			{
+				listener.Start();
+			}
+			catch(HttpListenerException e)
+			{
+				if(e.Message == "Access is denied" && Environment.OSVersion.Platform == PlatformID.Win32NT)
+				{
+					// Grant access to the url for this user
+					string args = string.Format(@"http add urlacl url={0} user={1}\{2}", url, Environment.UserDomainName, Environment.UserName);
+
+					ProcessStartInfo psi = new ProcessStartInfo("netsh", args);
+					psi.Verb = "runas";
+					psi.CreateNoWindow = true;
+					psi.WindowStyle = ProcessWindowStyle.Hidden;
+					psi.UseShellExecute = true;
+
+					Process.Start(psi).WaitForExit();
+
+					// Restart this function with a fresh listener (the old one was disposed)
+					listener = new HttpListener();
+					SetupService(portToListenOn);
+					return;
+				}
+				else
+				{
+					throw e;
+				}
+			}
+
 			ContinueService = true;
 			executionThread = new Thread(Run);
 			executionThread.Start();
