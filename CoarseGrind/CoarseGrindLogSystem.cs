@@ -81,7 +81,7 @@ namespace Rockabilly.CoarseGrind
 		{
 			get
 			{
-				return HTML__TABLE_STYLE;
+				return HTML__TABLE_STYLE + customStyle;
 			}
 		}
 
@@ -123,7 +123,12 @@ namespace Rockabilly.CoarseGrind
 		private static readonly InlineImage SECTIONSTART = new Image_SectionStart();
 		private static readonly InlineImage SECTIONEND = new Image_SectionEnd();
 
+		private string customStyle = "";
 
+		public void SetCustomStyle(string styleText)
+		{
+			customStyle = styleText;
+		}
 
 
 

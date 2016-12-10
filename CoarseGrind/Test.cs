@@ -82,6 +82,9 @@ namespace Rockabilly.CoarseGrind
 			}
 		}
 
+		// End User May Optionally Implement
+		public virtual string CustomStyle { get { return ""; } }
+
 		// End User Must Implement
 		public abstract bool Setup();
 		public abstract bool Cleanup();
@@ -152,6 +155,7 @@ namespace Rockabilly.CoarseGrind
 			{
 				bool setupResult = true;
 
+				Log.SetCustomStyle(CustomStyle);
 				parentArtifactsDirectory = rootDirectory;
 				Guid thisOutputIdentifier = Log.AddOutput(new TextOutputManager(
 						ArtifactsDirectory + Path.DirectorySeparatorChar + LogFileName),
