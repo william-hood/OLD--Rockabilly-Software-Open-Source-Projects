@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016 William Arthur Hood
+﻿// Copyright (c) 2019, 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,8 @@
 using System;
 namespace Rockabilly.CoarseGrind.LoadTesting
 {
-	public class LoadSequenceOrder
+    [Obsolete]
+    public class LoadSequenceOrder
 	{
 		public long targetSequenceDelay = default(long);
 		public bool randomSequenceDelay = false;
