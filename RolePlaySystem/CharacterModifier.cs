@@ -15,5 +15,11 @@ namespace RolePlaySystem
         public abstract int StrengthModifier { get; }
         public abstract int IntellectModifier { get; }
         public abstract int DexterityModifier { get; }
+        public abstract int CharismaModifier { get; }
     }
+
+    public abstract class CharacterGender : CharacterModifier { }
+    public abstract class CharacterRace : CharacterModifier { }
+    public abstract class CharacterClass : CharacterModifier { }
 }
+

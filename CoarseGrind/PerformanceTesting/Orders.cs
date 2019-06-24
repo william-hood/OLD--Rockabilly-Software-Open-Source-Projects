@@ -21,13 +21,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace Rockabilly.CoarseGrind.LoadTesting
+namespace Rockabilly.CoarseGrind.PerformanceTesting
 {
-    [Obsolete]
-    public class LoadGenerationOrder : LoadSequenceOrder
-	{
-		public int threadCount = default(int);
-		public string identifier = default(string);
-		public List<string> args = new List<string>();
-	}
+    public class SimulationOrders
+    {
+        public int ConcurrentUnits = default(int);
+        public TimeSpan Duration = default(TimeSpan);
+    }
+
+    public class SeriesOrders
+    {
+        public int StartingConcurrentUnits = default(int);
+        public int CycleIncrement = default(int);
+        public int TotalCycles = default(int);
+    }
 }

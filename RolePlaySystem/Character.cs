@@ -51,6 +51,17 @@ namespace RolePlaySystem
             }
         }
 
+        private int baseCharisma;
+        public int Charisma
+        {
+            get
+            {
+                int result = baseCharisma + Class.CharismaModifier + Race.CharismaModifier + Gender.CharismaModifier;
+                if (result > 1) return result;
+                return 1;
+            }
+        }
+
         private Dice challengeDie = new Dice(100);
         private Outcome checkAttribute(int effectiveValue)
         {

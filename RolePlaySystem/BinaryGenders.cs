@@ -3,6 +3,7 @@ namespace RolePlaySystem
 {
     public sealed class Female : CharacterGender
     {
+        #region Singleton
         private static readonly Female instance = new Female();
 
         // Explicit static constructor to tell C# compiler
@@ -22,18 +23,18 @@ namespace RolePlaySystem
                 return instance;
             }
         }
+        #endregion
 
         public override int HitPointModifier => -1;
-
         public override int StrengthModifier => -1;
-
         public override int IntellectModifier => 1;
-
         public override int DexterityModifier => 0;
+        public override int CharismaModifier => 1;
     }
 
     public sealed class Male : CharacterGender
     {
+        #region Singleton
         private static readonly Male instance = new Male();
 
         // Explicit static constructor to tell C# compiler
@@ -53,13 +54,12 @@ namespace RolePlaySystem
                 return instance;
             }
         }
+        #endregion
 
         public override int HitPointModifier => 0;
-
         public override int StrengthModifier => 1;
-
         public override int IntellectModifier => 0;
-
         public override int DexterityModifier => 0;
+        public override int CharismaModifier => 0;
     }
 }
