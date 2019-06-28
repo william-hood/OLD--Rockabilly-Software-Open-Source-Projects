@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+
+<head>
+    <title>Memoir v2 Mock Up</title>
+    <style>
+        html {
+            font-family: sans-serif
+        }
+
+        .lvl001 {
+            display: none;
+        }
+
+        input:checked~.lvl001 {
+            display: block;
+        }
+
+        .lvl002 {
+            display: none;
+        }
+
+        input:checked~.lvl002 {
+            display: block;
+        }
+
+        .lvl003 {
+            display: none;
+        }
+
+        input:checked~.lvl003 {
+            display: block;
+        }
+
+        .lvl004 {
+            display: none;
+        }
+
+        input:checked~.lvl004 {
+            display: block;
+        }
+
+        .gone {
+            display: none;
+        }
+
+        .memoir {
+            font-family: sans-serif;
+            border-radius: 1em;
+            border: 0.2em solid black;
+            display: inline-block;
+            background-image: linear-gradient(to bottom right, white, WhiteSmoke);
+        }
+
+        .failing_test_result {
+            background-image: linear-gradient(to bottom right, yellow, salmon);
+        }
+
+        .inconclusive_test_result {
+            background-image: linear-gradient(to bottom right, LemonChiffon, Moccasin);
+        }
+
+        .passing_test_result {
+            background-image: linear-gradient(to bottom right, honeydew, palegreen);
+        }
+
+        .implied_good {
+            background-image: linear-gradient(to bottom right, mintcream, honeydew);
+        }
+
+        .implied_caution {
+            background-image: linear-gradient(to bottom right, LemonChiffon, oldlace);
+        }
+
+        .implied_bad {
+            background-image: linear-gradient(to bottom right, Seashell, LavenderBlush);
+        }
+
+        .neutral {
+            background-image: linear-gradient(to bottom right, WhiteSmoke, Gainsboro);
+        }
+
+        .old_parchment {
+            background-image: radial-gradient(LightGoldenrodYellow, Cornsilk, Wheat);
+        }
+
+        .plate {
+            background-image: radial-gradient(Gainsboro, LightSlateGray);
+        }
+
+        th,
+        td {
+            padding: 1em 0em;
+            vertical-align: text-top;
+        }
+
+        h1 {
+            font-size: 5em;
+            margin: 0em
+        }
+
+        h2 {
+            font-size: 2em;
+            margin: 0.2em
+        }
+
+        hr {
+            border: none;
+            height: 0.3em;
+            background-color: black;
+        }
+
+        .highlighted {
+            background-image: linear-gradient(to bottom right, yellow, gold);
+        }
+
+        .outlined {
+            border-radius: 0.5em;
+            border: 0.05em solid black;
+        }
+
+        .object {
+            border-radius: 1em;
+            border: 0.5em solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>
+        <img
+            src="data:img/gif;base64,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">
+        HEADER</h1>
+    <h2>Header 2</h2>
+    Normal text<br>
+    <small><i>Small Italicized print</i></small>
+    <hr>
+    <br>
+    <br>
+    <table style="width: 100%">
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>🤪</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>🤪</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                <div class="memoir">
+                    <label for="0001">
+                        <input id="0001" class="gone" type="checkbox">
+                        <h2>This is a normal Memoir sublog</h2>
+                        <div class="lvl001">
+                            <table>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>❌</td>
+            <td>
+                <div class="memoir failing_test_result">
+                    <label for="0002">
+                        <input id="0002" class="gone" type="checkbox">
+                        <h2>This is a failing test</h2>
+                        <div class="lvl001">
+                            <table>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                <div class="memoir neutral">
+                    <label for="0011">
+                        <input id="0011" class="gone" type="checkbox">
+                        <h2>Embedded Memoir is in here!</h2>
+                        <div class="lvl001">
+                            <table>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        <div class="memoir highlighted">
+                                            <label for="0012">
+                                                <input id="0012" class="gone" type="checkbox">
+                                                <h2>This is the embedded Memoir!!!</h2>
+                                                <div class="lvl002">
+                                                    <table>
+                                                        <tr>
+                                                            <td>2019-06-17</td>
+                                                            <td>&nbsp;</td>
+                                                            <td>16:09:32.7854</td>
+                                                            <td>&nbsp;</td>
+                                                            <td>&nbsp;</td>
+                                                            <td>
+                                                                This is a normal message
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>2019-06-17</td>
+                                                            <td>&nbsp;</td>
+                                                            <td>16:09:32.7854</td>
+                                                            <td>&nbsp;</td>
+                                                            <td>&nbsp;</td>
+                                                            <td>
+                                                                <div class="object implied_bad">
+                                                                    <label for="0013">
+                                                                        <input id="0013" class="gone" type="checkbox">
+                                                                        <h2>500 Server Error</h2>
+                                                                        <div class="lvl003">
+                                                                            Info<br>
+                                                                            Info<br>
+                                                                            Info<br>
+                                                                            <label for="0014">
+                                                                                <input id="0014" type="checkbox">
+                                                                                Check the box for more details
+                                                                                <div class="lvl004">
+                                                                                    Info<br>
+                                                                                    Info<br>
+                                                                                    Info<br>
+                                                                                </div>
+                                                                            </label>
+                                                                        </div>
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>2019-06-17</td>
+                                                            <td>&nbsp;</td>
+                                                            <td>16:09:32.7854</td>
+                                                            <td>&nbsp;</td>
+                                                            <td>&nbsp;</td>
+                                                            <td>
+                                                                This is a normal message
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>👌</td>
+            <td>
+                <div class="memoir passing_test_result">
+                    <label for="0003">
+                        <input id="0003" class="gone" type="checkbox">
+                        <h2>This is a passing test</h2>
+                        <div class="lvl001">
+                            <table>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>❓</td>
+            <td>
+                <div class="memoir inconclusive_test_result">
+                    <label for="0004">
+                        <input id="0004" class="gone" type="checkbox">
+                        <h2>This is an inconclusive test</h2>
+                        <div class="lvl001">
+                            <table>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                <div class="memoir neutral">
+                    <label for="0005">
+                        <input id="0005" class="gone" type="checkbox">
+                        <h2>Neutral Memoir</h2>
+                        <div class="lvl001">
+                            <table>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                <div class="memoir plate">
+                    <label for="0006">
+                        <input id="0006" class="gone" type="checkbox">
+                        <h2>Plate Memoir</h2>
+                        <div class="lvl001">
+                            <table>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                <div class="memoir old_parchment">
+                    <label for="0007">
+                        <input id="0007" class="gone" type="checkbox">
+                        <h2>Old Parchment Memoir</h2>
+                        <div class="lvl001">
+                            <table>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>🤪</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>🤪</td>
+            <td>
+                <p class="highlighted outlined">&nbsp;This is a normal message&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                This is a normal message
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                <div class="memoir implied_good">
+                    <label for="0008">
+                        <input id="0008" class="gone" type="checkbox">
+                        <h2>Implied Good Memoir</h2>
+                        <div class="lvl001">
+                            <table>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                <div class="memoir implied_caution">
+                    <label for="0009">
+                        <input id="0009" class="gone" type="checkbox">
+                        <h2>Implied Caution Memoir</h2>
+                        <div class="lvl001">
+                            <table>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>2019-06-17</td>
+            <td>&nbsp;</td>
+            <td>16:09:32.7854</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                <div class="memoir implied_bad">
+                    <label for="0010">
+                        <input id="0010" class="gone" type="checkbox">
+                        <h2>Implied Bad Memoir</h2>
+                        <div class="lvl001">
+                            <table>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2019-06-17</td>
+                                    <td>&nbsp;</td>
+                                    <td>16:09:32.7854</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        This is a normal message
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </label>
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
