@@ -13,9 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memoir_v1", "MemoirV1\Memoir_v1.csproj", "{38C7C695-9D8E-41C5-B457-9D906CAE5A66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoirV1Example", "MemoirExample\MemoirV1Example.csproj", "{3D0FE45E-3D31-4FC4-BFBF-903FF6A4A497}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memoir", "Memoir\Memoir.csproj", "{C5B613B2-C6E5-4093-A302-E4B4FB3709C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoirExample", "MemoirExample\MemoirExample.csproj", "{B1988925-B82E-468F-A7E0-BC23E5FB85FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,14 +47,14 @@ Global
 		{38C7C695-9D8E-41C5-B457-9D906CAE5A66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38C7C695-9D8E-41C5-B457-9D906CAE5A66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38C7C695-9D8E-41C5-B457-9D906CAE5A66}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3D0FE45E-3D31-4FC4-BFBF-903FF6A4A497}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D0FE45E-3D31-4FC4-BFBF-903FF6A4A497}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3D0FE45E-3D31-4FC4-BFBF-903FF6A4A497}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D0FE45E-3D31-4FC4-BFBF-903FF6A4A497}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C5B613B2-C6E5-4093-A302-E4B4FB3709C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C5B613B2-C6E5-4093-A302-E4B4FB3709C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5B613B2-C6E5-4093-A302-E4B4FB3709C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5B613B2-C6E5-4093-A302-E4B4FB3709C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1988925-B82E-468F-A7E0-BC23E5FB85FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1988925-B82E-468F-A7E0-BC23E5FB85FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1988925-B82E-468F-A7E0-BC23E5FB85FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1988925-B82E-468F-A7E0-BC23E5FB85FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		version = 6.0

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3D0FE45E-3D31-4FC4-BFBF-903FF6A4A497}</ProjectGuid>
+    <ProjectGuid>{B1988925-B82E-468F-A7E0-BC23E5FB85FE}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>MemoirExample</RootNamespace>
     <AssemblyName>MemoirExample</AssemblyName>
@@ -35,13 +35,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{463F0CF5-6D6C-41BB-BF82-528396FF185A}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MemoirV1\Memoir_v1.csproj">
-      <Project>{38C7C695-9D8E-41C5-B457-9D906CAE5A66}</Project>
-      <Name>Memoir_v1</Name>
+    <ProjectReference Include="..\Memoir\Memoir.csproj">
+      <Project>{C5B613B2-C6E5-4093-A302-E4B4FB3709C8}</Project>
+      <Name>Memoir</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

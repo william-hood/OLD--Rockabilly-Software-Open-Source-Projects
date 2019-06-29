@@ -1,50 +1,64 @@
 ﻿using System;
 using System.IO;
-using Rockabilly.Common;
-using MemoirV1;
+using MemoirV2;
+
 namespace MemoirExample
 {
     class MainClass
     {
-        public static readonly Memoir Log = new Memoir();
         public static void Main(string[] args)
         {
-            Log.StartFile("its_in_the_working_dir.html");
+            Memoir memoir = new Memoir("Memoir Test", Console.Out, File.CreateText("memoir_test.html"));
 
-            Log.Header("Memoir Demonstration");
+            memoir.LogInfo("This is a test");
 
-            Log.Message("This is just a normal message");
+            memoir.LogDebug("Debug message here!");
 
-            Log.Debug("Debug messages look like this");
-            Log.Warn("This message has a warning icon");
+            memoir.LogError("Uh oh!");
+
+            memoir.LogInfo("Here's one with a custom emoji!", "🎶");
+
+            Memoir subLog = new Memoir("Sub Log", Console.Out);
+            subLog.LogInfo("First line of the sub log");
+            subLog.LogInfo("Second line of the sub log");
+
+            Memoir justSomeTest = new Memoir("Test Something", Console.Out);
+            justSomeTest.LogInfo("This happened");
+            justSomeTest.LogInfo("Then this");
+            justSomeTest.LogInfo("Also this");
+            justSomeTest.LogInfo("This check passed", Constants.EMOJI_PASSING_TEST);
+            justSomeTest.LogInfo("So did this", Constants.EMOJI_PASSING_TEST);
+            justSomeTest.LogInfo("But not this", Constants.EMOJI_FAILING_TEST);
+
+            subLog.LogMemoir(justSomeTest, Constants.EMOJI_FAILING_TEST, "failing_test_result");
 
 
+            subLog.LogDebug("Third line of the sub log");
+            subLog.LogInfo("Fourth line of the sub log");
+            memoir.LogMemoir(subLog);
 
-            try
-            {
-                Log.Debug("Gonna throw a nasty ol' exception...");
-                //int return2 = doSomethingTwo();
+            Memoir passingTest = new Memoir("Passing Test", Console.Out);
+            passingTest.LogInfo("This happened");
+            passingTest.LogInfo("Then this");
+            passingTest.LogInfo("Also this");
+            passingTest.LogInfo("This check passed", Constants.EMOJI_PASSING_TEST);
+            passingTest.LogInfo("So did this", Constants.EMOJI_PASSING_TEST);
+            memoir.LogMemoir(passingTest, Constants.EMOJI_PASSING_TEST, "passing_test_result");
 
-                throw new NullReferenceException("This is a FAKE null reference exception. Nothing's actually wrong.", new ArgumentException("Also a FAKE exception. Carry on."));
-            }
-            catch (Exception loggedException)
-            {
-                Log.ShowException(loggedException);
-            }
+            Memoir inconclusiveTest = new Memoir("Inconclusive Test", Console.Out);
+            inconclusiveTest.LogInfo("This happened");
+            inconclusiveTest.LogInfo("Then this");
+            inconclusiveTest.LogInfo("Also this");
+            inconclusiveTest.LogInfo("This check passed", Constants.EMOJI_PASSING_TEST);
+            inconclusiveTest.LogInfo("This check proved we're wasting our time. Dang it!", Constants.EMOJI_INCONCLUSIVE_TEST);
+            inconclusiveTest.LogInfo("This check also passed", Constants.EMOJI_PASSING_TEST);
+            memoir.LogMemoir(inconclusiveTest, Constants.EMOJI_INCONCLUSIVE_TEST, "inconclusive_test_result");
 
+            memoir.LogInfo("Second to last line...");
 
-            Log.Message("Just a test message again.");
-            Log.Message("Woooooohoooooooooooo!!!");
-            Log.Warn("Yikes");
-            Log.Message("Just a test message yet again.");
-            Log.SectionHeader("New Section");
-            Log.Message("Just a test message again.");
-            Log.Message("Woooooohoooooooooooo!!!");
-            Log.Message("Just a test message again.");
-            Log.Message("Woooooohoooooooooooo!!!");
-            Log.Message("Just a test message again.");
-            Log.Message("Woooooohoooooooooooo!!!");
-            Log.Debug("OK, I'm done.");
+            memoir.LogInfo("Final Line");
+
+            memoir.Conclude();
         }
     }
 }
