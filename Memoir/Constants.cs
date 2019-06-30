@@ -32,12 +32,15 @@ namespace MemoirV2
         public const string EMOJI_FAILING_TEST = "❌";
         public const string EMOJI_DEBUG = "👾";
         public const string EMOJI_ERROR = "😱";
-        public const string EMOJI_TEXT_MEMOIR = "🏷";
+        public const string EMOJI_MEMOIR = "📝";
         public const string EMOJI_TEXT_MEMOIR_CONCLUDE = "⤴️";
-        public const string EMOJI_TEXT_BLANK_LINE = "📝";
+        public const string EMOJI_TEXT_BLANK_LINE = "";
+        public const string EMOJI_OBJECT = "🔲";
+        public const string EMOJI_CAUSED_BY = "↘️";
 
         public const string ALREADY_CONCLUDED_MESSAGE = "This memoir is already concluded.";
 
+        public const int MAX_OBJECT_FIELDS_TO_DISPLAY = 10;
 
         public const string MEMOIR_LOG_STYLING = @"
     <style>
@@ -66,7 +69,7 @@ namespace MemoirV2
         }
 
         .failing_test_result {
-            background-image: linear-gradient(to bottom right, yellow, salmon);
+            background-image: linear-gradient(to bottom right, MistyRose, salmon);
         }
 
         .inconclusive_test_result {
@@ -99,6 +102,10 @@ namespace MemoirV2
 
         .plate {
             background-image: radial-gradient(Gainsboro, LightSlateGray);
+        }
+
+        .exception {
+            background-image: linear-gradient(to bottom right, yellow, salmon);
         }
 
         th,
@@ -135,6 +142,15 @@ namespace MemoirV2
         .object {
             border-radius: 1em;
             border: 0.5em solid black;
+            padding: 0.1em 0.2em;
+        }
+
+        table.gridlines,
+        table.gridlines th,
+        table.gridlines td {
+            padding: 0.1em 0.2em;
+            border-collapse: collapse;
+            border: 0.02em solid black;
         }
     </style>
 ";

@@ -46,7 +46,7 @@ namespace MemoirV2
             if (plainTextWriter != null)
             {
                 echoPlainText("");
-                echoPlainText(titleName, timeStamp, Constants.EMOJI_TEXT_MEMOIR);
+                echoPlainText(titleName, timeStamp, Constants.EMOJI_MEMOIR);
             }
 
             if (htmlTextWriter != null)
@@ -64,7 +64,7 @@ namespace MemoirV2
             }
         }
 
-        internal string getEncapsulationTag()
+        internal static string getEncapsulationTag()
         {
             return String.Format("lvl-{0}", Guid.NewGuid().ToString());
         }
@@ -78,11 +78,8 @@ namespace MemoirV2
         {
             if (! isConcluded)
             {
-                if (plainTextWriter != null)
-                {
-                    echoPlainText("", emoji: Constants.EMOJI_TEXT_MEMOIR_CONCLUDE);
-                    echoPlainText("");
-                }
+                echoPlainText("", emoji: Constants.EMOJI_TEXT_MEMOIR_CONCLUDE);
+                echoPlainText("");
 
                 isConcluded = true;
 
@@ -99,8 +96,14 @@ namespace MemoirV2
             return content.ToString();
         }
 
-        private void echoPlainText(string message, DateTime timeStamp = default(DateTime), string emoji = default(string))
+        internal void echoPlainText(string message, DateTime timeStamp = default(DateTime), string emoji = default(string))
         {
+            if (plainTextWriter == null)
+            {
+                // Silently decline
+                return;
+            }
+
             if (isConcluded)
             {
                 throw new Exception(Constants.ALREADY_CONCLUDED_MESSAGE);
@@ -121,7 +124,7 @@ namespace MemoirV2
             plainTextWriter.WriteLine(string.Format("{0} {1}\t{2} ", dateTime, emoji, message));
         }
 
-        public void writeToHTML(string message, DateTime timeStamp = default(DateTime), string emoji = default(string))
+        internal void writeToHTML(string message, DateTime timeStamp = default(DateTime), string emoji = default(string))
         {
             if (isConcluded)
             {
@@ -161,7 +164,7 @@ namespace MemoirV2
         public void LogError(string message)
         {
             DateTime timeStamp = DateTime.Now;
-            writeToHTML(highlight(message, "failing_test_result"), timeStamp, Constants.EMOJI_ERROR);
+            writeToHTML(highlight(message, "exception"), timeStamp, Constants.EMOJI_ERROR);
             echoPlainText(message, timeStamp, Constants.EMOJI_ERROR);
         }
 
@@ -182,7 +185,7 @@ namespace MemoirV2
         }
 
         // The Memoir submitted will be concluded.
-        public void LogMemoir(Memoir subordinate, string emoji = default(string), string style = "neutral")
+        public void LogMemoir(Memoir subordinate, string emoji = Constants.EMOJI_MEMOIR, string style = "neutral")
         {
             DateTime timeStamp = DateTime.Now;
             string subordinateContent = subordinate.Conclude();
