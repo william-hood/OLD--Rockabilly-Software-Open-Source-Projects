@@ -45,8 +45,8 @@ namespace MemoirV2
 
             if (plainTextWriter != null)
             {
-                echoPlainText("");
-                echoPlainText(titleName, timeStamp, Constants.EMOJI_MEMOIR);
+                EchoPlainText("");
+                EchoPlainText(titleName, timeStamp, Constants.EMOJI_MEMOIR);
             }
 
             if (htmlTextWriter != null)
@@ -78,8 +78,8 @@ namespace MemoirV2
         {
             if (! isConcluded)
             {
-                echoPlainText("", emoji: Constants.EMOJI_TEXT_MEMOIR_CONCLUDE);
-                echoPlainText("");
+                EchoPlainText("", emoji: Constants.EMOJI_TEXT_MEMOIR_CONCLUDE);
+                EchoPlainText("");
 
                 isConcluded = true;
 
@@ -96,7 +96,7 @@ namespace MemoirV2
             return content.ToString();
         }
 
-        internal void echoPlainText(string message, DateTime timeStamp = default(DateTime), string emoji = default(string))
+        public void EchoPlainText(string message, DateTime timeStamp = default(DateTime), string emoji = default(string))
         {
             if (plainTextWriter == null)
             {
@@ -124,7 +124,7 @@ namespace MemoirV2
             plainTextWriter.WriteLine(string.Format("{0} {1}\t{2} ", dateTime, emoji, message));
         }
 
-        internal void writeToHTML(string message, DateTime timeStamp = default(DateTime), string emoji = default(string))
+        public void WriteToHTML(string message, DateTime timeStamp = default(DateTime), string emoji = default(string))
         {
             if (isConcluded)
             {
@@ -139,7 +139,7 @@ namespace MemoirV2
                 time = timeStamp.ToString("HH:mm:ss.ffff");
             }
 
-            content.Append(String.Format("<tr><td>{0}</td><td>&nbsp;</td><td>{1}</td><td>&nbsp;</td><td>{2}</td><td>{3}</td></tr>\r\n", date, time, emoji, message));
+            content.Append(String.Format("<tr><td>{0}</td><td>&nbsp;</td><td>{1}</td><td>&nbsp;</td><td><h2>{2}</h2></td><td>{3}</td></tr>\r\n", date, time, emoji, message));
         }
 
         private string highlight(string message, string style = "highlighted")
@@ -150,28 +150,28 @@ namespace MemoirV2
         public void LogInfo(string message, string emoji = default(string))
         {
             DateTime timeStamp = DateTime.Now;
-            writeToHTML(message, timeStamp, emoji);
-            echoPlainText(message, timeStamp, emoji);
+            WriteToHTML(message, timeStamp, emoji);
+            EchoPlainText(message, timeStamp, emoji);
         }
 
         public void LogDebug(string message)
         {
             DateTime timeStamp = DateTime.Now;
-            writeToHTML(highlight(message), timeStamp, Constants.EMOJI_DEBUG);
-            echoPlainText(message, timeStamp, Constants.EMOJI_DEBUG);
+            WriteToHTML(highlight(message), timeStamp, Constants.EMOJI_DEBUG);
+            EchoPlainText(message, timeStamp, Constants.EMOJI_DEBUG);
         }
 
         public void LogError(string message)
         {
             DateTime timeStamp = DateTime.Now;
-            writeToHTML(highlight(message, "exception"), timeStamp, Constants.EMOJI_ERROR);
-            echoPlainText(message, timeStamp, Constants.EMOJI_ERROR);
+            WriteToHTML(highlight(message, "exception"), timeStamp, Constants.EMOJI_ERROR);
+            EchoPlainText(message, timeStamp, Constants.EMOJI_ERROR);
         }
 
         public void SkipLine()
         {
-            writeToHTML("");
-            echoPlainText("");
+            WriteToHTML("");
+            EchoPlainText("");
         }
 
         private string wrapAsSublog(string memoirTitle, string memoirContent, string style = "neutral")
@@ -189,7 +189,7 @@ namespace MemoirV2
         {
             DateTime timeStamp = DateTime.Now;
             string subordinateContent = subordinate.Conclude();
-            writeToHTML(wrapAsSublog(subordinate.titleName, subordinateContent, style), timeStamp, emoji);
+            WriteToHTML(wrapAsSublog(subordinate.titleName, subordinateContent, style), timeStamp, emoji);
             // This does not echo to plain text as it is assumed the subordinate memoir already did that.
         }
     }

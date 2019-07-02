@@ -19,20 +19,39 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 using System;
+using System.Diagnostics;
 using System.Text;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Collections.Generic;
-using Rockabilly.Common;
 using System.IO;
-using Rockabilly.Common.HtmlEffects;
 using System.Text.RegularExpressions;
+using MemoirV2;
 
 namespace Rockabilly.CoarseGrind
 {
 	public abstract class Test : TestEssentials
 	{
-		public static readonly CoarseGrindLogSystem Log = new CoarseGrindLogSystem();
+        internal Memoir topLevelMemoir;
+        internal Memoir setupMemoir;
+        internal Memoir cleanupMemoir;
+
+        public Memoir Log
+        {
+            get
+            {
+                string caller = new StackTrace().GetFrame(1).GetMethod().Name;
+                switch (caller)
+                {
+                    case "Setup":
+                        return setupMemoir;
+                    case "Cleanup":
+                        return cleanupMemoir;
+                    default:
+                        return topLevelMemoir;
+                }
+            }
+        }
 
 		public const string inProgressName = "(test in progress)";
 		private const string SETUP = "setup";
@@ -90,7 +109,6 @@ namespace Rockabilly.CoarseGrind
 		public abstract string DetailedDescription { get; }
 		public abstract void PerformTest();
 
-		public abstract string[] TestSuiteMemberships { get; }
 		public abstract string[] TestCategoryMemberships { get; }
 
 		public readonly List<TestResult> Results = new List<TestResult>();
@@ -116,9 +134,9 @@ namespace Rockabilly.CoarseGrind
 			}
 		}
 
-		public virtual void AddResult(TestResult thisResult, LoggingLevel requestedLevel = LoggingLevel.Standard)
+		public virtual void AddResult(TestResult thisResult)
 		{
-			thisResult.Log(requestedLevel);
+			thisResult.Log(topLevelMemoir);
 			Results.Add(thisResult);
 		}
 
@@ -137,12 +155,7 @@ namespace Rockabilly.CoarseGrind
 			}
 		}
 
-		private void LogTestHeader()
-		{
-			Log.Header(IdentifiedName);
-		}
-
-		public virtual void RunTest(LoggingLevel preferredLoggingLevel, string rootDirectory)
+		public virtual void RunTest(string rootDirectory)
 		{
 			if (CoarseGrind.KILL_SWITCH)
 			{
@@ -153,16 +166,16 @@ namespace Rockabilly.CoarseGrind
 				bool setupResult = true;
 
 				parentArtifactsDirectory = rootDirectory;
-				Guid thisOutputIdentifier = Log.AddOutput(new TextOutputManager(
-						ArtifactsDirectory + Path.DirectorySeparatorChar + LogFileName),
-						preferredLoggingLevel, LoggingMode.Minimum);
-				LogTestHeader();
+
+                string expectedFileName = ArtifactsDirectory + Path.DirectorySeparatorChar + LogFileName;
+                new FileInfo(expectedFileName).Directory.Create();
+                topLevelMemoir = new Memoir(Name, Console.Out, File.CreateText(expectedFileName), CoarseGrind.LogHeader);
 
 				SetupEnforcement before = null;
 
 				try
 				{
-					IndicateSetup();
+					setupMemoir = IndicateSetup();
 					before = new SetupEnforcement(this);
 					try
 					{
@@ -171,6 +184,7 @@ namespace Rockabilly.CoarseGrind
 					finally
 					{
 						WasSetup = true;
+                        topLevelMemoir.LogMemoir(setupMemoir, MemoirV2.Constants.EMOJI_SETUP, "plate");
 					}
 				}
 				catch (Exception thisFailure)
@@ -185,14 +199,12 @@ namespace Rockabilly.CoarseGrind
 						setupResult = false;
 						AddResult(new TestResult(TestStatus.Inconclusive, "PROGRAMMING ERROR: It is illegal to change the identifier, name, or priority in Setup.  This must happen in the constructor."));
 					}
-					IndicateSectionEnd();
 				}
 
 				if (setupResult && (CoarseGrind.KILL_SWITCH == false))
-				{
-					try
+                {
+                    try
 					{
-						IndicateBody();
 						executionThread = new Thread(PerformTest);
 						executionThread.Start();
 						executionThread.Join();
@@ -205,8 +217,7 @@ namespace Rockabilly.CoarseGrind
 					{
 						WasRun = true;
 						executionThread = null;
-						IndicateSectionEnd();
-					}
+                    }
 				}
 				else {
 					AddResult(new TestResult(TestStatus.Inconclusive,
@@ -214,9 +225,9 @@ namespace Rockabilly.CoarseGrind
 									+ " because setup method failed."));
 				}
 
-				try
+                cleanupMemoir = IndicateCleanup();
+                try
 				{
-					IndicateCleanup();
 					Cleanup();
 					WasCleanedUp = true;
 				}
@@ -225,14 +236,18 @@ namespace Rockabilly.CoarseGrind
 					ReportFailureInCleanup(thisFailure);
 				}
 				finally
-				{
-					IndicateSectionEnd();
-				}
+                {
+                    topLevelMemoir.LogMemoir(cleanupMemoir, MemoirV2.Constants.EMOJI_CLEANUP, "plate");
+                }
 
 				TestStatus overall = OverallStatus;
-				Log.Message("<h1>Overall Status: " + overall.ToString() + "</h1>", overall.ToLoggingLevel(), overall.ToHtmlLogIcon());
-				Log.ClearSpecificOutput(thisOutputIdentifier);
-			}
+                topLevelMemoir.WriteToHTML(String.Format("<h2>Overall Status: {0}</h2>", overall.ToString()));
+
+                // Will need the icon here...
+                topLevelMemoir.EchoPlainText(String.Format("Overall Status: {0}", overall.ToString()));
+
+                topLevelMemoir.Conclude();
+            }
 		}
 
 		public void Interrupt()
@@ -253,21 +268,21 @@ namespace Rockabilly.CoarseGrind
 		public virtual void CheckPrerequisite(string conditionDescription, bool condition)
 		{
 			TestResult result = TestResult.FromPrerequisite(conditionDescription, condition);
-			AddResult(result, result.Status.ToLoggingLevel());
+			AddResult(result);
 			result = null;
 		}
 
 		public virtual void CheckPassCriterion(string conditionDescription, bool condition)
 		{
 			TestResult result = TestResult.FromPassCriterion(conditionDescription, condition);
-			AddResult(result, result.Status.ToLoggingLevel());
+			AddResult(result);
 			result = null;
 		}
 
 		public virtual void CheckCondition(string conditionDescription, bool condition)
 		{
 			TestResult result = TestResult.FromCondition(conditionDescription, condition);
-			AddResult(result, result.Status.ToLoggingLevel());
+			AddResult(result);
 			result = null;
 		}
 
@@ -359,10 +374,10 @@ namespace Rockabilly.CoarseGrind
 		{
 			if (additionalMessage.Length > 0)
 				additionalMessage = " " + additionalMessage;
-			Log.Message(IdentifiedName + CLEANUP
+            topLevelMemoir.LogError(IdentifiedName + CLEANUP
 					+ ":  An unanticipated failure occurred" + additionalMessage
-					+ ".", LoggingLevel.Warning, Log.WarningIcon);
-			Log.ShowException(thisFailure);
+					+ ".");
+            topLevelMemoir.LogException(thisFailure);
 		}
 
 		public virtual TestResult GetResultForPreclusionInSetup(Exception thisPreclusion)
@@ -395,53 +410,41 @@ namespace Rockabilly.CoarseGrind
 
 		private string sectionIndicator = default(string);
 
-		internal void IndicateSetup()
+		private Memoir IndicateSetup()
 		{
-			string tmpIndicator = "Setup - " + getEchelonName() + " " + IdentifiedName;
-			IndicateSectionStart(Log.InfoIcon, "<b>" + tmpIndicator + "</b><br><small><i>" + DetailedDescription + "</i></small>");
-			sectionIndicator = tmpIndicator;
-			tmpIndicator = null;
+            Memoir result = new Memoir("Setup - " + getEchelonName() + " " + IdentifiedName, Console.Out);
+            result.WriteToHTML(String.Format("<small><i>{0}</i></small>", DetailedDescription));
+            result.SkipLine();
+            return result;
 		}
 
-		private void IndicateSectionStart(InlineImage icon, string indicator)
+        private Memoir IndicateCleanup()
 		{
-			sectionIndicator = indicator;
-			Log.Message(sectionIndicator
-					+ HtmlLogSystem.HTML__LINE_BREAK
-					+ Log.HTML__SECTIONSTART, LoggingLevel.Critical, icon);
+            Memoir result = new Memoir("Cleanup - " + getEchelonName() + " " + IdentifiedName, Console.Out);
+            return result;
 		}
 
-		internal void IndicateSectionEnd()
-		{
-			Log.Message(Log.HTML__SECTIONEND
-					+ HtmlLogSystem.HTML__LINE_BREAK
-					+ sectionIndicator);
-			Log.SkipLine();
+        private Memoir IndicateBody()
+        {
+            Memoir result = new Memoir(getEchelonName() + " " + IdentifiedName, Console.Out);
+            return result;
 		}
 
-		internal void IndicateCleanup()
+        private const string INFO_ICON = "ℹ️";
+
+        public void WaitSeconds(int howMany)
 		{
-			IndicateSectionStart(null, "Cleanup - " + getEchelonName() + " " + IdentifiedName);
+            topLevelMemoir.LogInfo("Waiting " + howMany + " seconds...", INFO_ICON);
+			DoWait(1000 * howMany);
 		}
 
-		internal void IndicateBody()
+		public void WaitMilliseconds(int howMany)
 		{
-			IndicateSectionStart(null, getEchelonName() + " " + IdentifiedName);
+            topLevelMemoir.LogInfo("Waiting " + howMany + " milliseconds...", INFO_ICON);
+			DoWait(howMany);
 		}
 
-		public static void WaitSeconds(int howMany, LoggingLevel requestedLevel = LoggingLevel.Standard)
-		{
-			Log.Message("Waiting " + howMany + " seconds...", requestedLevel, Log.InfoIcon);
-			DoWait(1000 * howMany, requestedLevel);
-		}
-
-		public static void WaitMilliseconds(int howMany, LoggingLevel requestedLevel = LoggingLevel.Standard)
-		{
-			Log.Message("Waiting " + howMany + " milliseconds...", requestedLevel, Log.InfoIcon);
-			DoWait(howMany, requestedLevel);
-		}
-
-		private static void DoWait(int howManyMilliseconds, LoggingLevel requestedLevel = LoggingLevel.Standard)
+		private static void DoWait(int howManyMilliseconds)
 		{
 			try
 			{

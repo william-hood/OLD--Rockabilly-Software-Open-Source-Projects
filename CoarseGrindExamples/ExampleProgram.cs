@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Rockabilly.CoarseGrind.Descriptions;
-using Rockabilly.CoarseGrind.Examples.Simple;
 using Rockabilly.Common;
 
 namespace Rockabilly.CoarseGrind.Examples
@@ -26,7 +25,6 @@ namespace Rockabilly.CoarseGrind.Examples
 				allTests.Add(new SimpleExample2());
 				allTests.Add(new SimpleExample3());
 				allTests.Add(new SimpleExample4());
-				allTests.Add(new MultiLogExample());
 
 				// Generate tests for the Integer field
 				SubnameFactory intSubnames = new SubnameFactory(0, 3);

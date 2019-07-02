@@ -20,7 +20,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using Rockabilly.Common;
-using Rockabilly.Common.HtmlEffects;
+using MemoirV2;
 
 namespace Rockabilly.CoarseGrind
 {
@@ -47,36 +47,39 @@ namespace Rockabilly.CoarseGrind
 			return it == TestStatus.Inconclusive;
 		}
 
-		public static InlineImage ToHtmlLogIcon(this TestStatus it)
+		public static string ToHtmlLogIcon(this TestStatus it)
 		{
 			switch (it)
 			{
 				case TestStatus.Pass:
-					return Test.Log.PassIcon;
+					return MemoirV2.Constants.EMOJI_PASSING_TEST;
 				case TestStatus.Fail:
-					return Test.Log.FailIcon;
+					return MemoirV2.Constants.EMOJI_FAILING_TEST;
 				case TestStatus.Subjective:
-					return Test.Log.InfoIcon;
+					return MemoirV2.Constants.EMOJI_SUBJECTIVE_TEST;
 				default:
-					return Test.Log.StopSignIcon;
+					return MemoirV2.Constants.EMOJI_INCONCLUSIVE_TEST;
 			}
-		}
+        }
 
-		public static LoggingLevel ToLoggingLevel(this TestStatus it)
-		{
-			if (it == TestStatus.Pass)
-				return LoggingLevel.Standard;
-			return LoggingLevel.Critical;
-		}
+        internal static string ToStyle(this TestStatus it)
+        {
+            switch (it)
+            {
+                case TestStatus.Pass:
+                    return "passing_test_result";
+                case TestStatus.Fail:
+                    return "failing_test_result";
+                case TestStatus.Subjective:
+                    return "neutral";
+                default:
+                    return "inconclusive_test_result";
+            }
+        }
 
-		public static void Log(this TestStatus it, String message)
+        public static void Log(this TestStatus it, Memoir memoir, string message)
 		{
-			it.Log(message, it.ToLoggingLevel());
-		}
-
-		public static void Log(this TestStatus it, string message, LoggingLevel requestedLevel)
-		{
-			Test.Log.Message(message, requestedLevel, it.ToHtmlLogIcon());
+			memoir.LogInfo(message, it.ToHtmlLogIcon());
 		}
 
 		public static TestStatus CombineWith(this TestStatus it, TestStatus candidate)

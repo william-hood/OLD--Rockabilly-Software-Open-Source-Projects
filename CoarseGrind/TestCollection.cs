@@ -40,7 +40,6 @@ namespace Rockabilly.CoarseGrind
 
 		internal Dictionary<string, TestSuite> AllTestSuites = new Dictionary<string, TestSuite>();
 		internal TestSuite CurrentlyRunningSuite = null;
-		//private ExecutionThread executionThread = null;
 		private Thread executionThread = null;
 		private MatchList exclusions = new MatchList();
 		private List<Test> AllTests = null;
@@ -61,7 +60,6 @@ namespace Rockabilly.CoarseGrind
 			AllTests = testsFromProgrammer;
 			foreach (Test thisTest in AllTests)
 			{
-				AddProgrammaticTestSuites(thisTest.TestSuiteMemberships, thisTest);
 				AddProgrammaticTestSuites(thisTest.TestCategoryMemberships, thisTest);
 			}
 		}
@@ -207,29 +205,6 @@ namespace Rockabilly.CoarseGrind
 					case DECLARE_ARG:
 						DoDeclare(args, index + 1);
 						return;
-					case PORT_ARG:
-						index++;
-						if (!parent.ContinueService)
-						{
-							parent.WEBUI_PORT = int.Parse(args[index]);
-						} // will silently ignore if serving.
-						return;
-					/*
-			case ADDRESS_ARG:
-				index++;
-				if (!parent.ContinueService)
-				{
-					try
-					{
-						parent.address = InetAddress.getByName(args[index]);
-					}
-					catch (UnknownHostException e)
-					{
-						Console.WriteLine("Unable to set local address to " + args[index]);
-					}
-				} // will silently ignore if serving.
-				return;
-				*/
 					default:
 						UnprocessedArguments.Add(args[index]);
 						break;

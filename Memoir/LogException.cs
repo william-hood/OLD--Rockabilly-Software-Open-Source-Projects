@@ -21,7 +21,7 @@ namespace MemoirV2
 
             if (memoir != null)
             {
-                memoir.echoPlainText(String.Format("{0}\r\n\r\n{1}\r\n{2}",
+                memoir.EchoPlainText(String.Format("{0}\r\n\r\n{1}\r\n{2}",
                     name,
                     target.Message,
                     plainTextStackTrace), timeStamp, Constants.EMOJI_ERROR);
@@ -46,7 +46,7 @@ namespace MemoirV2
 
             if (memoir != null)
             {
-                memoir.writeToHTML(result.ToString(), timeStamp, Constants.EMOJI_ERROR);
+                memoir.WriteToHTML(result.ToString(), timeStamp, Constants.EMOJI_ERROR);
             }
 
             return result.ToString();

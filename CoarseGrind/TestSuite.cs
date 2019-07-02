@@ -24,6 +24,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Rockabilly.Common;
+using MemoirV2;
 
 namespace Rockabilly.CoarseGrind
 {
@@ -31,7 +32,6 @@ namespace Rockabilly.CoarseGrind
 	{
 		private const string FOLDER_FOR_ALL_TESTS = "All Tests";
 		private Test currentTest = null;
-		private LoggingLevel currentLoggingLevel = default(LoggingLevel);
 		private string currentArtifactsDirectory = default(string);
 		private Thread executionThread = null;
 		private float currentCount = float.MaxValue;
@@ -143,8 +143,10 @@ namespace Rockabilly.CoarseGrind
 
 		public void RunTestSuite(LoggingLevel preferredLoggingLevel, MatchList exclusions, string rootDirectory)
 		{
-			currentLoggingLevel = preferredLoggingLevel;
 			currentArtifactsDirectory = rootDirectory;
+            string expectedFileName = currentArtifactsDirectory + Path.DirectorySeparatorChar + "All tests.html";
+            new FileInfo(expectedFileName).Directory.Create();
+            Memoir overLog = new Memoir(Name, null, File.CreateText(expectedFileName), CoarseGrind.LogHeader);
 			currentCount = 0;
 			for (currentCount = 0; currentCount < Count; currentCount++)
 			{
@@ -172,17 +174,20 @@ namespace Rockabilly.CoarseGrind
 						{
 							executionThread = null;
 							CopyResultsToCategories();
-						}
+                            overLog.LogMemoir(currentTest.topLevelMemoir, currentTest.OverallStatus.ToHtmlLogIcon(), currentTest.OverallStatus.ToStyle());
+                        }
 					}
 				}
 			}
 
-			CreateSummaryReport(rootDirectory);
+            overLog.Conclude();
+
+            CreateSummaryReport(rootDirectory);
 		}
 
 		public void Run()
 		{
-			currentTest.RunTest(currentLoggingLevel, currentArtifactsDirectory);
+			currentTest.RunTest(currentArtifactsDirectory);
 		}
 
 		public void InterruptCurrentTest()

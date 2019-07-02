@@ -41,7 +41,6 @@
     <Compile Include="Descriptions\SampleEnum.cs" />
     <Compile Include="Descriptions\SampleObject.cs" />
     <Compile Include="Descriptions\TestCaseDescription.cs" />
-    <Compile Include="Simple\MultiLogExample.cs" />
     <Compile Include="Simple\SimpleExample1.cs" />
     <Compile Include="Simple\SimpleExample2.cs" />
     <Compile Include="Simple\SimpleExample3.cs" />
@@ -55,6 +54,10 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{463F0CF5-6D6C-41BB-BF82-528396FF185A}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Memoir\Memoir.csproj">
+      <Project>{C5B613B2-C6E5-4093-A302-E4B4FB3709C8}</Project>
+      <Name>Memoir</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

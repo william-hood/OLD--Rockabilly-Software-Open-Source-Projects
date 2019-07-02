@@ -49,7 +49,7 @@ namespace MemoirV2
 
             if (memoir != null)
             {
-                memoir.echoPlainText(title, timeStamp, Constants.EMOJI_OBJECT);
+                memoir.EchoPlainText(title, timeStamp, Constants.EMOJI_OBJECT);
             }
             result.Append(String.Format("<label for=\"{0}\">\r\n<input id=\"{0}\" class=\"gone\" type=\"checkbox\">\r\n<center><h2>{1}</h2></center>\r\n<div class=\"{2}\">\r\n",
                 Guid.NewGuid().ToString(),
@@ -80,7 +80,8 @@ namespace MemoirV2
                 if (shouldRecurse(fieldValue))
                 {
                     content.Append(LogObject(null, fieldValue, fieldName));
-                } else
+                }
+                else
                 {
                     content.Append(fieldValue);
                 }
@@ -107,7 +108,7 @@ namespace MemoirV2
             result.Append("\r\n</label></div>");
             if (memoir != null)
             {
-                memoir.writeToHTML(result.ToString(), timeStamp, Constants.EMOJI_OBJECT);
+                memoir.WriteToHTML(result.ToString(), timeStamp, Constants.EMOJI_OBJECT);
             }
 
             return result.ToString();

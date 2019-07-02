@@ -31,19 +31,16 @@ namespace Rockabilly.CoarseGrind.Examples
 			if (this.OverallStatus != TestStatus.Inconclusive)
 			{
 				// You should log every little thing the test does.  That lessens the chance of needing to re-run when a bug happens.
-				Log.Message("Calling doSomethingOne()");
+				Log.LogInfo("Calling doSomethingOne()");
 				//int return1 = doSomethingOne();
 				int return1 = 42;
 
-				Log.Message("Calling doSomethingTwo()");
+				Log.LogInfo("Calling doSomethingTwo()");
 				//int return2 = doSomethingTwo();
 				int return2 = 42;
 
-				Log.Message("Calling doSomethingThree()");
+				Log.LogInfo("Calling doSomethingThree()");
 				//doSomethingThree();
-
-				Log.Message("This message has an info icon", icon: Log.InfoIcon);
-				Log.Message("This message has a warning icon", icon: Log.WarningIcon);
 
 				CheckPassCriterion("Everything adds up nicely.", return1 + return2 == 84);
 			}
@@ -88,19 +85,11 @@ namespace Rockabilly.CoarseGrind.Examples
 			return true;
 		}
 
-		public override string[] TestSuiteMemberships
-		{
-			get
-			{
-				return new String[] { "Simple", "All" };
-			}
-		}
-
 		public override string[] TestCategoryMemberships
 		{
 			get
 			{
-				return new String[] { "Example" };
+				return new String[] { "Simple", "All", "Example" };
 			}
 		}
 

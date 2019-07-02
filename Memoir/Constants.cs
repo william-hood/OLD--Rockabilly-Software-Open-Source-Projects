@@ -63,7 +63,7 @@ namespace MemoirV2
         .memoir {
             font-family: sans-serif;
             border-radius: 1em;
-            border: 0.2em solid black;
+            border: 0.5em solid black;
             display: inline-block;
             background-image: linear-gradient(to bottom right, white, WhiteSmoke);
         }
@@ -108,10 +108,11 @@ namespace MemoirV2
             background-image: linear-gradient(to bottom right, yellow, salmon);
         }
 
+        table,
         th,
         td {
             padding: 0.1em 0em;
-            vertical-align: text-top;
+            vertical-align: text-bottom;
         }
 
         h1 {
@@ -135,19 +136,22 @@ namespace MemoirV2
         }
 
         .outlined {
+            display: inline-block;
             border-radius: 0.5em;
             border: 0.05em solid black;
         }
 
         .object {
             border-radius: 1em;
-            border: 0.5em solid black;
+            border: 0.2em solid black;
+            display: inline-block;
             padding: 0.1em 0.2em;
         }
 
         table.gridlines,
         table.gridlines th,
         table.gridlines td {
+            vertical-align: text-bottom;
             padding: 0.1em 0.2em;
             border-collapse: collapse;
             border: 0.02em solid black;

@@ -23,12 +23,12 @@ namespace Rockabilly.CoarseGrind.Examples
 			// If setup fails, it will NOT be run.
 
 			// You should log every little thing the test does.  That lessens the chance of needing to re-run when a bug happens.
-			Log.Message("Deliberately throwing an exception");
+			Log.LogInfo("Deliberately throwing an exception");
 
 			try
 			{
 
-				Log.Message("Calling doSomethingTwo()");
+				Log.LogInfo("Calling doSomethingTwo()");
 				//int return2 = doSomethingTwo();
 
 				throw new NullReferenceException("This is a FAKE null pointer exception. Nothing's actually wrong.", new ArgumentException("Also a FAKE exception. Carry on."));
@@ -79,19 +79,11 @@ namespace Rockabilly.CoarseGrind.Examples
 			return true;
 		}
 
-		public override string[] TestSuiteMemberships
-		{
-			get
-			{
-				return new String[] { "Simple", "All" };
-			}
-		}
-
 		public override string[] TestCategoryMemberships
 		{
 			get
 			{
-				return new String[] { "Example" };
+				return new String[] { "Simple", "All", "Example" };
 			}
 		}
 
