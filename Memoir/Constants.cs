@@ -36,9 +36,9 @@ namespace MemoirV2
         public const string EMOJI_TEXT_MEMOIR_CONCLUDE = "⤴️";
         public const string EMOJI_TEXT_BLANK_LINE = "";
         public const string EMOJI_OBJECT = "🔲";
-        public const string EMOJI_CAUSED_BY = "↘️";
+        public const string EMOJI_CAUSED_BY = "→";
 
-        public const string ALREADY_CONCLUDED_MESSAGE = "This memoir is already concluded.";
+        public const string ALREADY_CONCLUDED_MESSAGE = "An attempt was made to write to a memoir that was already concluded.\r\n<li>Once a Memoir has been concluded it can no longer be written to.\r\n<li>Passing a Memoir to the ShowMemoir() method will automatically conclude it.";
 
         public const int MAX_OBJECT_FIELDS_TO_DISPLAY = 10;
 
@@ -62,8 +62,8 @@ namespace MemoirV2
 
         .memoir {
             font-family: sans-serif;
-            border-radius: 1em;
-            border: 0.5em solid black;
+            border-radius: 0.25em;
+            border: 0.1em solid black;
             display: inline-block;
             background-image: linear-gradient(to bottom right, white, WhiteSmoke);
         }
@@ -108,20 +108,40 @@ namespace MemoirV2
             background-image: linear-gradient(to bottom right, yellow, salmon);
         }
 
+        .decaf_green {
+            background-image: linear-gradient(to bottom right, #B0C6B2, #83A787);
+        }
+
+        .decaf_orange {
+            background-image: linear-gradient(to bottom right, #EED886, #D0A403);
+        }
+
+        .decaf_green_light_roast {
+            background-image: linear-gradient(to bottom right, #DCE9DD, #B0C6B2);
+        }
+
+        .decaf_orange_light_roast {
+            background-image: linear-gradient(to bottom right, #F2E5B4, #EED886);
+        }
+
+        .desert_horizon {
+            background-image: linear-gradient(to bottom, #127FCF, #52ACEE, #7EC7FD, #F7EFCA, #F6EDC2, #F5EBBA);
+        }
+
+
         table,
         th,
         td {
             padding: 0.1em 0em;
-            vertical-align: text-bottom;
         }
 
         h1 {
-            font-size: 5em;
+            font-size: 3em;
             margin: 0em
         }
 
         h2 {
-            font-size: 2em;
+            font-size: 1.75em;
             margin: 0.2em
         }
 
@@ -139,20 +159,20 @@ namespace MemoirV2
             display: inline-block;
             border-radius: 0.5em;
             border: 0.05em solid black;
+            padding: 0.2em 0.2em;
         }
 
         .object {
-            border-radius: 1em;
-            border: 0.2em solid black;
+            border-radius: 1.5em;
+            border: 0.3em solid black;
             display: inline-block;
-            padding: 0.1em 0.2em;
+            padding: 0.4em 0.4em;
         }
 
         table.gridlines,
         table.gridlines th,
         table.gridlines td {
-            vertical-align: text-bottom;
-            padding: 0.1em 0.2em;
+            padding: 0.4em 0.4em;
             border-collapse: collapse;
             border: 0.02em solid black;
         }

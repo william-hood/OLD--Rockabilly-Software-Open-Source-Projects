@@ -31,8 +31,9 @@
     <Compile Include="Memoir.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="LogObject.cs" />
-    <Compile Include="LogException.cs" />
+    <Compile Include="ShowObject.cs" />
+    <Compile Include="ShowException.cs" />
+    <Compile Include="MemoirConcludedException.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

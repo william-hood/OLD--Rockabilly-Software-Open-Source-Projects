@@ -31,15 +31,15 @@ namespace Rockabilly.CoarseGrind.Examples
 			if (this.OverallStatus != TestStatus.Inconclusive)
 			{
 				// You should log every little thing the test does.  That lessens the chance of needing to re-run when a bug happens.
-				Log.LogInfo("Calling doSomethingOne()");
+				Log.Info("Calling doSomethingOne()");
 				//int return1 = doSomethingOne();
 				int return1 = 42;
 
-				Log.LogInfo("Calling doSomethingTwo()");
+				Log.Info("Calling doSomethingTwo()");
 				//int return2 = doSomethingTwo();
 				int return2 = 42;
 
-				Log.LogInfo("Calling doSomethingThree()");
+				Log.Info("Calling doSomethingThree()");
 				//doSomethingThree();
 
 				// The line below should make this test failing.
@@ -50,8 +50,10 @@ namespace Rockabilly.CoarseGrind.Examples
 
 		public override bool Cleanup()
 		{
-			// This will ALWAYS be run, even if setup failed.
-			return true;
+            // This will ALWAYS be run, even if setup failed.
+            Log.Info("Cleaning everything up and returning false...");
+            Log.Debug("You don't have to have a Cleanup() method. If the Cleanup() returns false it has no affect programmatically, but will be indicated in the logs by the color of its section.");
+            return false;
 		}
 
 		public override string Identifier
@@ -75,12 +77,16 @@ namespace Rockabilly.CoarseGrind.Examples
 
 		public override bool Setup()
 		{
-			// Perform any test case specific setup.
-			// If this does not return true, performTest() will never be run.
-			// You may wish to make an abstract class that extends Test.
-			// Lots of testcases could extend that and share the same setup(),
-			// cleanup(), and other common methods.
-			return true;
+            // Perform any test case specific setup.
+            // If this does not return true, performTest() will never be run.
+            // You may wish to make an abstract class that extends Test.
+            // Lots of testcases could extend that and share the same setup(),
+            // cleanup(), and other common methods.
+            Log.Info("Setting this up...");
+            Log.Info("Setting that up...");
+            Log.Info("Setting up one more thing...");
+            Log.Debug("You don't have to have a Setup() method. If the Setup() returns false the PerformTest() method <b><u>WILL NOT BE RUN!!!</u></b>. Any Cleanup() method will be run regardless of whether or not Setup() failed.");
+            return true;
 		}
 
 		public override string[] TestCategoryMemberships

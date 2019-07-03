@@ -37,7 +37,7 @@ namespace Rockabilly.CoarseGrind
 
         internal static string LogHeader(string title)
         {
-            return String.Format("<table><tr><td>\r\n\r\n{0}\r\n\r\n</td><td><h1>{1}</h1>\r\nInitiated {2}</td></tr></table>\r\n<br><hr>\r\n<small><i>Powered by Coarse Grind</i></small>\r\n\r\n", HEADER.ToString(), title, HeaderTimeStamp);
+            return String.Format("<table><tr><td>\r\n\r\n{0}\r\n\r\n</td><td><h1>{1}</h1>\r\nInitiated {2}</td></tr></table>\r\n<hr>\r\n<small><i>Powered by Coarse Grind</i></small>\r\n\r\n", HEADER.ToString(), title, HeaderTimeStamp);
         }
 
         public static readonly Icon_Header HEADER = new Icon_Header();

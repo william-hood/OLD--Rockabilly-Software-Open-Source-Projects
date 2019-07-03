@@ -109,7 +109,7 @@ namespace Rockabilly.CoarseGrind
 
 			foreach (Exception thisFailure in Failures)
 			{
-                memoir.LogException(thisFailure);
+                memoir.ShowException(thisFailure);
 			}
 		}
 

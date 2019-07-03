@@ -31,9 +31,15 @@ namespace MemoirV2
     {
         private TextWriter htmlTextWriter = null;
         private TextWriter plainTextWriter = null;
-        private StringBuilder content = new StringBuilder("<table>\r\n");
+        private const string STARTING_CONTENT = "<table>\r\n";
+        private StringBuilder content = new StringBuilder(STARTING_CONTENT);
         private bool isConcluded = false;
         private string titleName = default(string);
+
+        public bool WasUsed()
+        {
+            return (content.Length - STARTING_CONTENT.Length) > 0;
+        }
         
         public Memoir(string title, TextWriter forPlainText = null, TextWriter forHTML = null, Func<string, string> Header = null)
         {
@@ -106,7 +112,7 @@ namespace MemoirV2
 
             if (isConcluded)
             {
-                throw new Exception(Constants.ALREADY_CONCLUDED_MESSAGE);
+                throw new MemoirConcludedException();
             }
 
             // Deliberate. Emoji will be clobbered to default(string) at many levels above otherwise.
@@ -128,7 +134,7 @@ namespace MemoirV2
         {
             if (isConcluded)
             {
-                throw new Exception(Constants.ALREADY_CONCLUDED_MESSAGE);
+                throw new MemoirConcludedException();
             }
 
             string date = "&nbsp;";
@@ -139,7 +145,7 @@ namespace MemoirV2
                 time = timeStamp.ToString("HH:mm:ss.ffff");
             }
 
-            content.Append(String.Format("<tr><td>{0}</td><td>&nbsp;</td><td>{1}</td><td>&nbsp;</td><td><h2>{2}</h2></td><td>{3}</td></tr>\r\n", date, time, emoji, message));
+            content.Append(String.Format("<tr><td><small>{0}</small></td><td>&nbsp;</td><td><small>{1}</small></td><td>&nbsp;</td><td><h2>{2}</h2></td><td>{3}</td></tr>\r\n", date, time, emoji, message));
         }
 
         private string highlight(string message, string style = "highlighted")
@@ -147,21 +153,21 @@ namespace MemoirV2
             return String.Format("<p class=\"{0} outlined\">&nbsp;{1}&nbsp;</p>", style, message);
         }
 
-        public void LogInfo(string message, string emoji = default(string))
+        public void Info(string message, string emoji = default(string))
         {
             DateTime timeStamp = DateTime.Now;
             WriteToHTML(message, timeStamp, emoji);
             EchoPlainText(message, timeStamp, emoji);
         }
 
-        public void LogDebug(string message)
+        public void Debug(string message)
         {
             DateTime timeStamp = DateTime.Now;
             WriteToHTML(highlight(message), timeStamp, Constants.EMOJI_DEBUG);
             EchoPlainText(message, timeStamp, Constants.EMOJI_DEBUG);
         }
 
-        public void LogError(string message)
+        public void Error(string message)
         {
             DateTime timeStamp = DateTime.Now;
             WriteToHTML(highlight(message, "exception"), timeStamp, Constants.EMOJI_ERROR);

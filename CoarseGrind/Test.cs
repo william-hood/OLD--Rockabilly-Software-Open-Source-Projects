@@ -31,7 +31,9 @@ using MemoirV2;
 namespace Rockabilly.CoarseGrind
 {
 	public abstract class Test : TestEssentials
-	{
+    {
+        private const string INFO_ICON = "ℹ️";
+
         internal Memoir topLevelMemoir;
         internal Memoir setupMemoir;
         internal Memoir cleanupMemoir;
@@ -102,9 +104,9 @@ namespace Rockabilly.CoarseGrind
 		}
 
 		// End User Must Implement
-		public abstract bool Setup();
-		public abstract bool Cleanup();
-		public abstract string Identifier { get; }
+		public virtual bool Setup() { return true; }
+		public virtual bool Cleanup() { return true; }
+        public abstract string Identifier { get; }
 		public abstract string Name { get; }
 		public abstract string DetailedDescription { get; }
 		public abstract void PerformTest();
@@ -163,7 +165,8 @@ namespace Rockabilly.CoarseGrind
 			}
 			else
 			{
-				bool setupResult = true;
+                bool setupResult = true;
+                bool cleanupResult = true;
 
 				parentArtifactsDirectory = rootDirectory;
 
@@ -171,7 +174,10 @@ namespace Rockabilly.CoarseGrind
                 new FileInfo(expectedFileName).Directory.Create();
                 topLevelMemoir = new Memoir(Name, Console.Out, File.CreateText(expectedFileName), CoarseGrind.LogHeader);
 
-				SetupEnforcement before = null;
+                topLevelMemoir.WriteToHTML(String.Format("<small><i>{0}</i></small>", DetailedDescription), emoji: INFO_ICON);
+                topLevelMemoir.SkipLine();
+
+                SetupEnforcement before = null;
 
 				try
 				{
@@ -184,7 +190,12 @@ namespace Rockabilly.CoarseGrind
 					finally
 					{
 						WasSetup = true;
-                        topLevelMemoir.LogMemoir(setupMemoir, MemoirV2.Constants.EMOJI_SETUP, "plate");
+
+                        if (setupMemoir.WasUsed()) {
+                            string style = "decaf_orange_light_roast";
+                            if (setupResult) { style = "decaf_green_light_roast"; }
+                            topLevelMemoir.LogMemoir(setupMemoir, MemoirV2.Constants.EMOJI_SETUP, style);
+                        }
 					}
 				}
 				catch (Exception thisFailure)
@@ -228,7 +239,7 @@ namespace Rockabilly.CoarseGrind
                 cleanupMemoir = IndicateCleanup();
                 try
 				{
-					Cleanup();
+                    cleanupResult = Cleanup();
 					WasCleanedUp = true;
 				}
 				catch (Exception thisFailure)
@@ -237,7 +248,12 @@ namespace Rockabilly.CoarseGrind
 				}
 				finally
                 {
-                    topLevelMemoir.LogMemoir(cleanupMemoir, MemoirV2.Constants.EMOJI_CLEANUP, "plate");
+                    if (cleanupMemoir.WasUsed())
+                    {
+                        string style = "decaf_orange_light_roast";
+                        if (cleanupResult) { style = "decaf_green_light_roast"; }
+                        topLevelMemoir.LogMemoir(cleanupMemoir, MemoirV2.Constants.EMOJI_CLEANUP, style);
+                    }
                 }
 
 				TestStatus overall = OverallStatus;
@@ -374,10 +390,10 @@ namespace Rockabilly.CoarseGrind
 		{
 			if (additionalMessage.Length > 0)
 				additionalMessage = " " + additionalMessage;
-            topLevelMemoir.LogError(IdentifiedName + CLEANUP
+            topLevelMemoir.Error(IdentifiedName + CLEANUP
 					+ ":  An unanticipated failure occurred" + additionalMessage
 					+ ".");
-            topLevelMemoir.LogException(thisFailure);
+            topLevelMemoir.ShowException(thisFailure);
 		}
 
 		public virtual TestResult GetResultForPreclusionInSetup(Exception thisPreclusion)
@@ -413,8 +429,6 @@ namespace Rockabilly.CoarseGrind
 		private Memoir IndicateSetup()
 		{
             Memoir result = new Memoir("Setup - " + getEchelonName() + " " + IdentifiedName, Console.Out);
-            result.WriteToHTML(String.Format("<small><i>{0}</i></small>", DetailedDescription));
-            result.SkipLine();
             return result;
 		}
 
@@ -430,17 +444,15 @@ namespace Rockabilly.CoarseGrind
             return result;
 		}
 
-        private const string INFO_ICON = "ℹ️";
-
         public void WaitSeconds(int howMany)
 		{
-            topLevelMemoir.LogInfo("Waiting " + howMany + " seconds...", INFO_ICON);
+            topLevelMemoir.Info("Waiting " + howMany + " seconds...", INFO_ICON);
 			DoWait(1000 * howMany);
 		}
 
 		public void WaitMilliseconds(int howMany)
 		{
-            topLevelMemoir.LogInfo("Waiting " + howMany + " milliseconds...", INFO_ICON);
+            topLevelMemoir.Info("Waiting " + howMany + " milliseconds...", INFO_ICON);
 			DoWait(howMany);
 		}
 

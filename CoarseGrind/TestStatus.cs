@@ -67,19 +67,19 @@ namespace Rockabilly.CoarseGrind
             switch (it)
             {
                 case TestStatus.Pass:
-                    return "passing_test_result";
+                    return "decaf_green";
                 case TestStatus.Fail:
-                    return "failing_test_result";
+                    return "decaf_orange";
                 case TestStatus.Subjective:
-                    return "neutral";
+                    return "old_parchment";
                 default:
-                    return "inconclusive_test_result";
+                    return "decaf_orange_light_roast";
             }
         }
 
         public static void Log(this TestStatus it, Memoir memoir, string message)
 		{
-			memoir.LogInfo(message, it.ToHtmlLogIcon());
+			memoir.Info(message, it.ToHtmlLogIcon());
 		}
 
 		public static TestStatus CombineWith(this TestStatus it, TestStatus candidate)

@@ -6,8 +6,10 @@ using System.Text;
 
 namespace MemoirV2
 {
-    public static class LogObjectExtension
+    public static class ShowObjectExtension
     {
+        private const int MAX_RECURSION = 10;
+
         private static bool shouldRecurse(object candidate)
         {
             if (candidate == null) return false;
@@ -40,8 +42,12 @@ namespace MemoirV2
             return true;
         }
 
-        public static string LogObject(this Memoir memoir, object target, string nameof_target = "")
+        public static string ShowObject(this Memoir memoir, object target, string nameof_target = "", int recurseLevel = 0)
         {
+            if (recurseLevel > MAX_RECURSION)
+            {
+                return String.Format("<div class=\"outlined\">{0} Too Many Levels In {0}</div>", Constants.EMOJI_INCONCLUSIVE_TEST);
+            }
             DateTime timeStamp = DateTime.Now;
             StringBuilder result = new StringBuilder("<div class=\"object neutral\">\r\n");
             Type thisType = target.GetType();
@@ -62,38 +68,66 @@ namespace MemoirV2
             StringBuilder content = new StringBuilder();
 
             content.Append("<center><table class=\"gridlines\">\r\n");
-            foreach (FieldInfo thisField in theseFields)
+
+            if (thisType.IsArray)
             {
-                string fieldName = thisField.Name;
-                object fieldValue = thisField.GetValue(target);
+                fieldCount = ((Array)target).Length;
+                foreach (object thisItem in (Array)target)
+                {
+                    content.Append("<tr><td>");
+                    content.Append(thisItem.GetType().Name);
+                    content.Append("</td><td>");
+                    if (thisItem == null)
+                    {
+                        content.Append("(null)");
+                    }
 
-                content.Append("<tr><td>");
-                content.Append(thisField.FieldType.Name);
-                content.Append("</td><td>");
-                content.Append(fieldName);
-                content.Append("</td><td>");
-                if (fieldValue == null)
-                {
-                    fieldValue = "(null)";
+                    if (shouldRecurse(thisItem))
+                    {
+                        content.Append(ShowObject(null, thisItem, thisItem.GetType().Name, recurseLevel + 1));
+                    }
+                    else
+                    {
+                        content.Append(thisItem.ToString());
+                    }
+                    content.Append("</td></tr>\r\n");
                 }
+            } else
+            {
+                foreach (FieldInfo thisField in theseFields)
+                {
+                    string fieldName = thisField.Name;
+                    object fieldValue = thisField.GetValue(target);
 
-                if (shouldRecurse(fieldValue))
-                {
-                    content.Append(LogObject(null, fieldValue, fieldName));
+                    content.Append("<tr><td>");
+                    content.Append(thisField.FieldType.Name);
+                    content.Append("</td><td>");
+                    content.Append(fieldName);
+                    content.Append("</td><td>");
+                    if (fieldValue == null)
+                    {
+                        fieldValue = "(null)";
+                    }
+
+                    if (shouldRecurse(fieldValue))
+                    {
+                        content.Append(ShowObject(null, fieldValue, fieldName, recurseLevel + 1));
+                    }
+                    else
+                    {
+                        content.Append(fieldValue);
+                    }
+                    content.Append("</td></tr>\r\n");
                 }
-                else
-                {
-                    content.Append(fieldValue);
-                }
-                content.Append("</td></tr>\r\n");
             }
+
             content.Append("\r\n</table></center><br></div>");
 
 
 
             if (fieldCount > Constants.MAX_OBJECT_FIELDS_TO_DISPLAY)
             {
-                result.Append(String.Format("<label for=\"{0}\">\r\n<input id=\"{0}\" type=\"checkbox\">\r\n(reveal {1} fields)\r\n<div class=\"{2}\">\r\n",
+                result.Append(String.Format("<label for=\"{0}\">\r\n<input id=\"{0}\" type=\"checkbox\">\r\n(show {1} fields)\r\n<div class=\"{2}\">\r\n",
                     Guid.NewGuid().ToString(),
                     fieldCount,
                     Memoir.getEncapsulationTag()));

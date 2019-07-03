@@ -23,12 +23,12 @@ namespace Rockabilly.CoarseGrind.Examples
 			// If setup fails, it will NOT be run.
 
 			// You should log every little thing the test does.  That lessens the chance of needing to re-run when a bug happens.
-			Log.LogInfo("Deliberately throwing an exception");
+			Log.Info("Deliberately throwing an exception");
 
 			try
 			{
 
-				Log.LogInfo("Calling doSomethingTwo()");
+				Log.Info("Calling doSomethingTwo()");
 				//int return2 = doSomethingTwo();
 
 				throw new NullReferenceException("This is a FAKE null pointer exception. Nothing's actually wrong.", new ArgumentException("Also a FAKE exception. Carry on."));
@@ -67,16 +67,6 @@ namespace Rockabilly.CoarseGrind.Examples
 				// This should be a human-readable name that describes the test in-brief
 				return "Sample Test FOUR";
 			}
-		}
-
-		public override bool Setup()
-		{
-			// Perform any test case specific setup.
-			// If this does not return true, performTest() will never be run.
-			// You may wish to make an abstract class that extends Test.
-			// Lots of testcases could extend that and share the same setup(),
-			// cleanup(), and other common methods.
-			return true;
 		}
 
 		public override string[] TestCategoryMemberships

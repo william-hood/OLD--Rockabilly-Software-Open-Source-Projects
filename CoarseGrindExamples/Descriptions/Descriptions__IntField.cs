@@ -30,16 +30,16 @@ namespace Rockabilly.CoarseGrind.Examples
 		public override void PerformTest()
 		{
 			SampleObject testDatum = null;
-			Log.LogInfo("Constructing the object as described above...");
+			Log.Info("Constructing the object as described above...");
 			try
 			{
 				testDatum = testDescription.DescribedObject;
-				Log.LogInfo("Constructed the following object:" + testDatum.ToString());
+				Log.Info("Constructed the following object:" + testDatum.ToString());
 			}
 			catch (Exception thisException)
 			{
-				Log.LogError("Exception was thrown...");
-				Log.LogException(thisException);
+				Log.Error("Exception was thrown...");
+				Log.ShowException(thisException);
 			}
 			if (secondsToWait > 0) WaitSeconds(secondsToWait);
 
