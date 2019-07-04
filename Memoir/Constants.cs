@@ -37,6 +37,8 @@ namespace MemoirV2
         public const string EMOJI_TEXT_BLANK_LINE = "";
         public const string EMOJI_OBJECT = "🔲";
         public const string EMOJI_CAUSED_BY = "→";
+        public const string EMOJI_OUTGOING = "↗️";
+        public const string EMOJI_INCOMING = "↩️";
 
         public const string ALREADY_CONCLUDED_MESSAGE = "An attempt was made to write to a memoir that was already concluded.\r\n<li>Once a Memoir has been concluded it can no longer be written to.\r\n<li>Passing a Memoir to the ShowMemoir() method will automatically conclude it.";
 
@@ -135,6 +137,11 @@ namespace MemoirV2
             padding: 0.1em 0em;
         }
 
+        td.min {
+            width: 1%;
+            white-space: nowrap;
+        }
+
         h1 {
             font-size: 3em;
             margin: 0em
@@ -167,6 +174,20 @@ namespace MemoirV2
             border: 0.3em solid black;
             display: inline-block;
             padding: 0.4em 0.4em;
+        }
+
+        .incoming {
+            border-radius: 3em 0.5em 0.5em 3em;
+            border: 0.3em solid black;
+            display: inline-block;
+            padding: 1em 1em;
+        }
+
+        .outgoing {
+            border-radius: 0.5em 3em 3em 0.5em;
+            border: 0.3em solid black;
+            display: inline-block;
+            padding: 1em 1em;
         }
 
         table.gridlines,

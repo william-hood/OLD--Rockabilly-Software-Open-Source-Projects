@@ -20,7 +20,7 @@ namespace Rockabilly.CoarseGrind.Examples
 			return true;
 		}
 
-		public override string[] TestCategoryMemberships
+		public override string[] TestSuiteMemberships
 		{
 			get
 			{

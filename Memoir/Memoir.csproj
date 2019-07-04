@@ -34,6 +34,7 @@
     <Compile Include="ShowObject.cs" />
     <Compile Include="ShowException.cs" />
     <Compile Include="MemoirConcludedException.cs" />
+    <Compile Include="ShowHttp.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

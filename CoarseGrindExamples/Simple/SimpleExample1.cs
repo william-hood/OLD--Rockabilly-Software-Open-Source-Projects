@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Rockabilly.CoarseGrind.Descriptions;
 using Rockabilly.Common;
+using MemoirV2;
 
 namespace Rockabilly.CoarseGrind.Examples
 {
@@ -40,7 +41,9 @@ namespace Rockabilly.CoarseGrind.Examples
 				int return2 = 42;
 
 				Log.Info("Calling doSomethingThree()");
-				//doSomethingThree();
+                //doSomethingThree();
+
+                Log.ShowObject(new Rockabilly.Common.DelimitedDataManager<string>());
 
 				CheckPassCriterion("Everything adds up nicely.", return1 + return2 == 84);
 			}
@@ -91,7 +94,7 @@ namespace Rockabilly.CoarseGrind.Examples
             return true;
         }
 
-        public override string[] TestCategoryMemberships
+        public override string[] TestSuiteMemberships
 		{
 			get
 			{

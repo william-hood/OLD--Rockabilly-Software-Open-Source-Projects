@@ -42,6 +42,36 @@ namespace MemoirV2
             return true;
         }
 
+        private static bool shouldRender(FieldInfo thisField)
+        {
+            if (thisField.IsLiteral)
+            {
+                return false;
+            }
+
+            if (thisField.IsInitOnly)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static int renderableFields(IEnumerable<FieldInfo> theseFields)
+        {
+            int result = 0;
+
+            foreach (FieldInfo thisField in theseFields)
+            {
+                if (shouldRender(thisField))
+                {
+                    result++;
+                }
+            }
+
+            return result;
+        }
+
         public static string ShowObject(this Memoir memoir, object target, string nameof_target = "", int recurseLevel = 0)
         {
             if (recurseLevel > MAX_RECURSION)
@@ -63,7 +93,7 @@ namespace MemoirV2
                 Memoir.getEncapsulationTag()));
 
             IEnumerable<FieldInfo> theseFields = thisType.GetRuntimeFields();
-            int fieldCount = theseFields.Count();
+            int fieldCount = renderableFields(theseFields);
 
             StringBuilder content = new StringBuilder();
 
@@ -96,28 +126,41 @@ namespace MemoirV2
             {
                 foreach (FieldInfo thisField in theseFields)
                 {
-                    string fieldName = thisField.Name;
-                    object fieldValue = thisField.GetValue(target);
+                    if (shouldRender(thisField))
+                    {
+                        string fieldName = thisField.Name;
+                        object fieldValue = thisField.GetValue(target);
 
-                    content.Append("<tr><td>");
-                    content.Append(thisField.FieldType.Name);
-                    content.Append("</td><td>");
-                    content.Append(fieldName);
-                    content.Append("</td><td>");
-                    if (fieldValue == null)
-                    {
-                        fieldValue = "(null)";
-                    }
+                        content.Append("<tr><td>");
+                        content.Append(thisField.FieldType.Name);
+                        content.Append("</td><td>");
+                        content.Append(fieldName);
+                        content.Append("</td><td>");
+                        if (fieldValue == null)
+                        {
+                            fieldValue = "(null)";
+                        }
 
-                    if (shouldRecurse(fieldValue))
-                    {
-                        content.Append(ShowObject(null, fieldValue, fieldName, recurseLevel + 1));
+                        if (shouldRecurse(fieldValue))
+                        {
+                            content.Append(ShowObject(null, fieldValue, fieldName, recurseLevel + 1));
+                        }
+                        else if (fieldValue is string)
+                        {
+                            // When possible, attempt JSON pretty-print here.
+                            if (memoir == null)
+                            {
+                                content.Append(fieldValue.ToString());
+                            } else
+                            {
+                                content.Append(memoir.attemptBase64Decode(fieldValue.ToString()));
+                            }
+                        } else
+                        {
+                            content.Append(fieldValue);
+                        }
+                        content.Append("</td></tr>\r\n");
                     }
-                    else
-                    {
-                        content.Append(fieldValue);
-                    }
-                    content.Append("</td></tr>\r\n");
                 }
             }
 

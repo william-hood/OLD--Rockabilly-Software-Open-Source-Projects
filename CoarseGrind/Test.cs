@@ -30,7 +30,7 @@ using MemoirV2;
 
 namespace Rockabilly.CoarseGrind
 {
-	public abstract class Test : TestEssentials
+    public abstract class Test : TestEssentials
     {
         private const string INFO_ICON = "ℹ️";
 
@@ -55,120 +55,120 @@ namespace Rockabilly.CoarseGrind
             }
         }
 
-		public const string inProgressName = "(test in progress)";
-		private const string SETUP = "setup";
-		private const string CLEANUP = "cleanup";
-		public string parentArtifactsDirectory = default(string);
-		public TestPriority Priority = TestPriority.Normal;
-		private Thread executionThread = null;
-		internal bool WasSetup = false;
-		internal bool WasRun = false;
-		internal bool WasCleanedUp = false;
+        public const string inProgressName = "(test in progress)";
+        private const string SETUP = "setup";
+        private const string CLEANUP = "cleanup";
+        public string parentArtifactsDirectory = default(string);
+        public TestPriority Priority = TestPriority.Normal;
+        private Thread executionThread = null;
+        internal bool WasSetup = false;
+        internal bool WasRun = false;
+        internal bool WasCleanedUp = false;
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		internal float getProgress()
-		{
-			float result = 0;
-			if (WasSetup) result += (float).33;
-			if (WasRun) result += (float).34;
-			if (WasCleanedUp) result += (float).33;
-			return result;
-		}
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        internal float getProgress()
+        {
+            float result = 0;
+            if (WasSetup) result += (float).33;
+            if (WasRun) result += (float).34;
+            if (WasCleanedUp) result += (float).33;
+            return result;
+        }
 
-		protected class SetupEnforcement
-		{
-			public string identifier = default(string);
-			public string name = default(string);
-			public int contentSize = default(int);
-			public TestPriority Priority = TestPriority.Normal;
+        protected class SetupEnforcement
+        {
+            public string identifier = default(string);
+            public string name = default(string);
+            public int contentSize = default(int);
+            public TestPriority Priority = TestPriority.Normal;
 
-			public SetupEnforcement(Test candidate)
-			{
-				identifier = candidate.Identifier;
-				name = candidate.Name;
-				if (!(candidate is Test))
-				{
-					contentSize = candidate.Results.Count;
-				}
-				Priority = candidate.Priority;
-			}
+            public SetupEnforcement(Test candidate)
+            {
+                identifier = candidate.Identifier;
+                name = candidate.Name;
+                if (!(candidate is Test))
+                {
+                    contentSize = candidate.Results.Count;
+                }
+                Priority = candidate.Priority;
+            }
 
-			public bool matches(SetupEnforcement candidate)
-			{
-				if (!identifier.Equals(candidate.identifier)) return false;
-				if (!name.Equals(candidate.name)) return false;
-				if (contentSize != candidate.contentSize) return false;
-				if (Priority != candidate.Priority) return false;
-				return true;
-			}
-		}
+            public bool matches(SetupEnforcement candidate)
+            {
+                if (!identifier.Equals(candidate.identifier)) return false;
+                if (!name.Equals(candidate.name)) return false;
+                if (contentSize != candidate.contentSize) return false;
+                if (Priority != candidate.Priority) return false;
+                return true;
+            }
+        }
 
-		// End User Must Implement
-		public virtual bool Setup() { return true; }
-		public virtual bool Cleanup() { return true; }
+        // End User Must Implement
+        public virtual bool Setup() { return true; }
+        public virtual bool Cleanup() { return true; }
         public abstract string Identifier { get; }
-		public abstract string Name { get; }
-		public abstract string DetailedDescription { get; }
-		public abstract void PerformTest();
+        public abstract string Name { get; }
+        public abstract string DetailedDescription { get; }
+        public abstract void PerformTest();
 
-		public abstract string[] TestCategoryMemberships { get; }
+        public abstract string[] TestSuiteMemberships { get; }
 
-		public readonly List<TestResult> Results = new List<TestResult>();
+        public readonly List<TestResult> Results = new List<TestResult>();
 
-		private string getEchelonName()
-		{
-			return "Test";
-		}
+        private string getEchelonName()
+        {
+            return "Test";
+        }
 
-		private string DescribeCategorization
-		{
-			get
-			{
-				StringBuilder tmp = new StringBuilder();
+        private string DescribeCategorization
+        {
+            get
+            {
+                StringBuilder tmp = new StringBuilder();
 
-				foreach (string thisCategory in TestCategoryMemberships)
-				{
-					if (tmp.Length > 0) tmp.Append('/');
-					tmp.Append(thisCategory);
-				}
+                foreach (string thisCategory in TestSuiteMemberships)
+                {
+                    if (tmp.Length > 0) tmp.Append('/');
+                    tmp.Append(thisCategory);
+                }
 
-				return tmp.ToString();
-			}
-		}
+                return tmp.ToString();
+            }
+        }
 
-		public virtual void AddResult(TestResult thisResult)
-		{
-			thisResult.Log(topLevelMemoir);
-			Results.Add(thisResult);
-		}
+        public virtual void AddResult(TestResult thisResult)
+        {
+            thisResult.Log(topLevelMemoir);
+            Results.Add(thisResult);
+        }
 
-		public TestStatus OverallStatus
-		{
-			get
-			{
-				if ((Results.Count < 1))
-					return TestStatus.Inconclusive;
-				TestStatus finalValue = TestStatus.Pass;
-				foreach (TestResult thisResult in Results)
-				{
-					finalValue = finalValue.CombineWith(thisResult.Status);
-				}
-				return finalValue;
-			}
-		}
+        public TestStatus OverallStatus
+        {
+            get
+            {
+                if ((Results.Count < 1))
+                    return TestStatus.Inconclusive;
+                TestStatus finalValue = TestStatus.Pass;
+                foreach (TestResult thisResult in Results)
+                {
+                    finalValue = finalValue.CombineWith(thisResult.Status);
+                }
+                return finalValue;
+            }
+        }
 
-		public virtual void RunTest(string rootDirectory)
-		{
-			if (CoarseGrind.KILL_SWITCH)
-			{
-				// Decline to run
-			}
-			else
-			{
+        public virtual void RunTest(string rootDirectory)
+        {
+            if (CoarseGrind.KILL_SWITCH)
+            {
+                // Decline to run
+            }
+            else
+            {
                 bool setupResult = true;
                 bool cleanupResult = true;
 
-				parentArtifactsDirectory = rootDirectory;
+                parentArtifactsDirectory = rootDirectory;
 
                 string expectedFileName = ArtifactsDirectory + Path.DirectorySeparatorChar + LogFileName;
                 new FileInfo(expectedFileName).Directory.Create();
@@ -179,84 +179,86 @@ namespace Rockabilly.CoarseGrind
 
                 SetupEnforcement before = null;
 
-				try
-				{
-					setupMemoir = IndicateSetup();
-					before = new SetupEnforcement(this);
-					try
-					{
-						setupResult = Setup();
-					}
-					finally
-					{
-						WasSetup = true;
+                try
+                {
+                    setupMemoir = IndicateSetup();
+                    before = new SetupEnforcement(this);
+                    try
+                    {
+                        setupResult = Setup();
+                    }
+                    finally
+                    {
+                        WasSetup = true;
 
-                        if (setupMemoir.WasUsed()) {
+                        if (setupMemoir.WasUsed())
+                        {
                             string style = "decaf_orange_light_roast";
                             if (setupResult) { style = "decaf_green_light_roast"; }
-                            topLevelMemoir.LogMemoir(setupMemoir, MemoirV2.Constants.EMOJI_SETUP, style);
+                            topLevelMemoir.ShowMemoir(setupMemoir, MemoirV2.Constants.EMOJI_SETUP, style);
                         }
-					}
-				}
-				catch (Exception thisFailure)
-				{
-					setupResult = false;
-					AddResult(GetResultForPreclusionInSetup(thisFailure));
-				}
-				finally
-				{
-					if (!new SetupEnforcement(this).matches(before))
-					{
-						setupResult = false;
-						AddResult(new TestResult(TestStatus.Inconclusive, "PROGRAMMING ERROR: It is illegal to change the identifier, name, or priority in Setup.  This must happen in the constructor."));
-					}
-				}
+                    }
+                }
+                catch (Exception thisFailure)
+                {
+                    setupResult = false;
+                    AddResult(GetResultForPreclusionInSetup(thisFailure));
+                }
+                finally
+                {
+                    if (!new SetupEnforcement(this).matches(before))
+                    {
+                        setupResult = false;
+                        AddResult(new TestResult(TestStatus.Inconclusive, "PROGRAMMING ERROR: It is illegal to change the identifier, name, or priority in Setup.  This must happen in the constructor."));
+                    }
+                }
 
-				if (setupResult && (CoarseGrind.KILL_SWITCH == false))
+                if (setupResult && (CoarseGrind.KILL_SWITCH == false))
                 {
                     try
-					{
-						executionThread = new Thread(PerformTest);
-						executionThread.Start();
-						executionThread.Join();
-					}
-					catch (Exception thisFailure)
-					{
-						AddResult(GetResultForFailure(thisFailure));
-					}
-					finally
-					{
-						WasRun = true;
-						executionThread = null;
+                    {
+                        executionThread = new Thread(PerformTest);
+                        executionThread.Start();
+                        executionThread.Join();
                     }
-				}
-				else {
-					AddResult(new TestResult(TestStatus.Inconclusive,
-							"Declining to perform test case " + IdentifiedName
-									+ " because setup method failed."));
-				}
+                    catch (Exception thisFailure)
+                    {
+                        AddResult(GetResultForFailure(thisFailure));
+                    }
+                    finally
+                    {
+                        WasRun = true;
+                        executionThread = null;
+                    }
+                }
+                else
+                {
+                    AddResult(new TestResult(TestStatus.Inconclusive,
+                            "Declining to perform test case " + IdentifiedName
+                                    + " because setup method failed."));
+                }
 
                 cleanupMemoir = IndicateCleanup();
                 try
-				{
+                {
                     cleanupResult = Cleanup();
-					WasCleanedUp = true;
-				}
-				catch (Exception thisFailure)
-				{
-					ReportFailureInCleanup(thisFailure);
-				}
-				finally
+                    WasCleanedUp = true;
+                }
+                catch (Exception thisFailure)
+                {
+                    ReportFailureInCleanup(thisFailure);
+                }
+                finally
                 {
                     if (cleanupMemoir.WasUsed())
                     {
                         string style = "decaf_orange_light_roast";
                         if (cleanupResult) { style = "decaf_green_light_roast"; }
-                        topLevelMemoir.LogMemoir(cleanupMemoir, MemoirV2.Constants.EMOJI_CLEANUP, style);
+                        topLevelMemoir.ShowMemoir(cleanupMemoir, MemoirV2.Constants.EMOJI_CLEANUP, style);
                     }
                 }
 
-				TestStatus overall = OverallStatus;
+                TestStatus overall = OverallStatus;
                 topLevelMemoir.WriteToHTML(String.Format("<h2>Overall Status: {0}</h2>", overall.ToString()));
 
                 // Will need the icon here...
@@ -264,205 +266,205 @@ namespace Rockabilly.CoarseGrind
 
                 topLevelMemoir.Conclude();
             }
-		}
+        }
 
-		public void Interrupt()
-		{
-			try
-			{
-				executionThread.Interrupt();
-				executionThread.Abort();
-				executionThread.Abort();
-				executionThread.Abort();
-			}
-			catch
-			{
-				// DELIBERATE NO-OP
-			}
-		}
+        public void Interrupt()
+        {
+            try
+            {
+                executionThread.Interrupt();
+                executionThread.Abort();
+                executionThread.Abort();
+                executionThread.Abort();
+            }
+            catch
+            {
+                // DELIBERATE NO-OP
+            }
+        }
 
-		public virtual void CheckPrerequisite(string conditionDescription, bool condition)
-		{
-			TestResult result = TestResult.FromPrerequisite(conditionDescription, condition);
-			AddResult(result);
-			result = null;
-		}
+        public virtual void CheckPrerequisite(string conditionDescription, bool condition)
+        {
+            TestResult result = TestResult.FromPrerequisite(conditionDescription, condition);
+            AddResult(result);
+            result = null;
+        }
 
-		public virtual void CheckPassCriterion(string conditionDescription, bool condition)
-		{
-			TestResult result = TestResult.FromPassCriterion(conditionDescription, condition);
-			AddResult(result);
-			result = null;
-		}
+        public virtual void CheckPassCriterion(string conditionDescription, bool condition)
+        {
+            TestResult result = TestResult.FromPassCriterion(conditionDescription, condition);
+            AddResult(result);
+            result = null;
+        }
 
-		public virtual void CheckCondition(string conditionDescription, bool condition)
-		{
-			TestResult result = TestResult.FromCondition(conditionDescription, condition);
-			AddResult(result);
-			result = null;
-		}
+        public virtual void CheckCondition(string conditionDescription, bool condition)
+        {
+            TestResult result = TestResult.FromCondition(conditionDescription, condition);
+            AddResult(result);
+            result = null;
+        }
 
-		public virtual void MakeSubjective()
-		{
-			AddResult(new TestResult(TestStatus.Subjective, "This test case requires analysis by appropriate personnel to determine pass/fail status"));
-		}
+        public virtual void MakeSubjective()
+        {
+            AddResult(new TestResult(TestStatus.Subjective, "This test case requires analysis by appropriate personnel to determine pass/fail status"));
+        }
 
-		private string FilterForSummary(string it)
-		{
-			//use regex -- will need to search the Java version for ReplaceAll() calls.
-			// FIXED
-			return Regex.Replace(Regex.Replace(it, "[,\r\f\b]", ""), "[\t\n]", " ");
-		}
+        private string FilterForSummary(string it)
+        {
+            //use regex -- will need to search the Java version for ReplaceAll() calls.
+            // FIXED
+            return Regex.Replace(Regex.Replace(it, "[,\r\f\b]", ""), "[\t\n]", " ");
+        }
 
-		internal List<String> SummaryDataRow
-		{
-			get
-			{
-				List<String> tmp = new List<String>();
-				tmp.Add(FilterForSummary(DescribeCategorization));
-				tmp.Add(FilterForSummary(Priority.ToString()));
-				tmp.Add(FilterForSummary(Identifier));
-				tmp.Add(FilterForSummary(Name));
-				tmp.Add(FilterForSummary(DetailedDescription));
-				tmp.Add(FilterForSummary(OverallStatus.ToString()));
+        internal List<String> SummaryDataRow
+        {
+            get
+            {
+                List<String> tmp = new List<String>();
+                tmp.Add(FilterForSummary(DescribeCategorization));
+                tmp.Add(FilterForSummary(Priority.ToString()));
+                tmp.Add(FilterForSummary(Identifier));
+                tmp.Add(FilterForSummary(Name));
+                tmp.Add(FilterForSummary(DetailedDescription));
+                tmp.Add(FilterForSummary(OverallStatus.ToString()));
 
-				StringBuilder reasoning = new StringBuilder();
-				foreach (TestResult thisResult in Results)
-				{
-					if (thisResult.Status != TestStatus.Pass)
-					{
-						if (reasoning.Length > 0) reasoning.Append("; ");
-						reasoning.Append(thisResult.Description);
+                StringBuilder reasoning = new StringBuilder();
+                foreach (TestResult thisResult in Results)
+                {
+                    if (thisResult.Status != TestStatus.Pass)
+                    {
+                        if (reasoning.Length > 0) reasoning.Append("; ");
+                        reasoning.Append(thisResult.Description);
 
-						if (thisResult.HasFailures())
-						{
-							foreach (Exception thisFailure in thisResult.Failures)
-							{
-								if (reasoning.Length > 0) reasoning.Append("; ");
-								reasoning.Append(thisFailure.GetType().Name);
-							}
-						}
-					}
-				}
-				tmp.Add(FilterForSummary(reasoning.ToString()));
+                        if (thisResult.HasFailures())
+                        {
+                            foreach (Exception thisFailure in thisResult.Failures)
+                            {
+                                if (reasoning.Length > 0) reasoning.Append("; ");
+                                reasoning.Append(thisFailure.GetType().Name);
+                            }
+                        }
+                    }
+                }
+                tmp.Add(FilterForSummary(reasoning.ToString()));
 
-				reasoning = null;
-				return tmp;
-			}
-		}
+                reasoning = null;
+                return tmp;
+            }
+        }
 
-		public virtual string LogFileName
-		{
-			get
-			{
-				return IdentifiedName + " Log.html";
-			}
-		}
+        public virtual string LogFileName
+        {
+            get
+            {
+                return IdentifiedName + " Log.html";
+            }
+        }
 
 
-		public virtual string ArtifactsDirectory
-		{
-			get
-			{
-				return parentArtifactsDirectory + Path.DirectorySeparatorChar + inProgressName;
-			}
-		}
+        public virtual string ArtifactsDirectory
+        {
+            get
+            {
+                return parentArtifactsDirectory + Path.DirectorySeparatorChar + inProgressName;
+            }
+        }
 
-		public virtual string IdentifiedName
-		{
-			get
-			{
-				return Identifier + " - " + Name;
-			}
-		}
+        public virtual string IdentifiedName
+        {
+            get
+            {
+                return Identifier + " - " + Name;
+            }
+        }
 
-		public virtual TestResult GetResultForFailure(Exception thisFailure, string section = "")
-		{
-			return GetResultForIncident(TestStatus.Fail, section, thisFailure);
-		}
+        public virtual TestResult GetResultForFailure(Exception thisFailure, string section = "")
+        {
+            return GetResultForIncident(TestStatus.Fail, section, thisFailure);
+        }
 
-		public virtual void ReportFailureInCleanup(Exception thisFailure)
-		{
-			ReportFailureInCleanup("", thisFailure);
-		}
+        public virtual void ReportFailureInCleanup(Exception thisFailure)
+        {
+            ReportFailureInCleanup("", thisFailure);
+        }
 
-		public virtual void ReportFailureInCleanup(string additionalMessage, Exception thisFailure)
-		{
-			if (additionalMessage.Length > 0)
-				additionalMessage = " " + additionalMessage;
+        public virtual void ReportFailureInCleanup(string additionalMessage, Exception thisFailure)
+        {
+            if (additionalMessage.Length > 0)
+                additionalMessage = " " + additionalMessage;
             topLevelMemoir.Error(IdentifiedName + CLEANUP
-					+ ":  An unanticipated failure occurred" + additionalMessage
-					+ ".");
+                    + ":  An unanticipated failure occurred" + additionalMessage
+                    + ".");
             topLevelMemoir.ShowException(thisFailure);
-		}
+        }
 
-		public virtual TestResult GetResultForPreclusionInSetup(Exception thisPreclusion)
-		{
-			return GetResultForIncident(TestStatus.Inconclusive, SETUP, thisPreclusion);
-		}
+        public virtual TestResult GetResultForPreclusionInSetup(Exception thisPreclusion)
+        {
+            return GetResultForIncident(TestStatus.Inconclusive, SETUP, thisPreclusion);
+        }
 
-		public virtual TestResult GetResultForPreclusion(Exception thisPreclusion)
-		{
-			return GetResultForIncident(TestStatus.Inconclusive, "", thisPreclusion);
-		}
+        public virtual TestResult GetResultForPreclusion(Exception thisPreclusion)
+        {
+            return GetResultForIncident(TestStatus.Inconclusive, "", thisPreclusion);
+        }
 
-		private TestResult GetResultForIncident(TestStatus status, string section, Exception thisFailure)
-		{
-			if (section.Length > 0)
-				section = " (" + section + ")";
-			TestResult result = new TestResult(status, IdentifiedName
-					+ section + ":  An unanticipated failure occurred.");
-			result.Failures.Add(thisFailure);
-			return result;
-		}
+        private TestResult GetResultForIncident(TestStatus status, string section, Exception thisFailure)
+        {
+            if (section.Length > 0)
+                section = " (" + section + ")";
+            TestResult result = new TestResult(status, IdentifiedName
+                    + section + ":  An unanticipated failure occurred.");
+            result.Failures.Add(thisFailure);
+            return result;
+        }
 
-		public virtual string PrefixedName
-		{
-			get
-			{
-				return OverallStatus + " - " + IdentifiedName;
-			}
-		}
+        public virtual string PrefixedName
+        {
+            get
+            {
+                return OverallStatus + " - " + IdentifiedName;
+            }
+        }
 
-		private string sectionIndicator = default(string);
+        private string sectionIndicator = default(string);
 
-		private Memoir IndicateSetup()
-		{
+        private Memoir IndicateSetup()
+        {
             Memoir result = new Memoir("Setup - " + getEchelonName() + " " + IdentifiedName, Console.Out);
             return result;
-		}
+        }
 
         private Memoir IndicateCleanup()
-		{
+        {
             Memoir result = new Memoir("Cleanup - " + getEchelonName() + " " + IdentifiedName, Console.Out);
             return result;
-		}
+        }
 
         private Memoir IndicateBody()
         {
             Memoir result = new Memoir(getEchelonName() + " " + IdentifiedName, Console.Out);
             return result;
-		}
+        }
 
         public void WaitSeconds(int howMany)
-		{
+        {
             topLevelMemoir.Info("Waiting " + howMany + " seconds...", INFO_ICON);
-			DoWait(1000 * howMany);
-		}
+            DoWait(1000 * howMany);
+        }
 
-		public void WaitMilliseconds(int howMany)
-		{
+        public void WaitMilliseconds(int howMany)
+        {
             topLevelMemoir.Info("Waiting " + howMany + " milliseconds...", INFO_ICON);
-			DoWait(howMany);
-		}
+            DoWait(howMany);
+        }
 
-		private static void DoWait(int howManyMilliseconds)
-		{
-			try
-			{
-				Thread.Sleep(howManyMilliseconds);
-			}
-			catch (ThreadInterruptedException) { }
-		}
-	}
+        private static void DoWait(int howManyMilliseconds)
+        {
+            try
+            {
+                Thread.Sleep(howManyMilliseconds);
+            }
+            catch (ThreadInterruptedException) { }
+        }
+    }
 }

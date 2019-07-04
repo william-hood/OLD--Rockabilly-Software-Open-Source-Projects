@@ -40,7 +40,7 @@ namespace MemoirV2
         {
             return (content.Length - STARTING_CONTENT.Length) > 0;
         }
-        
+
         public Memoir(string title, TextWriter forPlainText = null, TextWriter forHTML = null, Func<string, string> Header = null)
         {
             titleName = title;
@@ -82,7 +82,7 @@ namespace MemoirV2
 
         public string Conclude()
         {
-            if (! isConcluded)
+            if (!isConcluded)
             {
                 EchoPlainText("", emoji: Constants.EMOJI_TEXT_MEMOIR_CONCLUDE);
                 EchoPlainText("");
@@ -145,7 +145,7 @@ namespace MemoirV2
                 time = timeStamp.ToString("HH:mm:ss.ffff");
             }
 
-            content.Append(String.Format("<tr><td><small>{0}</small></td><td>&nbsp;</td><td><small>{1}</small></td><td>&nbsp;</td><td><h2>{2}</h2></td><td>{3}</td></tr>\r\n", date, time, emoji, message));
+            content.Append(String.Format("<tr><td class=\"min\"><small>{0}</small></td><td>&nbsp;</td><td class=\"min\"><small>{1}</small></td><td>&nbsp;</td><td><h2>{2}</h2></td><td>{3}</td></tr>\r\n", date, time, emoji, message));
         }
 
         private string highlight(string message, string style = "highlighted")
@@ -191,12 +191,61 @@ namespace MemoirV2
         }
 
         // The Memoir submitted will be concluded.
-        public void LogMemoir(Memoir subordinate, string emoji = Constants.EMOJI_MEMOIR, string style = "neutral")
+        public void ShowMemoir(Memoir subordinate, string emoji = Constants.EMOJI_MEMOIR, string style = "neutral")
         {
             DateTime timeStamp = DateTime.Now;
             string subordinateContent = subordinate.Conclude();
             WriteToHTML(wrapAsSublog(subordinate.titleName, subordinateContent, style), timeStamp, emoji);
             // This does not echo to plain text as it is assumed the subordinate memoir already did that.
+        }
+
+        internal string attemptBase64Decode(string candidate)
+        {
+            if (candidate.Equals("true")) return candidate;
+            if (candidate.Equals("DENY")) return candidate;
+            if (candidate.Equals("whatever")) return candidate;
+            StringBuilder result = new StringBuilder();
+            bool successfulDecode = false;
+
+            string refinedCandidate = candidate.Replace("Bearer ", "");
+            refinedCandidate = refinedCandidate.Replace("Basic ", "");
+            string[] refinedCandidates = refinedCandidate.Split('.');
+
+            foreach (string thisCandidate in refinedCandidates)
+            {
+                try
+                {
+                    byte[] data = Convert.FromBase64String(thisCandidate);
+                    string decodedString = Encoding.UTF8.GetString(data, 0, data.Length);
+
+                    // If we get this far it decoded
+                    successfulDecode = true;
+
+
+                    result.Append(String.Format("<label for=\"{0}\">\r\n<input id=\"{0}\" type=\"checkbox\"><small><i>(show decrypted base64)</i></small>\r\n<div class=\"{1}\">\r\n",
+                        Guid.NewGuid().ToString(),
+                        Memoir.getEncapsulationTag()));
+
+                    // When possible, attempt JSON pretty-print here.
+                    result.Append(String.Format("<br>\r\n{0}\r\n<br>", decodedString));
+
+                    result.Append(String.Format("<label for=\"{0}\">\r\n<input id=\"{0}\" type=\"checkbox\"><small><i>(show original encrypted value)</i></small>\r\n<div class=\"{1}\">\r\n",
+                        Guid.NewGuid().ToString(),
+                        Memoir.getEncapsulationTag()));
+
+                    result.Append(String.Format("<br>\r\n{0}\r\n", thisCandidate));
+
+                    result.Append("</div>\r\n</label>");
+                    result.Append("</div>\r\n</label>");
+                }
+                catch (Exception deliberatelyIgnoredException)
+                {
+                    int x = 0;
+                }
+            }
+
+            if (successfulDecode) return result.ToString();
+            return candidate;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net.Http;
 using MemoirV2;
 
 namespace MemoirExample
@@ -14,6 +15,7 @@ namespace MemoirExample
 
     class MainClass
     {
+        public static HttpClient httpClient = new HttpClient();
         public static void Main(string[] args)
         {
             Memoir memoir = new Memoir("Memoir Test", Console.Out, File.CreateText("memoir_test.html"));
@@ -71,16 +73,18 @@ namespace MemoirExample
                 justSomeTest.Info("This happened");
                 justSomeTest.Info("Then this");
                 justSomeTest.Info("Also this");
+                HttpRequestMessage request2 = new HttpRequestMessage(HttpMethod.Get, "https://httpbin.org/get?param1=latida&param2=tweedledee&param3=whatever");
+                httpClient.ShowTransaction(justSomeTest, request2);
                 justSomeTest.Info("This check passed", Constants.EMOJI_PASSING_TEST);
                 justSomeTest.Info("So did this", Constants.EMOJI_PASSING_TEST);
                 justSomeTest.Info("But not this", Constants.EMOJI_FAILING_TEST);
 
-                subLog.LogMemoir(justSomeTest, Constants.EMOJI_FAILING_TEST, "failing_test_result");
+                subLog.ShowMemoir(justSomeTest, Constants.EMOJI_FAILING_TEST, "failing_test_result");
 
 
                 subLog.Debug("Third line of the sub log");
                 subLog.Info("Fourth line of the sub log");
-                memoir.LogMemoir(subLog);
+                memoir.ShowMemoir(subLog);
 
                 Memoir passingTest = new Memoir("Passing Test", Console.Out);
                 passingTest.Info("This happened");
@@ -88,7 +92,7 @@ namespace MemoirExample
                 passingTest.Info("Also this");
                 passingTest.Info("This check passed", Constants.EMOJI_PASSING_TEST);
                 passingTest.Info("So did this", Constants.EMOJI_PASSING_TEST);
-                memoir.LogMemoir(passingTest, Constants.EMOJI_PASSING_TEST, "passing_test_result");
+                memoir.ShowMemoir(passingTest, Constants.EMOJI_PASSING_TEST, "passing_test_result");
 
                 Memoir inconclusiveTest = new Memoir("Inconclusive Test", Console.Out);
                 inconclusiveTest.Info("This happened");
@@ -97,7 +101,7 @@ namespace MemoirExample
                 inconclusiveTest.Info("This check passed", Constants.EMOJI_PASSING_TEST);
                 inconclusiveTest.Info("This check proved we're wasting our time. Dang it!", Constants.EMOJI_INCONCLUSIVE_TEST);
                 inconclusiveTest.Info("This check also passed", Constants.EMOJI_PASSING_TEST);
-                memoir.LogMemoir(inconclusiveTest, Constants.EMOJI_INCONCLUSIVE_TEST, "inconclusive_test_result");
+                memoir.ShowMemoir(inconclusiveTest, Constants.EMOJI_INCONCLUSIVE_TEST, "inconclusive_test_result");
 
                 memoir.Info("This is a test");
                 memoir.Info("This is a test");
@@ -106,17 +110,23 @@ namespace MemoirExample
 
                 memoir.Info("This is a test");
                 memoir.Info("This is a test");
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "https://httpbin.org/get?param1=latida&param2=tweedledee&param3=whatever");
+                HttpResponseMessage response = httpClient.ShowTransaction(memoir, request);
+
+                memoir.Debug(String.Format("Reality Check: Content upon return is {0}", response.Content.ReadAsStringAsync().Result));
+
                 memoir.Info("This is a test");
                 memoir.Info("This is a test");
                 memoir.Info("This is a test");
+
+                memoir.ShowObject(new MemoirConcludedException());
 
                 memoir.Info("This is a test");
                 memoir.Info("This is a test");
                 memoir.Info("This is a test");
                 memoir.Info("This is a test");
                 memoir.Info("This is a test");
-
-                StyleTest(memoir, "plate");
 
                 memoir.Info("Second to last line...");
 
@@ -142,7 +152,7 @@ namespace MemoirExample
             styleTest.Info("Then this");
             styleTest.Info("Also this");
             styleTest.Info("This check passed", Constants.EMOJI_PASSING_TEST);
-            memoir.LogMemoir(styleTest, null, style);
+            memoir.ShowMemoir(styleTest, null, style);
         }
     }
 }

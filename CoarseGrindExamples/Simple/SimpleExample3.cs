@@ -66,7 +66,7 @@ namespace Rockabilly.CoarseGrind.Examples
 			}
 		}
 
-		public override string[] TestCategoryMemberships
+		public override string[] TestSuiteMemberships
 		{
 			get
 			{
