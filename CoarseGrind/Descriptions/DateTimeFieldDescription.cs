@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016 William Arthur Hood
+﻿// Copyright (c) 2019, 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -151,11 +151,11 @@ namespace Rockabilly.CoarseGrind.Descriptions
 
 		public DateTime Random(DateTime min, DateTime max)
 		{
-			return new DateTime(Foundation.RandomLong(min.Ticks, max.Ticks));
-			//return Add( min, new DateTime(Foundation.nextlong(new Random(), Subtract(max, min).Ticks)));
-		}
+			return new DateTime(RandomUtilities.RandomLong(min.Ticks, max.Ticks));
+            //return Add( min, new DateTime(RandomUtilities.nextlong(new Random(), Subtract(max, min).Ticks)));
+        }
 
-		public DateTime Size
+        public DateTime Size
 		{
 			get
 			{
@@ -260,15 +260,15 @@ namespace Rockabilly.CoarseGrind.Descriptions
 						result.AddYears(-1 * (DateTime.Now.Year - 3));
 						break;
 					case DateTimeFieldTargets.TWO_DIGIT_MONTH:
-						return new DateTime(result.Year - 1, Foundation.Random.Next(11, 12), result.Day);
+						return new DateTime(result.Year - 1, RandomUtilities.Random.Next(11, 12), result.Day);
 					case DateTimeFieldTargets.SINGLE_DIGIT_MONTH:
-						return new DateTime(result.Year - 1, Foundation.Random.Next(1, 9), result.Day);
+						return new DateTime(result.Year - 1, RandomUtilities.Random.Next(1, 9), result.Day);
 					case DateTimeFieldTargets.TWO_DIGIT_DAY:
-						return new DateTime(result.Year - 1, result.Month - 1, Foundation.Random.Next(10, 28));
+						return new DateTime(result.Year - 1, result.Month - 1, RandomUtilities.Random.Next(10, 28));
 					case DateTimeFieldTargets.SINGLE_DIGIT_DAY:
-						return new DateTime(result.Year - 1, result.Month - 1, Foundation.Random.Next(1, 9));
+						return new DateTime(result.Year - 1, result.Month - 1, RandomUtilities.Random.Next(1, 9));
 					case DateTimeFieldTargets.SINGLE_DIGIT_MONTH_AND_DAY:
-						return new DateTime(result.Year - 1, Foundation.Random.Next(11, 12), Foundation.Random.Next(10, 28));
+						return new DateTime(result.Year - 1, RandomUtilities.Random.Next(11, 12), RandomUtilities.Random.Next(10, 28));
 					default:
 						throw new NoValueException();
 				}

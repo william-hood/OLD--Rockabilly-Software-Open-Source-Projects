@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using Rockabilly.CoarseGrind.Descriptions;
 using Rockabilly.Common;
+using Rockabilly.MemoirV2;
+using Rockabilly.IO;
 
 namespace Rockabilly.CoarseGrind.Examples
 {
@@ -31,34 +33,35 @@ namespace Rockabilly.CoarseGrind.Examples
 			if (this.OverallStatus != TestStatus.Inconclusive)
 			{
 				// You should log every little thing the test does.  That lessens the chance of needing to re-run when a bug happens.
-				Log.Message("Calling doSomethingOne()");
+				Log.Info("Calling doSomethingOne()");
 				//int return1 = doSomethingOne();
 				int return1 = 42;
 
-				Log.Message("Calling doSomethingTwo()");
+				Log.Info("Calling doSomethingTwo()");
 				//int return2 = doSomethingTwo();
 				int return2 = 42;
 
-				Log.Message("Calling doSomethingThree()");
-				//doSomethingThree();
+				Log.Info("Calling doSomethingThree()");
+                //doSomethingThree();
 
-				Log.Message("This message has an info icon", icon: Log.InfoIcon);
-				Log.Message("This message has a warning icon", icon: Log.WarningIcon);
+                Log.ShowObject(new DelimitedDataManager<string>());
 
 				CheckPassCriterion("Everything adds up nicely.", return1 + return2 == 84);
 			}
 
-			// This test should pass.
-			// Note that the test subject will only be passing if there are NO failing or inconclusive tests in its contents.
-		}
+            // This test should pass.
+            // Note that the test subject will only be passing if there are NO failing or inconclusive tests in its contents.
+        }
 
-		public override bool Cleanup()
-		{
-			// This will ALWAYS be run, even if setup failed.
-			return true;
-		}
+        public override bool Cleanup()
+        {
+            // This will ALWAYS be run, even if setup failed.
+            Log.Info("Cleaning everything up...");
+            Log.Debug("You don't have to have a Cleanup() method. If the Cleanup() returns false it has no affect programmatically, but will be indicated in the logs by the color of its section.");
+            return true;
+        }
 
-		public override string Identifier
+        public override string Identifier
 		{
 			get
 			{
@@ -76,31 +79,27 @@ namespace Rockabilly.CoarseGrind.Examples
 				// This should be a human-readable name that describes the test in-brief
 				return "Sample Test ONE";
 			}
-		}
+        }
 
-		public override bool Setup()
-		{
-			// Perform any test case specific setup.
-			// If this does not return true, performTest() will never be run.
-			// You may wish to make an abstract class that extends Test.
-			// Lots of testcases could extend that and share the same setup(),
-			// cleanup(), and other common methods.
-			return true;
-		}
+        public override bool Setup()
+        {
+            // Perform any test case specific setup.
+            // If this does not return true, performTest() will never be run.
+            // You may wish to make an abstract class that extends Test.
+            // Lots of testcases could extend that and share the same setup(),
+            // cleanup(), and other common methods.
+            Log.Info("Setting this up...");
+            Log.Info("Setting that up...");
+            Log.Info("Setting up one more thing...");
+            Log.Debug("You don't have to have a Setup() method. If the Setup() returns false the PerformTest() method <b><u>WILL NOT BE RUN!!!</u></b>. Any Cleanup() method will be run regardless of whether or not Setup() failed.");
+            return true;
+        }
 
-		public override string[] TestSuiteMemberships
-		{
-			get
-			{
-				return new String[] { "Simple", "All" };
-			}
-		}
-
-		public override string[] TestCategoryMemberships
+        public override string[] TestSuiteMemberships
 		{
 			get
 			{
-				return new String[] { "Example" };
+				return new String[] { "Simple", "All", "Example" };
 			}
 		}
 

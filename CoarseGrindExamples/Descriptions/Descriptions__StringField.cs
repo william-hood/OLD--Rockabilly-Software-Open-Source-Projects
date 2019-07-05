@@ -2,7 +2,8 @@
 using System;
 using System.Collections.Generic;
 using Rockabilly.CoarseGrind.Descriptions;
-using Rockabilly.Common;
+using Rockabilly.Strings;
+using Rockabilly.MemoirV2;
 
 namespace Rockabilly.CoarseGrind.Examples
 {
@@ -30,15 +31,15 @@ namespace Rockabilly.CoarseGrind.Examples
 		public override void PerformTest()
 		{
 			SampleObject testDatum = null;
-			Log.Message("Constructing the object as described above...");
+			Log.Info("Constructing the object as described above...");
 			try
 			{
 				testDatum = testDescription.DescribedObject;
-				Log.Message("Constructed the following object:" + testDatum.ToString());
+				Log.Info("Constructed the following object:" + testDatum.ToString());
 			}
 			catch (Exception thisException)
 			{
-				Log.Message("Exception was thrown...", icon: Log.WarningIcon);
+				Log.Error("Exception was thrown...");
 				Log.ShowException(thisException);
 			}
 			if (secondsToWait > 0) WaitSeconds(secondsToWait);

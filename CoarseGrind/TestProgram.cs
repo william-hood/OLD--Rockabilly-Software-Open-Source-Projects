@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016 William Arthur Hood
+﻿// Copyright (c) 2019, 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,12 +26,12 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using Rockabilly.Common;
-using Rockabilly.Common.HtmlEffects;
+using Rockabilly.HtmlEffects;
 
 namespace Rockabilly.CoarseGrind
 {
 
-	public abstract partial class TestProgram : HttpServer
+	public abstract class TestProgram
 	{
 
 		// Override this to change from the default reload frequency
@@ -47,31 +47,6 @@ namespace Rockabilly.CoarseGrind
 
 		protected abstract List<Test> AllTests { get; }
 		protected abstract void ProcessArguments(List<string> args);
-
-		private const string RUN_SUITE_PATH = "run";
-		private const string STOP_TEST_CASE_PATH_PART = "interrupt";
-		private const string STOP_ALL_TESTING_PATH_PART = "halt";
-		private const string REQUEST_KILL_SERVICE_PATH = "confirm_kill_service";
-		private const string CARRY_OUT_KILL_SERVICE_PATH = "kill_service";
-		private const string BANNER_FRAME_PATH = "banner";
-		private const string STATUS_FRAME_PATH = "status";
-		private const string CONTROL_FRAME_PATH = "controls";
-		private const string TEST_SUITES_PATH = "suites";
-		private const string TEST_RESULTS_PATH = "results";
-		private const string SELECT_CUSTOM_SUITE_PATH = "select_custom";
-		private const string RUN_CUSTOM_SUITE_PATH = "run_custom";
-
-
-		private const string BANNER_FRAME_NAME = "BANNER_FRAME";
-		private const string STATUS_FRAME_NAME = "STATUS_FRAME";
-		private const string CONTROL_FRAME_NAME = "CONTROLS_FRAME";
-		private const string VIEW_FRAME_NAME = "VIEW_FRAME";
-
-		internal const int SMALL_SUITE_THRESHOLD = 26;
-		internal const int LARGE_SUITE_THRESHOLD = 99;
-		internal const int ICON_TEXT_SIZE = 175;
-
-		internal int WEBUI_PORT = 8085;
 
 		private bool testingContinues = true;
 
@@ -123,22 +98,6 @@ namespace Rockabilly.CoarseGrind
 
 				Console.WriteLine(tests.DescribeAvailableSuites);
 
-
-				if (!ContinueService)
-				{
-					// Attempt to start the test server
-					try
-					{
-						SetupService(WEBUI_PORT);
-						Console.WriteLine(DescribeService());
-					}
-					catch (Exception loggedException)
-					{
-						Console.WriteLine(Foundation.DepictException(loggedException));
-						Console.WriteLine("Test Server is offline");
-					}
-				}
-
 				if (tests.immediateRun != default(string))
 				{
 					TestSuite tmp = null;
@@ -160,7 +119,6 @@ namespace Rockabilly.CoarseGrind
 						tests.RunTestSuite();
 						tests.WaitWhileTesting();
 					}
-					if (ContinueService) DiscontinueService();
 					CoarseGrind.KILL_SWITCH = true;
 					tests.destroy();
 					tests = null;
@@ -172,24 +130,6 @@ namespace Rockabilly.CoarseGrind
 				tests = null;
 				GC.Collect();
 			}
-
-			if (ContinueService) DiscontinueService();
-		}
-
-		public override void DiscontinueService() //HTTP Server
-		{
-			if (ContinueService)
-			{
-				testingContinues = false;
-				new Thread(effectDiscontinue).Start();
-			}
-		}
-
-		private void effectDiscontinue()
-		{
-			Thread.Sleep(2000);
-			base.DiscontinueService();
-			Console.WriteLine("TEST SERVER TAKEN OFFLINE");
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016 William Arthur Hood
+﻿// Copyright (c) 2019, 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
-using Rockabilly.Common;
+using Rockabilly.MemoirV2;
 
 namespace Rockabilly.CoarseGrind
 {
@@ -103,18 +103,13 @@ namespace Rockabilly.CoarseGrind
 			return FromCondition(conditionDescription, condition, TestConditionalType.Unspecified);
 		}
 
-		public void Log()
+		public void Log(Memoir memoir)
 		{
-			Log(Status.ToLoggingLevel());
-		}
-
-		public void Log(LoggingLevel requestedLevel)
-		{
-			Status.Log(Description, requestedLevel);
+			Status.Log(memoir, Description);
 
 			foreach (Exception thisFailure in Failures)
 			{
-				Test.Log.ShowException(thisFailure, requestedLevel);
+                memoir.ShowException(thisFailure);
 			}
 		}
 
@@ -128,6 +123,7 @@ namespace Rockabilly.CoarseGrind
 			}
 		}
 
+        /*
 		public static bool CheckCollection(List<TestResult> Results, bool shouldLog = true)
 		{
 			bool isPassing = true;
@@ -138,5 +134,6 @@ namespace Rockabilly.CoarseGrind
 			}
 			return isPassing;
 		}
+        */
 	}
 }

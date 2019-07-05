@@ -1,6 +1,6 @@
 
 using System.Text;
-using Rockabilly.Common;
+using Rockabilly.Strings;
 
 namespace Rockabilly.CoarseGrind.Examples
 {
@@ -16,12 +16,12 @@ namespace Rockabilly.CoarseGrind.Examples
 		public override string ToString()
 		{
 			StringBuilder result = new StringBuilder();
-			result.Append("intField == " + Foundation.RobustGetString(intField));
-			result.Append("; floatField == " + Foundation.RobustGetString(floatField));
-			result.Append("; stringField == " + Foundation.RobustGetString(stringField));
-			result.Append("; boolField == " + Foundation.RobustGetString(boolField));
-			result.Append("; charField == " + Foundation.RobustGetString(charField));
-			result.Append("; enumField == " + Foundation.RobustGetString(enumField));
+			result.Append("intField == " + StringUtilities.RobustGetString(intField));
+			result.Append("; floatField == " + StringUtilities.RobustGetString(floatField));
+			result.Append("; stringField == " + StringUtilities.RobustGetString(stringField));
+			result.Append("; boolField == " + StringUtilities.RobustGetString(boolField));
+			result.Append("; charField == " + StringUtilities.RobustGetString(charField));
+			result.Append("; enumField == " + StringUtilities.RobustGetString(enumField));
 			return result.ToString();
 		}
 	}

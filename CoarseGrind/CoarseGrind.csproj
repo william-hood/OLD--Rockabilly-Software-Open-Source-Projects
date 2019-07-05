@@ -7,8 +7,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Rockabilly.CoarseGrind</RootNamespace>
     <AssemblyName>CoarseGrind</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ReleaseVersion>5.0</ReleaseVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <ReleaseVersion>6.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,11 +40,8 @@
     <Compile Include="TestPriority.cs" />
     <Compile Include="CoarseGrindResultList.cs" />
     <Compile Include="Test.cs" />
-    <Compile Include="CoarseGrindLogSystem.cs" />
     <Compile Include="TestStatus.cs" />
     <Compile Include="TestResult.cs" />
-    <Compile Include="LoadTesting\LoadGenerationOrder.cs" />
-    <Compile Include="LoadTesting\LoadSequenceOrder.cs" />
     <Compile Include="Descriptions\ObjectDescription.cs" />
     <Compile Include="Descriptions\NoValueException.cs" />
     <Compile Include="Descriptions\InappropriateDescriptionException.cs" />
@@ -73,32 +70,35 @@
     <Compile Include="TestProgram.cs" />
     <Compile Include="Descriptions\IntLimitsDescription.cs" />
     <Compile Include="Descriptions\IntFieldDescription.cs" />
-    <Compile Include="UserInterface\Handle.cs" />
-    <Compile Include="UserInterface\BannerFrame.cs" />
-    <Compile Include="UserInterface\CoarseGrindBanner.cs" />
-    <Compile Include="UserInterface\ControlFrame.cs" />
-    <Compile Include="UserInterface\UnderConstruction.cs" />
-    <Compile Include="UserInterface\CoarseGrindUserInterface.cs" />
-    <Compile Include="UserInterface\StatusFrame.cs" />
-    <Compile Include="UserInterface\TestSuiteLaunchPane.cs" />
-    <Compile Include="UserInterface\Index_HTML.cs" />
-    <Compile Include="UserInterface\RunTestSuite.cs" />
-    <Compile Include="UserInterface\StopTest.cs" />
-    <Compile Include="UserInterface\RequestKillService.cs" />
-    <Compile Include="UserInterface\CarryOutKillService.cs" />
-    <Compile Include="UserInterface\SelectIndividualTests.cs" />
-    <Compile Include="UserInterface\RunCustomTestSuite.cs" />
+    <Compile Include="PerformanceTesting\Orders.cs" />
+    <Compile Include="PerformanceTesting\Sequence.cs" />
+    <Compile Include="PerformanceTesting\Coordinator.cs" />
+    <Compile Include="PerformanceTesting\SequenceDelay.cs" />
+    <Compile Include="..\Common\RandomUtilities.cs">
+      <Link>RandomUtilities.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{463F0CF5-6D6C-41BB-BF82-528396FF185A}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="LoadTesting\" />
+    <Folder Include="PerformanceTesting\" />
     <Folder Include="Descriptions\" />
-    <Folder Include="UserInterface\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Memoir\Memoir.csproj">
+      <Project>{C5B613B2-C6E5-4093-A302-E4B4FB3709C8}</Project>
+      <Name>Memoir</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HtmlEffects\HtmlEffects.csproj">
+      <Project>{61AD29A7-1D1D-4215-AF51-C0F893F585B6}</Project>
+      <Name>HtmlEffects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IO\IO.csproj">
+      <Project>{091D3C18-9FF0-41E7-8830-9FE48F96C5B6}</Project>
+      <Name>IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Strings\Strings.csproj">
+      <Project>{ACD5C6F0-7174-44F3-99FB-6917996ADB4D}</Project>
+      <Name>Strings</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

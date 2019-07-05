@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016 William Arthur Hood
+﻿// Copyright (c) 2019, 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -43,14 +43,14 @@ namespace Rockabilly.CoarseGrind.Descriptions
 		{
 		}
 
-		public ValueFieldDescription(T BasisValue) : this()
+		public ValueFieldDescription(T basisValue) : this()
 		{
-			BasisValue = BasisValue;
+			BasisValue = basisValue;
 		}
 
-		public ValueFieldDescription(T BasisValue, LimitsDescription<T> limitsDescription) : this()
+		public ValueFieldDescription(T basisValue, LimitsDescription<T> limitsDescription) : this()
 		{
-			BasisValue = BasisValue;
+			BasisValue = basisValue;
 			bounds = limitsDescription;
 		}
 

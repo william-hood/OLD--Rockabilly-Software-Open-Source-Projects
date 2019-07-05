@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016 William Arthur Hood
+﻿// Copyright (c) 2019, 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -105,7 +105,7 @@ namespace Rockabilly.CoarseGrind.Descriptions
 		// Based on http://stackoverflow.com/questions/6651554/random-number-in-long-range-is-this-the-way
 		public override long Random(long min, long max)
 		{
-			return Foundation.RandomLong(min, max);
+			return RandomUtilities.RandomLong(min, max);
 			//return add(min, Foundation.Random..nextLong(new Random(), subtract(max, min)));
 		}
 

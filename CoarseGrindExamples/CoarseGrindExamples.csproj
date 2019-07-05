@@ -7,8 +7,8 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Rockabilly.CoarseGrind.Examples</RootNamespace>
     <AssemblyName>CoarseGrindExamples</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ReleaseVersion>5.0</ReleaseVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <ReleaseVersion>6.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,7 +41,6 @@
     <Compile Include="Descriptions\SampleEnum.cs" />
     <Compile Include="Descriptions\SampleObject.cs" />
     <Compile Include="Descriptions\TestCaseDescription.cs" />
-    <Compile Include="Simple\MultiLogExample.cs" />
     <Compile Include="Simple\SimpleExample1.cs" />
     <Compile Include="Simple\SimpleExample2.cs" />
     <Compile Include="Simple\SimpleExample3.cs" />
@@ -52,9 +51,17 @@
       <Project>{49EA574B-5DFA-4A26-B6D8-8048D08F8075}</Project>
       <Name>CoarseGrind</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{463F0CF5-6D6C-41BB-BF82-528396FF185A}</Project>
-      <Name>Common</Name>
+    <ProjectReference Include="..\Memoir\Memoir.csproj">
+      <Project>{C5B613B2-C6E5-4093-A302-E4B4FB3709C8}</Project>
+      <Name>Memoir</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IO\IO.csproj">
+      <Project>{091D3C18-9FF0-41E7-8830-9FE48F96C5B6}</Project>
+      <Name>IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Strings\Strings.csproj">
+      <Project>{ACD5C6F0-7174-44F3-99FB-6917996ADB4D}</Project>
+      <Name>Strings</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

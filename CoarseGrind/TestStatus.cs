@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016 William Arthur Hood
+﻿// Copyright (c) 2019, 2016 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using Rockabilly.Common;
-using Rockabilly.Common.HtmlEffects;
+using Rockabilly.MemoirV2;
 
 namespace Rockabilly.CoarseGrind
 {
@@ -47,36 +47,39 @@ namespace Rockabilly.CoarseGrind
 			return it == TestStatus.Inconclusive;
 		}
 
-		public static InlineImage ToHtmlLogIcon(this TestStatus it)
+		public static string ToHtmlLogIcon(this TestStatus it)
 		{
 			switch (it)
 			{
 				case TestStatus.Pass:
-					return Test.Log.PassIcon;
+					return MemoirV2.Constants.EMOJI_PASSING_TEST;
 				case TestStatus.Fail:
-					return Test.Log.FailIcon;
+					return MemoirV2.Constants.EMOJI_FAILING_TEST;
 				case TestStatus.Subjective:
-					return Test.Log.InfoIcon;
+					return MemoirV2.Constants.EMOJI_SUBJECTIVE_TEST;
 				default:
-					return Test.Log.StopSignIcon;
+					return MemoirV2.Constants.EMOJI_INCONCLUSIVE_TEST;
 			}
-		}
+        }
 
-		public static LoggingLevel ToLoggingLevel(this TestStatus it)
-		{
-			if (it == TestStatus.Pass)
-				return LoggingLevel.Standard;
-			return LoggingLevel.Critical;
-		}
+        internal static string ToStyle(this TestStatus it)
+        {
+            switch (it)
+            {
+                case TestStatus.Pass:
+                    return "decaf_green";
+                case TestStatus.Fail:
+                    return "decaf_orange";
+                case TestStatus.Subjective:
+                    return "old_parchment";
+                default:
+                    return "decaf_orange_light_roast";
+            }
+        }
 
-		public static void Log(this TestStatus it, String message)
+        public static void Log(this TestStatus it, Memoir memoir, string message)
 		{
-			it.Log(message, it.ToLoggingLevel());
-		}
-
-		public static void Log(this TestStatus it, string message, LoggingLevel requestedLevel)
-		{
-			Test.Log.Message(message, requestedLevel, it.ToHtmlLogIcon());
+			memoir.Info(message, it.ToHtmlLogIcon());
 		}
 
 		public static TestStatus CombineWith(this TestStatus it, TestStatus candidate)

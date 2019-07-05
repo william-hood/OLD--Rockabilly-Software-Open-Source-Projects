@@ -8,7 +8,7 @@ namespace Rockabilly.CoarseGrind.Examples
 	{
 		protected List<ExceptionDescription> ExpectedFailures = null;
 		protected TestDescription testDescription = null;
-		protected int secondsToWait = 1;
+		protected int secondsToWait = 0;
 
 		public override bool Setup()
 		{
@@ -24,15 +24,7 @@ namespace Rockabilly.CoarseGrind.Examples
 		{
 			get
 			{
-				return new string[] { "Descriptions", "All" };
-			}
-		}
-
-		public override string[] TestCategoryMemberships
-		{
-			get
-			{
-				return new string[] { "Example", "Generated" };
+				return new string[] { "Descriptions", "All", "Example", "Generated" };
 			}
 		}
 	}
