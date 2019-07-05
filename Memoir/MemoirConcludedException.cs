@@ -19,7 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 using System;
-namespace MemoirV2
+namespace Rockabilly.MemoirV2
 {
 	public class MemoirConcludedException : Exception
 	{

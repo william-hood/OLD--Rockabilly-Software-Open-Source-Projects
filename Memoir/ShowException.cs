@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace MemoirV2
+namespace Rockabilly.MemoirV2
 {
     public static class ShowExceptionExtension
     {

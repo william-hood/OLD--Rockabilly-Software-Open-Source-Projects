@@ -20,7 +20,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
-using MemoirV2;
+using Rockabilly.MemoirV2;
 
 namespace Rockabilly.CoarseGrind
 {

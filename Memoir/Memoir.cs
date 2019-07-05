@@ -23,7 +23,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace MemoirV2
+namespace Rockabilly.MemoirV2
 {
     // Basic log segment will be called a memoir.
     // An encapsulation might hold a stack trace, HTTP message, another memoir, anything better depicted in HTML than plain text.
@@ -201,6 +201,7 @@ namespace MemoirV2
 
         internal string attemptBase64Decode(string candidate)
         {
+            if (candidate.Trim().Length < 1) return candidate;
             if (candidate.Equals("true")) return candidate;
             if (candidate.Equals("DENY")) return candidate;
             if (candidate.Equals("whatever")) return candidate;
@@ -238,9 +239,10 @@ namespace MemoirV2
                     result.Append("</div>\r\n</label>");
                     result.Append("</div>\r\n</label>");
                 }
-                catch (Exception deliberatelyIgnoredException)
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+                catch
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
                 {
-                    int x = 0;
                 }
             }
 

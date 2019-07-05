@@ -21,13 +21,13 @@
 using System;
 using System.IO;
 using Rockabilly.Common;
-using Rockabilly.Common.HtmlEffects;
+using Rockabilly.HtmlEffects;
+using Rockabilly.IO;
 
 namespace Rockabilly.CoarseGrind
 {
 	public static class CoarseGrind
 	{
-		internal const LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.Warning;
 		internal static string DateFormatString = "yyyy-MM-dd HH-mm-ss.ffff";
 		internal const string SUMMARY_FILE = "SUMMARY";
 		internal const string SUMMARY_FILE_EXTENSION = ".csv";
@@ -79,7 +79,7 @@ namespace Rockabilly.CoarseGrind
 				if (defaultParentFolder == default(string))
 				{
 					string rootShortName = Path.DirectorySeparatorChar + "Test Results";
-					string rootPath = Foundation.UserHomeFolder + Path.DirectorySeparatorChar + "Documents";
+					string rootPath = IoUtilities.UserHomeFolder + Path.DirectorySeparatorChar + "Documents";
 
 					if (Directory.Exists(rootPath))
 					{
@@ -87,7 +87,7 @@ namespace Rockabilly.CoarseGrind
 					}
 					else
 					{
-						rootPath = Foundation.UserHomeFolder;
+						rootPath = IoUtilities.UserHomeFolder;
 					}
 
 					defaultParentFolder = rootPath + rootShortName;

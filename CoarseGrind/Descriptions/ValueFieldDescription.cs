@@ -43,14 +43,14 @@ namespace Rockabilly.CoarseGrind.Descriptions
 		{
 		}
 
-		public ValueFieldDescription(T BasisValue) : this()
+		public ValueFieldDescription(T basisValue) : this()
 		{
-			BasisValue = BasisValue;
+			BasisValue = basisValue;
 		}
 
-		public ValueFieldDescription(T BasisValue, LimitsDescription<T> limitsDescription) : this()
+		public ValueFieldDescription(T basisValue, LimitsDescription<T> limitsDescription) : this()
 		{
-			BasisValue = BasisValue;
+			BasisValue = basisValue;
 			bounds = limitsDescription;
 		}
 

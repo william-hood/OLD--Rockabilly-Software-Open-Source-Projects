@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace MemoirV2
+namespace Rockabilly.MemoirV2
 {
     public static class ShowObjectExtension
     {

@@ -26,7 +26,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using Rockabilly.Common;
-using Rockabilly.Common.HtmlEffects;
+using Rockabilly.HtmlEffects;
 
 namespace Rockabilly.CoarseGrind
 {

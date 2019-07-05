@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Rockabilly.CoarseGrind.Descriptions;
-using Rockabilly.Common;
+using Rockabilly.Strings;
 
 namespace Rockabilly.CoarseGrind.Examples
 {

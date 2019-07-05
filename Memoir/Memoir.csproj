@@ -6,7 +6,7 @@
     <ProjectGuid>{C5B613B2-C6E5-4093-A302-E4B4FB3709C8}</ProjectGuid>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <RootNamespace>MemoirV2</RootNamespace>
+    <RootNamespace>Rockabilly.MemoirV2</RootNamespace>
     <AssemblyName>Memoir</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>

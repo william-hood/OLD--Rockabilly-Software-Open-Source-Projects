@@ -105,7 +105,7 @@ namespace Rockabilly.CoarseGrind.Descriptions
 		// Based on http://stackoverflow.com/questions/6651554/random-number-in-long-range-is-this-the-way
 		public override long Random(long min, long max)
 		{
-			return Foundation.RandomLong(min, max);
+			return RandomUtilities.RandomLong(min, max);
 			//return add(min, Foundation.Random..nextLong(new Random(), subtract(max, min)));
 		}
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
-using MemoirV2;
+using Rockabilly.MemoirV2;
 
 namespace MemoirExample
 {

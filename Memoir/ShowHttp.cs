@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace MemoirV2
+namespace Rockabilly.MemoirV2
 {
     public static class ShowHttpExtensions
     {

@@ -3,7 +3,8 @@ using System;
 using System.Collections.Generic;
 using Rockabilly.CoarseGrind.Descriptions;
 using Rockabilly.Common;
-using MemoirV2;
+using Rockabilly.MemoirV2;
+using Rockabilly.Strings;
 
 namespace Rockabilly.CoarseGrind.Examples
 {

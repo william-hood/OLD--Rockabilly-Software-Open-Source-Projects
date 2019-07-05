@@ -3,7 +3,8 @@ using System;
 using System.Collections.Generic;
 using Rockabilly.CoarseGrind.Descriptions;
 using Rockabilly.Common;
-using MemoirV2;
+using Rockabilly.MemoirV2;
+using Rockabilly.IO;
 
 namespace Rockabilly.CoarseGrind.Examples
 {
@@ -43,7 +44,7 @@ namespace Rockabilly.CoarseGrind.Examples
 				Log.Info("Calling doSomethingThree()");
                 //doSomethingThree();
 
-                Log.ShowObject(new Rockabilly.Common.DelimitedDataManager<string>());
+                Log.ShowObject(new DelimitedDataManager<string>());
 
 				CheckPassCriterion("Everything adds up nicely.", return1 + return2 == 84);
 			}

@@ -26,7 +26,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using MemoirV2;
+using Rockabilly.MemoirV2;
 
 namespace Rockabilly.CoarseGrind
 {
@@ -425,8 +425,6 @@ namespace Rockabilly.CoarseGrind
                 return OverallStatus + " - " + IdentifiedName;
             }
         }
-
-        private string sectionIndicator = default(string);
 
         private Memoir IndicateSetup()
         {

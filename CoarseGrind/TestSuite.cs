@@ -24,7 +24,9 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Rockabilly.Common;
-using MemoirV2;
+using Rockabilly.MemoirV2;
+using Rockabilly.Strings;
+using Rockabilly.IO;
 
 namespace Rockabilly.CoarseGrind
 {
@@ -103,45 +105,45 @@ namespace Rockabilly.CoarseGrind
             {
                 try
                 {
-                    Foundation.CopyCompletely(currentTest.ArtifactsDirectory, currentArtifactsDirectory + Path.DirectorySeparatorChar + thisCategory + Path.DirectorySeparatorChar + currentTest.PrefixedName);
+                    IoUtilities.CopyCompletely(currentTest.ArtifactsDirectory, currentArtifactsDirectory + Path.DirectorySeparatorChar + thisCategory + Path.DirectorySeparatorChar + currentTest.PrefixedName);
                 }
                 catch (Exception loggedException)
                 {
-                    Console.WriteLine(Foundation.DepictException(loggedException));
+                    Console.WriteLine(StringUtilities.DepictException(loggedException));
                 }
             }
 
             try
             {
-                Foundation.CopyCompletely(currentTest.ArtifactsDirectory, currentArtifactsDirectory + Path.DirectorySeparatorChar + currentTest.OverallStatus.ToString() + Path.DirectorySeparatorChar + currentTest.PrefixedName);
+                IoUtilities.CopyCompletely(currentTest.ArtifactsDirectory, currentArtifactsDirectory + Path.DirectorySeparatorChar + currentTest.OverallStatus.ToString() + Path.DirectorySeparatorChar + currentTest.PrefixedName);
             }
             catch (Exception loggedException)
             {
-                Console.WriteLine(Foundation.DepictException(loggedException));
+                Console.WriteLine(StringUtilities.DepictException(loggedException));
             }
 
             try
             {
-                Foundation.CopyCompletely(currentTest.ArtifactsDirectory, currentArtifactsDirectory + Path.DirectorySeparatorChar + currentTest.Priority.ToString() + Path.DirectorySeparatorChar + currentTest.PrefixedName);
+                IoUtilities.CopyCompletely(currentTest.ArtifactsDirectory, currentArtifactsDirectory + Path.DirectorySeparatorChar + currentTest.Priority.ToString() + Path.DirectorySeparatorChar + currentTest.PrefixedName);
             }
             catch (Exception loggedException)
             {
-                Console.WriteLine(Foundation.DepictException(loggedException));
+                Console.WriteLine(StringUtilities.DepictException(loggedException));
             }
 
             try
             {
-                Foundation.CopyCompletely(currentTest.ArtifactsDirectory, currentArtifactsDirectory + Path.DirectorySeparatorChar + FOLDER_FOR_ALL_TESTS + Path.DirectorySeparatorChar + currentTest.PrefixedName);
+                IoUtilities.CopyCompletely(currentTest.ArtifactsDirectory, currentArtifactsDirectory + Path.DirectorySeparatorChar + FOLDER_FOR_ALL_TESTS + Path.DirectorySeparatorChar + currentTest.PrefixedName);
             }
             catch (Exception loggedException)
             {
-                Console.WriteLine(Foundation.DepictException(loggedException));
+                Console.WriteLine(StringUtilities.DepictException(loggedException));
             }
 
             Directory.Delete(currentTest.ArtifactsDirectory, true);
         }
 
-        public void RunTestSuite(LoggingLevel preferredLoggingLevel, MatchList exclusions, string rootDirectory)
+        public void RunTestSuite(MatchList exclusions, string rootDirectory)
         {
             currentArtifactsDirectory = rootDirectory;
             string expectedFileName = currentArtifactsDirectory + Path.DirectorySeparatorChar + "All tests.html";
@@ -209,7 +211,9 @@ namespace Rockabilly.CoarseGrind
                 executionThread.Abort();
                 executionThread.Abort();
             }
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
             catch { }
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
             finally
             {
                 executionThread = null;

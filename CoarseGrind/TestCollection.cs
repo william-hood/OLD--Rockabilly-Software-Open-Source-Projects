@@ -24,6 +24,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using Rockabilly.Common;
+using Rockabilly.Strings;
 
 namespace Rockabilly.CoarseGrind
 {
@@ -247,7 +248,7 @@ namespace Rockabilly.CoarseGrind
             try
             {
                 Console.WriteLine("Test Suite: " + CurrentlyRunningSuite.Name + Symbols.CarriageReturnLineFeed + Symbols.Divider());
-                CurrentlyRunningSuite.RunTestSuite(CoarseGrind.DEFAULT_LOGGING_LEVEL, exclusions, CoarseGrind.DEFAULT_PARENT_FOLDER + Path.DirectorySeparatorChar + DateTime.Now.ToString(CoarseGrind.DateFormatString) + " " + CurrentlyRunningSuite.Name);
+                CurrentlyRunningSuite.RunTestSuite(exclusions, CoarseGrind.DEFAULT_PARENT_FOLDER + Path.DirectorySeparatorChar + DateTime.Now.ToString(CoarseGrind.DateFormatString) + " " + CurrentlyRunningSuite.Name);
 
                 Console.WriteLine();
                 Console.WriteLine(Symbols.Divider());
@@ -259,7 +260,9 @@ namespace Rockabilly.CoarseGrind
                 {
                     block.Signal();
                 }
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
                 catch { }
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
                 CurrentlyRunningSuite = null;
             }
         }

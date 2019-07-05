@@ -31,7 +31,7 @@ namespace Rockabilly.CoarseGrind.PerformanceTesting
                 }
             }
 
-            Coordinator.StopAcknowledgement.Signal();
+            // Coordinator.StopAcknowledgement.Signal();// Defined in Coordinator. Not yet implemented.
         }
     }
 }

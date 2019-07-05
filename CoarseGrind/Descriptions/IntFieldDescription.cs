@@ -106,7 +106,7 @@ namespace Rockabilly.CoarseGrind.Descriptions
 		public override int Random(int min, int max)
 		{
 			// return add(min, new Random().nextInt(subtract(max, min)));
-			return Add(min, Foundation.Random.Next(min, max));
+			return Add(min, RandomUtilities.Random.Next(min, max));
 		}
 
 	}

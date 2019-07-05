@@ -22,7 +22,7 @@ namespace Rockabilly.CoarseGrind.PerformanceTesting
 
         public override void TakeEffect()
         {
-            Thread.Sleep(Foundation.Random.Next(min.Milliseconds, max.Milliseconds));
+            Thread.Sleep(RandomUtilities.Random.Next(min.Milliseconds, max.Milliseconds));
         }
     }
 
