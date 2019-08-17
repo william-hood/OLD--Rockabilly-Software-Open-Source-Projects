@@ -1,0 +1,24 @@
+﻿<Properties StartupConfiguration="{6E8DA111-F802-4CDB-8DBF-D8857FF4B938}|Default">
+  <MonoDevelop.Ide.ItemProperties.Memoir-MSTest FirstBuild="True" />
+  <MonoDevelop.Ide.ItemProperties.Memoir--MSTest-Wrapper FirstBuild="True" />
+  <MonoDevelop.Ide.ItemProperties.Memoir--NUnit-Wrapper FirstBuild="True" />
+  <MonoDevelop.Ide.ItemProperties.MemoirExample PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.ItemProperties.Memoir-NUnit PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Memoir" expanded="True" selected="True" />
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.Memoir-xUnit FirstBuild="True" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.Memoir--xUnit-Wrapper FirstBuild="True" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

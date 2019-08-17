@@ -1,0 +1,33 @@
+﻿<Properties StartupConfiguration="{092E53A5-1EAD-4177-AA58-91355E9018C0}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="CoarseGrind/TestStatus.cs">
+    <Files>
+      <File FileName="CoarseGrind/Test.cs" Line="33" Column="31" />
+      <File FileName="CoarseGrind/TestProgram.cs" />
+      <File FileName="CoarseGrind/TestPriority.cs" />
+      <File FileName="CoarseGrind/CoarseGrind.cs" />
+      <File FileName="CoarseGrind/TestStatus.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="CoarseGrind" expanded="True">
+            <Node name="CoarseGrind" expanded="True">
+              <Node name="TestStatus.cs" selected="True" />
+            </Node>
+            <Node name="CoarseGrindExampleLibrary" expanded="True" />
+            <Node name="CoarseGrindExampleProgram" expanded="True" />
+            <Node name="CoarseGrindRunner" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.ItemProperties.CoarseGrindExampleProgram PreferredExecutionTarget="MonoDevelop.Default" />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.CoarseGrindRunner PreferredExecutionTarget="MonoDevelop.Default" />
+</Properties>

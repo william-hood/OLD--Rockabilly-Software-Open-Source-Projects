@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019, 2016 William Arthur Hood
+﻿// Copyright (c) 2019 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,119 +17,46 @@
 // HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+// OTHER DEALINGS IN THE SOFTWARE.using System;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
-using System.Net;
-using System.Text;
-using System.Threading;
-using Rockabilly.Common;
-using Rockabilly.HtmlEffects;
+using System.Reflection;
+
+
+// Web UI goes away.
+// TestCollection is merged into this
 
 namespace Rockabilly.CoarseGrind
 {
+    public class TestProgram
+    {
+        public void Run(Assembly target = null, string outputFolder = null)
+        {
+            if (target == null)
+            {
+                target = Assembly.GetEntryAssembly();
+            }
 
-	public abstract class TestProgram
-	{
+            string shortName = target.FullName.Split(',')[0];
+            TestCollection AvailableTests = new TestCollection(shortName);
 
-		// Override this to change from the default reload frequency
-		protected virtual int RELOAD_SECONDS
-		{
-			get
-			{
-				return 5;
-			}
-		}
+            if (outputFolder == null)
+            {
+                outputFolder = CoarseGrind.DEFAULT_PARENT_FOLDER + Path.DirectorySeparatorChar + DateTime.Now.ToString(CoarseGrind.DateFormatString) + " " + AvailableTests.Name;
+            } else
+            {
+                outputFolder = outputFolder + Path.DirectorySeparatorChar + AvailableTests.Name;
+            }
 
-		TestCollection tests = null;
+            foreach (Type candidate in target.GetTypes())
+            {
+                if (candidate.IsSubclassOf(typeof(Test)))
+                {
+                    AvailableTests.Add((Test) Activator.CreateInstance(candidate));
+                }
+            }
 
-		protected abstract List<Test> AllTests { get; }
-		protected abstract void ProcessArguments(List<string> args);
-
-		private bool testingContinues = true;
-
-		public bool IsReady
-		{
-			get
-			{
-				if (tests == null) return false;
-				return tests.IsSetUp;
-			}
-		}
-
-		public bool IsBusy
-		{
-			get
-			{
-				if (tests == null) return false;
-				return tests.CurrentlyRunningSuite != null;
-			}
-		}
-
-		public int Progress
-		{
-			get
-			{
-				if (!IsBusy) return 100;
-				return tests.CurrentlyRunningSuite.getProgress();
-			}
-		}
-
-		// Call this from the static main() entrypoint
-		protected void RunTestProgram(string[] args)
-		{
-			while (testingContinues)
-			{
-				CoarseGrind.KILL_SWITCH = false;
-				tests = new TestCollection();
-				Console.WriteLine("Resetting the Test Collection");
-
-				// Create all programmatically declared test suites
-				tests.SetAllTests(AllTests);
-
-				// We can't process config before adding programmatic
-				// Test Suites because DECLARE requires all test
-				// cases to already be defined.
-				tests.ProcessConfigSet(this, args);
-				ProcessArguments(tests.UnprocessedArguments);
-				tests.IsSetUp = true;
-
-				Console.WriteLine(tests.DescribeAvailableSuites);
-
-				if (tests.immediateRun != default(string))
-				{
-					TestSuite tmp = null;
-					testingContinues = false;
-
-					try
-					{
-						tmp = tests.AllTestSuites[tests.immediateRun];
-					}
-					catch { }
-
-					if (tmp == null)
-					{
-						Console.WriteLine("No test suite named \"" + tests.immediateRun + "\" exists. Nothing to run so exiting the program.");
-						System.Environment.Exit(1);
-					}
-					else {
-						tests.CurrentlyRunningSuite = tmp;
-						tests.RunTestSuite();
-						tests.WaitWhileTesting();
-					}
-					CoarseGrind.KILL_SWITCH = true;
-					tests.destroy();
-					tests = null;
-					System.Environment.Exit(0);
-				}
-
-				tests.WaitWhileTesting();
-				tests.destroy();
-				tests = null;
-				GC.Collect();
-			}
-		}
-	}
+            AvailableTests.RunTestCollection(new Strings.MatchList(), outputFolder);
+        }
+    }
 }

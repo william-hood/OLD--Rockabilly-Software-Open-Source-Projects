@@ -30,7 +30,7 @@ using Rockabilly.MemoirV2;
 
 namespace Rockabilly.CoarseGrind
 {
-    public abstract class Test : TestEssentials
+    public abstract class Test
     {
         private const string INFO_ICON = "ℹ️";
 
@@ -111,7 +111,7 @@ namespace Rockabilly.CoarseGrind
         public abstract string DetailedDescription { get; }
         public abstract void PerformTest();
 
-        public abstract string[] TestSuiteMemberships { get; }
+        public abstract string[] Categories { get; }
 
         public readonly List<TestResult> Results = new List<TestResult>();
 
@@ -126,7 +126,7 @@ namespace Rockabilly.CoarseGrind
             {
                 StringBuilder tmp = new StringBuilder();
 
-                foreach (string thisCategory in TestSuiteMemberships)
+                foreach (string thisCategory in Categories)
                 {
                     if (tmp.Length > 0) tmp.Append('/');
                     tmp.Append(thisCategory);
@@ -283,21 +283,21 @@ namespace Rockabilly.CoarseGrind
             }
         }
 
-        public virtual void CheckPrerequisite(string conditionDescription, bool condition)
+        public virtual void Require(string conditionDescription, bool condition)
         {
             TestResult result = TestResult.FromPrerequisite(conditionDescription, condition);
             AddResult(result);
             result = null;
         }
 
-        public virtual void CheckPassCriterion(string conditionDescription, bool condition)
+        public virtual void Assert(string conditionDescription, bool condition)
         {
             TestResult result = TestResult.FromPassCriterion(conditionDescription, condition);
             AddResult(result);
             result = null;
         }
 
-        public virtual void CheckCondition(string conditionDescription, bool condition)
+        public virtual void Consider(string conditionDescription, bool condition)
         {
             TestResult result = TestResult.FromCondition(conditionDescription, condition);
             AddResult(result);

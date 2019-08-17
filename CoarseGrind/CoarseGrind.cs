@@ -28,7 +28,7 @@ namespace Rockabilly.CoarseGrind
 {
 	public static class CoarseGrind
 	{
-		internal static string DateFormatString = "yyyy-MM-dd HH-mm-ss.ffff";
+		public static string DateFormatString = "yyyy-MM-dd HH-mm-ss.ffff";
 		internal const string SUMMARY_FILE = "SUMMARY";
 		internal const string SUMMARY_FILE_EXTENSION = ".csv";
 		internal const string SUMMARY_FILE_NAME = SUMMARY_FILE + SUMMARY_FILE_EXTENSION;
@@ -72,7 +72,7 @@ namespace Rockabilly.CoarseGrind
         private static string HeaderDateFormatstring = "[yyyy-MM-dd] [HH:mm:ss.ffff]";
 
         private static string defaultParentFolder = default(string);
-		internal static string DEFAULT_PARENT_FOLDER// = Foundation.UserHomeFolder + Path.DirectorySeparatorChar + "Documents" + Path.DirectorySeparatorChar + "Test Results";
+		public static string DEFAULT_PARENT_FOLDER// = Foundation.UserHomeFolder + Path.DirectorySeparatorChar + "Documents" + Path.DirectorySeparatorChar + "Test Results";
 		{
 			get
 			{

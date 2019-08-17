@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NuGet.Build.Packaging.0.2.5-dev.8\build\NuGet.Build.Packaging.props" Condition="Exists('..\packages\NuGet.Build.Packaging.0.2.5-dev.8\build\NuGet.Build.Packaging.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -11,6 +12,15 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
     <ReleaseVersion>6.0</ReleaseVersion>
+    <PackOnBuild>true</PackOnBuild>
+    <PackageId>Memoir_Rich_Logging_System</PackageId>
+    <PackageVersion>2.0</PackageVersion>
+    <Authors>William A. Hood</Authors>
+    <Copyright>Copyright 2019</Copyright>
+    <Owners>William A. Hood</Owners>
+    <Summary>Generates an HTML log file for programs, automated tests, etc. Objects, HTTP Requests, and Exceptions are visualized in a concise easy-to-understand format that emphasizes readability. Also provides minimal simultaneous logging to the console if desired.</Summary>
+    <Title>Memoir Rich Logging System</Title>
+    <Description>Generates an HTML log file for programs, automated tests, etc. Objects, HTTP Requests, and Exceptions are visualized in a concise easy-to-understand format that emphasizes readability. Also provides minimal simultaneous logging to the console if desired.</Description>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,5 +49,9 @@
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <Import Project="..\packages\NuGet.Build.Packaging.0.2.5-dev.8\build\NuGet.Build.Packaging.targets" Condition="Exists('..\packages\NuGet.Build.Packaging.0.2.5-dev.8\build\NuGet.Build.Packaging.targets')" />
 </Project>

@@ -1,0 +1,21 @@
+﻿<Properties StartupConfiguration="{B5E32433-8F6E-43DA-8572-DB88129E9EF8}|Default">
+  <MonoDevelop.Ide.ItemProperties.CoarseGrindExamples PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Rockabilly" expanded="True" selected="True">
+            <Node name="CoarseGrindExamples" expanded="True" />
+            <Node name="Memoir" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

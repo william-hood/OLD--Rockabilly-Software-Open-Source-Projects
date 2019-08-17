@@ -21,260 +21,276 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Rockabilly.Common;
+using Rockabilly.MemoirV2;
 using Rockabilly.Strings;
+using Rockabilly.IO;
 
 namespace Rockabilly.CoarseGrind
 {
-    internal class TestCollection
+    internal class TestCollection : List<Test>
     {
-
-        private const string RUN_ARG = "RUN";
-        private const string INCLUDE_ARG = "INCLUDE";
-        private const string EXCLUDE_ARG = "EXCLUDE";
-        private const string DECLARE_ARG = "DECLARE";
-        private const string PORT_ARG = "PORT";
-        private const string ADDRESS_ARG = "ADDRESS";
-
-
-        internal Dictionary<string, TestSuite> AllTestSuites = new Dictionary<string, TestSuite>();
-        internal TestSuite CurrentlyRunningSuite = null;
+        private const string FOLDER_FOR_ALL_TESTS = "All Tests";
+        private Test currentTest = null;
+        private string currentArtifactsDirectory = default(string);
         private Thread executionThread = null;
-        private MatchList exclusions = new MatchList();
-        private List<Test> AllTests = null;
-        internal List<string> UnprocessedArguments = new List<string>();
-        internal string immediateRun = default(string);
-        internal CountdownEvent block = new CountdownEvent(1);
-        internal bool IsSetUp = false;
+        private float currentCount = float.MaxValue;
+        private string name = default(string);
 
-
-        public void WaitWhileTesting()
+        void Reset()
         {
-            block.Wait();
-        }
-
-        // Create all programmatically declared test suites
-        internal void SetAllTests(List<Test> testsFromProgrammer)
-        {
-            AllTests = testsFromProgrammer;
-            foreach (Test thisTest in AllTests)
+            currentCount = float.MaxValue;
+            currentTest = null;
+            if (executionThread != null)
             {
-                AddProgrammaticTestSuites(thisTest.TestSuiteMemberships, thisTest);
-            }
-        }
-
-        private void AddProgrammaticTestSuites(string[] memberships, Test thisTest)
-        {
-            if (memberships == null) return;
-
-            foreach (string thisMembership in memberships)
-            {
-                string thisMembership_UpperCase = thisMembership.ToUpper();
-                TestSuite tmp = null;
-
                 try
                 {
-                    tmp = AllTestSuites[thisMembership_UpperCase];
+                    executionThread.Abort();
+                    executionThread.Abort();
+                    executionThread.Abort();
                 }
-                catch
-                {
-                }
-
-                if (tmp == null) tmp = new TestSuite(thisMembership);
-                tmp.Add(thisTest);
-                AllTestSuites[thisMembership_UpperCase] = tmp;
-                thisMembership_UpperCase = null;
-                tmp = null;
+                catch { }
             }
-
+            executionThread = null;
+            currentArtifactsDirectory = default(string);
         }
 
-        private Test FindTest(string identifier)
+        public TestCollection(string suiteName)
         {
-            foreach (Test thisTest in AllTests)
-            {
-                if (thisTest.Identifier.MatchesCaseInspecific(identifier)) return thisTest;
-            }
-            return null;
+            name = suiteName;
         }
 
-        private void DoDeclare(string[] args, int startIndex)
-        {
-            string suiteName = args[startIndex].ToUpper();
-            TestSuite tmp = null;
-            try
-            {
-                tmp = AllTestSuites[suiteName];
-            }
-            catch
-            {
-            }
-
-            if (tmp == null) tmp = new TestSuite(suiteName);
-
-            for (int index = startIndex + 1; index < args.Length; index++)
-            {
-                Test foundTest = FindTest(args[index]);
-                if (foundTest == null)
-                {
-                    Console.WriteLine("No test case named " + args[index] + " exists. Not adding to " + suiteName);
-                }
-                else
-                {
-                    tmp.Add(foundTest);
-                }
-            }
-
-            if (tmp.Count < 1)
-            {
-                Console.WriteLine("Declining to add empty test suite " + suiteName);
-            }
-            else
-            {
-                Console.WriteLine("Added declared test suite " + suiteName);
-                AllTestSuites[suiteName] = tmp;
-            }
-
-            suiteName = null;
-            tmp = null;
-        }
-
-        private void IncludeFile(TestProgram parent, FileInfo includedFile)
-        {
-            string[] args = null;
-
-            Console.WriteLine("Handling included file " + includedFile.FullName);
-            try
-            {
-                args = File.ReadAllLines(includedFile.FullName);
-            }
-            catch (IOException)
-            {
-                Console.WriteLine("Unable to read included file " + includedFile.FullName);
-            }
-
-            if (args != null)
-            {
-                ProcessConfigSet(parent, args);
-            }
-        }
-
-        private void IncludeDirectory(TestProgram parent, DirectoryInfo includedDirectory)
-        {
-            Console.WriteLine("Handling included directory " + includedDirectory.FullName);
-            foreach (FileInfo thisListing in includedDirectory.GetFiles())
-            {
-                HandleInclusion(parent, thisListing);
-            }
-        }
-
-        private void HandleInclusion(TestProgram parent, FileInfo inclusion)
-        {
-            if (inclusion.Exists)
-            {
-                if (inclusion.Attributes.HasFlag(FileAttributes.Directory))
-                {
-                    IncludeDirectory(parent, new DirectoryInfo(inclusion.DirectoryName));
-                }
-                else
-                {
-                    IncludeFile(parent, inclusion);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Ignoring non-existent inclusion " + inclusion.FullName);
-            }
-        }
-
-        internal void ProcessConfigSet(TestProgram parent, string[] args)
-        {
-            for (int index = 0; index < args.Length; index++)
-            {
-                switch (args[index].ToUpper())
-                {
-                    case RUN_ARG:
-                        index++;
-                        immediateRun = args[index].ToUpper();
-                        break;
-                    case EXCLUDE_ARG:
-                        index++;
-                        exclusions.Add(args[index]);
-                        break;
-                    case INCLUDE_ARG:
-                        index++;
-                        HandleInclusion(parent, new FileInfo(args[index]));
-                        break;
-                    case DECLARE_ARG:
-                        DoDeclare(args, index + 1);
-                        return;
-                    default:
-                        UnprocessedArguments.Add(args[index]);
-                        break;
-                }
-            }
-        }
-
-        internal string DescribeAvailableSuites
+        public string Name
         {
             get
             {
-                StringBuilder result = new StringBuilder("TEST SUITES");
-                result.Append(Symbols.CarriageReturnLineFeed);
-                foreach (string thisTestSuite in AllTestSuites.Keys)
-                {
-                    result.Append(Symbols.CloseAngleQuote);
-                    result.Append(thisTestSuite);
-                    result.Append(Symbols.CarriageReturnLineFeed);
-                }
-
-                return result.ToString();
+                return name;
             }
         }
 
-        internal void KickOffTestSuite(TestSuite thisTestSuite)
+        public string CurrentTest
         {
-
-            CurrentlyRunningSuite = thisTestSuite;
-            executionThread = new Thread(RunTestSuite);
-            executionThread.Start();
-            //executionThread.Join();
+            get
+            {
+                if (currentTest == null) return default(string);
+                return currentTest.IdentifiedName;
+            }
         }
 
-        internal void RunTestSuite()
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public int getProgress()
         {
+            if (Count < 1) return 100;
+            if (currentCount >= Count) return 100;
+
+            float effectiveCount = currentCount;
+
             try
             {
-                Console.WriteLine("Test Suite: " + CurrentlyRunningSuite.Name + Symbols.CarriageReturnLineFeed + Symbols.Divider());
-                CurrentlyRunningSuite.RunTestSuite(exclusions, CoarseGrind.DEFAULT_PARENT_FOLDER + Path.DirectorySeparatorChar + DateTime.Now.ToString(CoarseGrind.DateFormatString) + " " + CurrentlyRunningSuite.Name);
-
-                Console.WriteLine();
-                Console.WriteLine(Symbols.Divider());
-
+                effectiveCount += (1 * currentTest.getProgress());
             }
-            finally
+            catch
+            {
+                // DELIBERATE NO-OP
+            }
+
+            return (int)Math.Round((effectiveCount / Count) * 100);
+        }
+
+        private void CopyResultsToCategories()
+        {
+            #region Old way that uses category folders
+            /*
+            foreach (string thisCategory in currentTest.Categories)
             {
                 try
                 {
-                    block.Signal();
+                    IoUtilities.CopyCompletely(currentTest.ArtifactsDirectory, currentArtifactsDirectory + Path.DirectorySeparatorChar + thisCategory + Path.DirectorySeparatorChar + currentTest.PrefixedName);
                 }
+                catch (Exception loggedException)
+                {
+                    Console.WriteLine(StringUtilities.DepictException(loggedException));
+                }
+            }
+
+            try
+            {
+                IoUtilities.CopyCompletely(currentTest.ArtifactsDirectory, currentArtifactsDirectory + Path.DirectorySeparatorChar + currentTest.OverallStatus.ToString() + Path.DirectorySeparatorChar + currentTest.PrefixedName);
+            }
+            catch (Exception loggedException)
+            {
+                Console.WriteLine(StringUtilities.DepictException(loggedException));
+            }
+
+            try
+            {
+                IoUtilities.CopyCompletely(currentTest.ArtifactsDirectory, currentArtifactsDirectory + Path.DirectorySeparatorChar + currentTest.Priority.ToString() + Path.DirectorySeparatorChar + currentTest.PrefixedName);
+            }
+            catch (Exception loggedException)
+            {
+                Console.WriteLine(StringUtilities.DepictException(loggedException));
+            }
+
+            try
+            {
+                IoUtilities.CopyCompletely(currentTest.ArtifactsDirectory, currentArtifactsDirectory + Path.DirectorySeparatorChar + FOLDER_FOR_ALL_TESTS + Path.DirectorySeparatorChar + currentTest.PrefixedName);
+            }
+            catch (Exception loggedException)
+            {
+                Console.WriteLine(StringUtilities.DepictException(loggedException));
+            }
+            */
+            #endregion
+
+            try
+            {
+                IoUtilities.CopyCompletely(currentTest.ArtifactsDirectory, currentArtifactsDirectory + Path.DirectorySeparatorChar + currentTest.PrefixedName);
+            }
+            catch (Exception loggedException)
+            {
+                Console.WriteLine(StringUtilities.DepictException(loggedException));
+            }
+
+            Directory.Delete(currentTest.ArtifactsDirectory, true);
+        }
+
+        public void RunTestCollection(MatchList exclusions, string rootDirectory)
+        {
+            currentArtifactsDirectory = rootDirectory;
+            string expectedFileName = currentArtifactsDirectory + Path.DirectorySeparatorChar + "All tests.html";
+            new FileInfo(expectedFileName).Directory.Create();
+            Memoir overLog = new Memoir(Name, null, File.CreateText(expectedFileName), CoarseGrind.LogHeader);
+            currentCount = 0;
+            for (currentCount = 0; currentCount < Count; currentCount++)
+            {
+                if (CoarseGrind.KILL_SWITCH)
+                {
+                    // Decline to run
+                    break;
+                }
+                else
+                {
+                    currentTest = this[(int)currentCount];
+                    if (!exclusions.MatchesCaseInspecific(currentTest.IdentifiedName))
+                    {
+                        try
+                        {
+                            executionThread = new Thread(Run);
+                            executionThread.Start();
+                            executionThread.Join();
+                        }
+                        catch (Exception thisFailure)
+                        {
+                            currentTest.AddResult(currentTest.GetResultForPreclusionInSetup(thisFailure));
+                        }
+                        finally
+                        {
+                            executionThread = null;
+                            CopyResultsToCategories();
+                            overLog.ShowMemoir(currentTest.topLevelMemoir, currentTest.OverallStatus.ToHtmlLogIcon(), currentTest.OverallStatus.ToStyle());
+                        }
+                    }
+                }
+            }
+
+            overLog.Conclude();
+
+            CreateSummaryReport(rootDirectory);
+        }
+
+        public void Run()
+        {
+            currentTest.RunTest(currentArtifactsDirectory);
+        }
+
+        public void InterruptCurrentTest()
+        {
+            currentTest.Interrupt();
+        }
+
+        public void HaltAllTesting()
+        {
+            CoarseGrind.KILL_SWITCH = true;
+
+            currentCount = float.MaxValue;
+            InterruptCurrentTest();
+
+            try
+            {
+                executionThread.Interrupt();
+                executionThread.Abort();
+                executionThread.Abort();
+                executionThread.Abort();
+            }
 #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-                catch { }
+            catch { }
 #pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-                CurrentlyRunningSuite = null;
+            finally
+            {
+                executionThread = null;
             }
         }
 
-        internal void destroy()
+        static string[] SUMMARY_HEADERS = { "Categorization", "Test Priority", "Test ID", "Name", "Description", "Status", "Reasons" };
+
+        public void CreateSummaryReport(string rootDirectory)
         {
-            AllTestSuites.Clear();
-            AllTests.Clear();
-            UnprocessedArguments.Clear();
-            AllTestSuites = null;
-            AllTests = null;
-            UnprocessedArguments = null;
+            Console.WriteLine("Creating Test Suite Summary Report");
+
+            string fullyQulaifiedSummaryFileName = rootDirectory + Path.DirectorySeparatorChar + CoarseGrind.SUMMARY_FILE_NAME;
+            DelimitedDataManager<string> summaryReport = null;
+
+            try
+            {
+                summaryReport = DelimitedDataManager<string>.FromFile(fullyQulaifiedSummaryFileName, new StringParser());
+            }
+            catch
+            {
+                summaryReport = new DelimitedDataManager<string>(columnNames: SUMMARY_HEADERS);
+            }
+
+            foreach (Test thisCase in this)
+            {
+                //if (thisCase.wasRun) summaryReport.addDataRow(thisCase.getSummaryDataRow());
+                if (thisCase.WasSetup) summaryReport.addDataRow(thisCase.SummaryDataRow);
+            }
+
+            summaryReport.ToFile(fullyQulaifiedSummaryFileName);
+
+            string fullyQulaifiedSummaryTextFileName = rootDirectory + Path.DirectorySeparatorChar + CoarseGrind.SUMMARY_TEXTFILE_NAME;
+            try
+            {
+                TextOutputManager textFile = new TextOutputManager(fullyQulaifiedSummaryTextFileName);
+                textFile.WriteLine(OverallStatus.ToString());
+                textFile.Flush();
+                textFile.Close();
+            }
+            catch
+            {
+                // DELIBERATE NO-OP
+            }
         }
+
+        public TestStatus OverallStatus
+        {
+            get
+            {
+                int tally = 0;
+                TestStatus finalValue = TestStatus.Pass;
+                foreach (Test thisTest in this)
+                {
+                    if (thisTest.WasRun)
+                    {
+                        tally++;
+                        finalValue = finalValue.CombineWith(thisTest.OverallStatus);
+                    }
+                }
+                if (tally < 1) return TestStatus.Inconclusive;
+                return finalValue;
+            }
+        }
+
     }
 }
