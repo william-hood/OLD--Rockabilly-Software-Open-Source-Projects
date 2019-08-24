@@ -188,8 +188,8 @@ namespace Rockabilly.CoarseGrind
                         finally
                         {
                             executionThread = null;
-                            CopyResultsToCategories();
                             overLog.ShowMemoir(currentTest.topLevelMemoir, currentTest.OverallStatus.ToHtmlLogIcon(), currentTest.OverallStatus.ToStyle());
+                            CopyResultsToCategories();
                         }
                     }
                 }

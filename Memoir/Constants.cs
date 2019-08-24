@@ -26,11 +26,11 @@ namespace Rockabilly.MemoirV2
         // Some of these might belong in Coarse Grind
         public const string EMOJI_SETUP = "🛠";
         public const string EMOJI_CLEANUP = "🧹";
-        public const string EMOJI_PASSING_TEST = "👌";
+        public const string EMOJI_PASSING_TEST = "✅";
         public const string EMOJI_SUBJECTIVE_TEST = "🤔";
         public const string EMOJI_INCONCLUSIVE_TEST = "🛑";
         public const string EMOJI_FAILING_TEST = "❌";
-        public const string EMOJI_DEBUG = "👾";
+        public const string EMOJI_DEBUG = "🐞";
         public const string EMOJI_ERROR = "😱";
         public const string EMOJI_MEMOIR = "📝";
         public const string EMOJI_TEXT_MEMOIR_CONCLUDE = "⤴️";

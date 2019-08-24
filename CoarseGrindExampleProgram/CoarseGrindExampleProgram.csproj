@@ -29,6 +29,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -37,6 +38,9 @@
     <Compile Include="SimpleExample3.cs" />
     <Compile Include="SimpleExample4.cs" />
     <Compile Include="SimpleExample1.cs" />
+    <Compile Include="SampleTest4x.cs" />
+    <Compile Include="DescriptionsExample.cs" />
+    <Compile Include="DataDrivenExample.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CoarseGrind\CoarseGrind.csproj">
@@ -46,6 +50,10 @@
     <ProjectReference Include="..\Memoir\Memoir.csproj">
       <Project>{C5B613B2-C6E5-4093-A302-E4B4FB3709C8}</Project>
       <Name>Memoir</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Strings\Strings.csproj">
+      <Project>{ACD5C6F0-7174-44F3-99FB-6917996ADB4D}</Project>
+      <Name>Strings</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

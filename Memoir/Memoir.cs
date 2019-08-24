@@ -27,10 +27,10 @@ namespace Rockabilly.MemoirV2
 {
     // Basic log segment will be called a memoir.
     // An encapsulation might hold a stack trace, HTTP message, another memoir, anything better depicted in HTML than plain text.
-    public class Memoir
+    public partial class Memoir
     {
-        private TextWriter htmlTextWriter = null;
-        private TextWriter plainTextWriter = null;
+        private TextWriter textWriter_HTML = null;
+        private TextWriter textWriter_PlainText = null;
         private const string STARTING_CONTENT = "<table>\r\n";
         private StringBuilder content = new StringBuilder(STARTING_CONTENT);
         private bool isConcluded = false;
@@ -44,18 +44,18 @@ namespace Rockabilly.MemoirV2
         public Memoir(string title, TextWriter forPlainText = null, TextWriter forHTML = null, Func<string, string> Header = null)
         {
             titleName = title;
-            htmlTextWriter = forHTML;
-            plainTextWriter = forPlainText;
+            textWriter_HTML = forHTML;
+            textWriter_PlainText = forPlainText;
 
             DateTime timeStamp = DateTime.Now;
 
-            if (plainTextWriter != null)
+            if (textWriter_PlainText != null)
             {
                 EchoPlainText("");
                 EchoPlainText(titleName, timeStamp, Constants.EMOJI_MEMOIR);
             }
 
-            if (htmlTextWriter != null)
+            if (textWriter_HTML != null)
             {
                 if (Header == null)
                 {
@@ -63,10 +63,10 @@ namespace Rockabilly.MemoirV2
                 }
 
                 // This should be the start of a newly opened file
-                htmlTextWriter.Write(String.Format("<html>\r\n<meta charset=\"UTF-8\">\r\n<head>\r\n<title>{0}</title>\r\n", title));
-                htmlTextWriter.Write(Constants.MEMOIR_LOG_STYLING);
-                htmlTextWriter.Write("</head>\r\n<body>\r\n");
-                htmlTextWriter.Write(Header(title));
+                textWriter_HTML.Write(String.Format("<html>\r\n<meta charset=\"UTF-8\">\r\n<head>\r\n<title>{0}</title>\r\n", title));
+                textWriter_HTML.Write(Constants.MEMOIR_LOG_STYLING);
+                textWriter_HTML.Write("</head>\r\n<body>\r\n");
+                textWriter_HTML.Write(Header(title));
             }
         }
 
@@ -91,11 +91,12 @@ namespace Rockabilly.MemoirV2
 
                 content.Append("\r\n</table>");
 
-                if (htmlTextWriter != null)
+                if (textWriter_HTML != null)
                 {
-                    htmlTextWriter.Write(content.ToString());
-                    htmlTextWriter.Write("\r\n</body>\r\n</html>");
-                    htmlTextWriter.Flush();
+                    textWriter_HTML.Write(content.ToString());
+                    textWriter_HTML.Write("\r\n</body>\r\n</html>");
+                    textWriter_HTML.Flush();
+                    textWriter_HTML.Dispose();
                 }
             }
 
@@ -104,7 +105,7 @@ namespace Rockabilly.MemoirV2
 
         public void EchoPlainText(string message, DateTime timeStamp = default(DateTime), string emoji = default(string))
         {
-            if (plainTextWriter == null)
+            if (textWriter_PlainText == null)
             {
                 // Silently decline
                 return;
@@ -127,7 +128,7 @@ namespace Rockabilly.MemoirV2
                 dateTime = timeStamp.ToString("yyyy-MM-dd HH:mm:ss.ffff");
             }
 
-            plainTextWriter.WriteLine(string.Format("{0} {1}\t{2} ", dateTime, emoji, message));
+            textWriter_PlainText.WriteLine(string.Format("{0} {1}\t{2} ", dateTime, emoji, message));
         }
 
         public void WriteToHTML(string message, DateTime timeStamp = default(DateTime), string emoji = default(string))

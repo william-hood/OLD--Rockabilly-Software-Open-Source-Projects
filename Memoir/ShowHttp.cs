@@ -7,10 +7,10 @@ using System.Linq;
 
 namespace Rockabilly.MemoirV2
 {
-    public static class ShowHttpExtensions
+    public partial class Memoir
     {
 
-        public static string ShowHttpRequest(this Memoir memoir, HttpRequestMessage request)
+        public string ShowHttpRequest(HttpRequestMessage request)
         {
             DateTime timeStamp = DateTime.Now;
             StringBuilder result = new StringBuilder("<div class=\"outgoing implied_caution\">\r\n");
@@ -44,7 +44,7 @@ namespace Rockabilly.MemoirV2
                     if (part.Length > 1)
                     {
                         // When possible, attempt JSON pretty-print here.
-                        result.Append(memoir.attemptBase64Decode(part[1]));
+                        result.Append(attemptBase64Decode(part[1]));
                     } else
                     {
                         result.Append("(unset)");
@@ -72,7 +72,7 @@ namespace Rockabilly.MemoirV2
                     else if (allValues.Length == 1)
                     {
                         // When possible, attempt JSON pretty-print here.
-                        result.Append(memoir.attemptBase64Decode(allValues[0]));
+                        result.Append(attemptBase64Decode(allValues[0]));
                     }
                     else
                     {
@@ -81,7 +81,7 @@ namespace Rockabilly.MemoirV2
                         {
                             result.Append("<tr><td>");
                             // When possible, attempt JSON pretty-print here.
-                            result.Append(memoir.attemptBase64Decode(thisValue));
+                            result.Append(attemptBase64Decode(thisValue));
                             result.Append("</td></tr>");
                         }
                     }
@@ -111,17 +111,13 @@ namespace Rockabilly.MemoirV2
 
             result.Append("</div>");
 
-
-            if (memoir != null)
-            {
-                memoir.WriteToHTML(result.ToString(), timeStamp, Constants.EMOJI_OUTGOING);
-                memoir.EchoPlainText(String.Format("{0} {1}", request.Method, request.RequestUri.AbsoluteUri), timeStamp, Constants.EMOJI_OUTGOING);
-            }
+            WriteToHTML(result.ToString(), timeStamp, Constants.EMOJI_OUTGOING);
+            EchoPlainText(String.Format("{0} {1}", request.Method, request.RequestUri.AbsoluteUri), timeStamp, Constants.EMOJI_OUTGOING);
 
             return result.ToString();
         }
 
-        public static string ShowHttpResponse(this Memoir memoir, HttpResponseMessage response)
+        public string ShowHttpResponse(HttpResponseMessage response)
         {
             DateTime timeStamp = DateTime.Now;
             string style = "implied_bad";
@@ -150,7 +146,7 @@ namespace Rockabilly.MemoirV2
                     }
                     else if (allValues.Length == 1)
                     {
-                        result.Append(memoir.attemptBase64Decode(allValues[0]));
+                        result.Append(attemptBase64Decode(allValues[0]));
                     }
                     else
                     {
@@ -158,7 +154,7 @@ namespace Rockabilly.MemoirV2
                         foreach (string thisValue in allValues)
                         {
                             result.Append("<tr><td>");
-                            result.Append(memoir.attemptBase64Decode(thisValue));
+                            result.Append(attemptBase64Decode(thisValue));
                             result.Append("</td></tr>");
                         }
                     }
@@ -187,14 +183,20 @@ namespace Rockabilly.MemoirV2
             result.Append("</div>");
 
 
-            if (memoir != null)
-            {
-                memoir.WriteToHTML(result.ToString(), timeStamp, Constants.EMOJI_INCOMING);
-                memoir.EchoPlainText(String.Format("{0} {1}", (int)response.StatusCode, response.ReasonPhrase), timeStamp, Constants.EMOJI_INCOMING);
-            }
+            WriteToHTML(result.ToString(), timeStamp, Constants.EMOJI_INCOMING);
+            EchoPlainText(String.Format("{0} {1}", (int)response.StatusCode, response.ReasonPhrase), timeStamp, Constants.EMOJI_INCOMING);
 
             return result.ToString();
         }
+
+        public HttpResponseMessage ShowTransaction(HttpClient httpClient, HttpRequestMessage request)
+        {
+            return httpClient.ShowTransaction(this, request);
+        }
+    }
+
+    public static class ShowTransactionExtension
+    {
 
         public static HttpResponseMessage ShowTransaction(this HttpClient httpClient, Memoir memoir, HttpRequestMessage request)
         {
@@ -222,18 +224,14 @@ namespace Rockabilly.MemoirV2
                     });
                 }
 
-            } catch (Exception loggedException)
+            }
+            catch (Exception loggedException)
             {
                 memoir.ShowException(loggedException);
                 throw loggedException;
             }
 
             return result;
-        }
-
-        public static HttpResponseMessage ShowTransaction(this Memoir memoir, HttpClient httpClient, HttpRequestMessage request)
-        {
-            return httpClient.ShowTransaction(memoir, request);
         }
     }
 }

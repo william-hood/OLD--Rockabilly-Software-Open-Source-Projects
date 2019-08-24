@@ -3,10 +3,10 @@ using System.Text;
 
 namespace Rockabilly.MemoirV2
 {
-    public static class ShowExceptionExtension
+    public partial class Memoir
     {
         const string DEFAULT_STACKTRACE = "no stacktrace";
-        public static string ShowException(this Memoir memoir, Exception target)
+        public string ShowException(Exception target)
         {
             DateTime timeStamp = DateTime.Now;
             StringBuilder result = new StringBuilder("<div class=\"object exception\">\r\n");
@@ -20,13 +20,10 @@ namespace Rockabilly.MemoirV2
                 stackTrace = target.StackTrace.Trim().Replace("at ", "<br><br>at ").Replace(" in ", "<br>in ").Trim().Substring(8);
             }
 
-            if (memoir != null)
-            {
-                memoir.EchoPlainText(String.Format("{0}\r\n\r\n{1}\r\n{2}",
+            EchoPlainText(String.Format("{0}\r\n\r\n{1}\r\n{2}",
                     name,
                     target.Message,
                     plainTextStackTrace), timeStamp, Constants.EMOJI_ERROR);
-            }
 
             StringBuilder indicator = new StringBuilder();
             if ((stackTrace != DEFAULT_STACKTRACE) || (target.InnerException != null))
@@ -59,7 +56,7 @@ namespace Rockabilly.MemoirV2
                 {
                     result.Append(String.Format("<br>\r\n<table><tr><td>&nbsp;</td><td>Caused by {0}</td><td>&nbsp;</td><td>{1}</td></tr></table>",
                         Constants.EMOJI_CAUSED_BY,
-                        ShowException(null, target.InnerException)));
+                        ShowException(target.InnerException)));
                 }
 
                 result.Append("</div>\r\n</label>");
@@ -71,11 +68,7 @@ namespace Rockabilly.MemoirV2
 
             result.Append("</div>");
 
-
-            if (memoir != null)
-            {
-                memoir.WriteToHTML(result.ToString(), timeStamp, Constants.EMOJI_ERROR);
-            }
+            WriteToHTML(result.ToString(), timeStamp, Constants.EMOJI_ERROR);
 
             return result.ToString();
         }

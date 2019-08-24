@@ -52,7 +52,23 @@ namespace Rockabilly.CoarseGrind
             {
                 if (candidate.IsSubclassOf(typeof(Test)))
                 {
-                    AvailableTests.Add((Test) Activator.CreateInstance(candidate));
+                    if (! candidate.IsAbstract)
+                    {
+                        if (! candidate.IsSubclassOf(typeof(ManufacturedTest)))
+                        {
+                            // If it's not abstract, derived from Rockabilly.CoarseGrind.Test, but not a Manufactured Test, instantiate one and add it.
+                            AvailableTests.Add((Test)Activator.CreateInstance(candidate));
+                        }
+                    }
+                }
+
+                if (candidate.IsSubclassOf(typeof(TestFactory)))
+                {
+                    if (! candidate.IsAbstract)
+                    {
+                        // For Test Factories, instantiate it and get their list of products (Manufactureds Tests)
+                        AvailableTests.AddRange(((TestFactory)Activator.CreateInstance(candidate)).Products);
+                    }
                 }
             }
 

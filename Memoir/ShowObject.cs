@@ -6,11 +6,11 @@ using System.Text;
 
 namespace Rockabilly.MemoirV2
 {
-    public static class ShowObjectExtension
+    public partial class Memoir
     {
         private const int MAX_RECURSION = 10;
 
-        private static bool shouldRecurse(object candidate)
+        private bool shouldRecurse(object candidate)
         {
             if (candidate == null) return false;
 
@@ -42,7 +42,7 @@ namespace Rockabilly.MemoirV2
             return true;
         }
 
-        private static bool shouldRender(FieldInfo thisField)
+        private bool shouldRender(FieldInfo thisField)
         {
             if (thisField.IsLiteral)
             {
@@ -57,7 +57,7 @@ namespace Rockabilly.MemoirV2
             return true;
         }
 
-        private static int renderableFields(IEnumerable<FieldInfo> theseFields)
+        private int renderableFields(IEnumerable<FieldInfo> theseFields)
         {
             int result = 0;
 
@@ -72,7 +72,7 @@ namespace Rockabilly.MemoirV2
             return result;
         }
 
-        public static string ShowObject(this Memoir memoir, object target, string nameof_target = "", int recurseLevel = 0)
+        public string ShowObject(object target, string nameof_target = "", int recurseLevel = 0)
         {
             if (recurseLevel > MAX_RECURSION)
             {
@@ -83,10 +83,8 @@ namespace Rockabilly.MemoirV2
             Type thisType = target.GetType();
             string title = String.Format("{0} {1}", thisType.Name, nameof_target).Trim();
 
-            if (memoir != null)
-            {
-                memoir.EchoPlainText(title, timeStamp, Constants.EMOJI_OBJECT);
-            }
+            EchoPlainText(title, timeStamp, Constants.EMOJI_OBJECT);
+
             result.Append(String.Format("<label for=\"{0}\">\r\n<input id=\"{0}\" class=\"gone\" type=\"checkbox\">\r\n<center><h2>{1}</h2></center>\r\n<div class=\"{2}\">\r\n",
                 Guid.NewGuid().ToString(),
                 title,
@@ -114,7 +112,7 @@ namespace Rockabilly.MemoirV2
 
                     if (shouldRecurse(thisItem))
                     {
-                        content.Append(ShowObject(null, thisItem, thisItem.GetType().Name, recurseLevel + 1));
+                        content.Append(ShowObject(thisItem, thisItem.GetType().Name, recurseLevel + 1));
                     }
                     else
                     {
@@ -143,18 +141,12 @@ namespace Rockabilly.MemoirV2
 
                         if (shouldRecurse(fieldValue))
                         {
-                            content.Append(ShowObject(null, fieldValue, fieldName, recurseLevel + 1));
+                            content.Append(ShowObject(fieldValue, fieldName, recurseLevel + 1));
                         }
                         else if (fieldValue is string)
                         {
                             // When possible, attempt JSON pretty-print here.
-                            if (memoir == null)
-                            {
-                                content.Append(fieldValue.ToString());
-                            } else
-                            {
-                                content.Append(memoir.attemptBase64Decode(fieldValue.ToString()));
-                            }
+                            content.Append(attemptBase64Decode(fieldValue.ToString()));
                         } else
                         {
                             content.Append(fieldValue);
@@ -183,10 +175,8 @@ namespace Rockabilly.MemoirV2
             }
 
             result.Append("\r\n</label></div>");
-            if (memoir != null)
-            {
-                memoir.WriteToHTML(result.ToString(), timeStamp, Constants.EMOJI_OBJECT);
-            }
+
+            WriteToHTML(result.ToString(), timeStamp, Constants.EMOJI_OBJECT);
 
             return result.ToString();
         }

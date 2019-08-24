@@ -84,8 +84,8 @@ namespace Rockabilly.CoarseGrind
 
             public SetupEnforcement(Test candidate)
             {
-                identifier = candidate.Identifier;
-                name = candidate.Name;
+                identifier = candidate.identifier;
+                name = candidate.name;
                 if (!(candidate is Test))
                 {
                     contentSize = candidate.Results.Count;
@@ -103,15 +103,29 @@ namespace Rockabilly.CoarseGrind
             }
         }
 
+        // For readability these are now passed into the base constructor
+        // and are no longer abstract properties
+        private string identifier = default(string);
+        private string name = default(string);
+        private string detailedDescription = default(string);
+        private string[] categories = { };
+
+        protected Test(
+            string Name,
+            string DetailedDescription = default(string),
+            string ID = default(string),
+            params string[] Categories)
+        {
+            identifier = ID;
+            name = Name;
+            detailedDescription = DetailedDescription;
+            categories = Categories;
+        }
+
         // End User Must Implement
         public virtual bool Setup() { return true; }
         public virtual bool Cleanup() { return true; }
-        public abstract string Identifier { get; }
-        public abstract string Name { get; }
-        public abstract string DetailedDescription { get; }
         public abstract void PerformTest();
-
-        public abstract string[] Categories { get; }
 
         public readonly List<TestResult> Results = new List<TestResult>();
 
@@ -126,7 +140,7 @@ namespace Rockabilly.CoarseGrind
             {
                 StringBuilder tmp = new StringBuilder();
 
-                foreach (string thisCategory in Categories)
+                foreach (string thisCategory in categories)
                 {
                     if (tmp.Length > 0) tmp.Append('/');
                     tmp.Append(thisCategory);
@@ -172,9 +186,12 @@ namespace Rockabilly.CoarseGrind
 
                 string expectedFileName = ArtifactsDirectory + Path.DirectorySeparatorChar + LogFileName;
                 new FileInfo(expectedFileName).Directory.Create();
-                topLevelMemoir = new Memoir(Name, Console.Out, File.CreateText(expectedFileName), CoarseGrind.LogHeader);
+                topLevelMemoir = new Memoir(name, Console.Out, File.CreateText(expectedFileName), CoarseGrind.LogHeader);
 
-                topLevelMemoir.WriteToHTML(String.Format("<small><i>{0}</i></small>", DetailedDescription), emoji: INFO_ICON);
+                if (detailedDescription != default(string))
+                {
+                    topLevelMemoir.WriteToHTML(String.Format("<small><i>{0}</i></small>", detailedDescription), emoji: Constants.EMOJI_TEXT_BLANK_LINE);
+                }
                 topLevelMemoir.SkipLine();
 
                 SetupEnforcement before = null;
@@ -323,9 +340,9 @@ namespace Rockabilly.CoarseGrind
                 List<String> tmp = new List<String>();
                 tmp.Add(FilterForSummary(DescribeCategorization));
                 tmp.Add(FilterForSummary(Priority.ToString()));
-                tmp.Add(FilterForSummary(Identifier));
-                tmp.Add(FilterForSummary(Name));
-                tmp.Add(FilterForSummary(DetailedDescription));
+                tmp.Add(FilterForSummary(identifier));
+                tmp.Add(FilterForSummary(name));
+                tmp.Add(FilterForSummary(detailedDescription));
                 tmp.Add(FilterForSummary(OverallStatus.ToString()));
 
                 StringBuilder reasoning = new StringBuilder();
@@ -374,7 +391,8 @@ namespace Rockabilly.CoarseGrind
         {
             get
             {
-                return Identifier + " - " + Name;
+                if (identifier == default(string)) return name;
+                return identifier + " - " + name;
             }
         }
 
