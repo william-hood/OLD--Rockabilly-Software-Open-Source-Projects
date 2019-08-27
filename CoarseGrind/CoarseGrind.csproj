@@ -76,6 +76,7 @@
     </Compile>
     <Compile Include="TestProgram.cs" />
     <Compile Include="TestFactory.cs" />
+    <Compile Include="Assertions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PerformanceTesting\" />

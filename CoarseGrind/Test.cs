@@ -30,7 +30,7 @@ using Rockabilly.MemoirV2;
 
 namespace Rockabilly.CoarseGrind
 {
-    public abstract class Test
+    public abstract partial class Test
     {
         private const string INFO_ICON = "ℹ️";
 
@@ -120,7 +120,10 @@ namespace Rockabilly.CoarseGrind
             name = Name;
             detailedDescription = DetailedDescription;
             categories = Categories;
-        }
+            Assert = new enforcer(TestConditionalType.Assertion, this);
+            Require = new enforcer(TestConditionalType.Requirement, this);
+            Consider = new enforcer(TestConditionalType.Consideration, this);
+    }
 
         // End User Must Implement
         public virtual bool Setup() { return true; }
@@ -298,32 +301,6 @@ namespace Rockabilly.CoarseGrind
             {
                 // DELIBERATE NO-OP
             }
-        }
-
-        public virtual void Require(string conditionDescription, bool condition)
-        {
-            TestResult result = TestResult.FromPrerequisite(conditionDescription, condition);
-            AddResult(result);
-            result = null;
-        }
-
-        public virtual void Assert(string conditionDescription, bool condition)
-        {
-            TestResult result = TestResult.FromPassCriterion(conditionDescription, condition);
-            AddResult(result);
-            result = null;
-        }
-
-        public virtual void Consider(string conditionDescription, bool condition)
-        {
-            TestResult result = TestResult.FromCondition(conditionDescription, condition);
-            AddResult(result);
-            result = null;
-        }
-
-        public virtual void MakeSubjective()
-        {
-            AddResult(new TestResult(TestStatus.Subjective, "This test case requires analysis by appropriate personnel to determine pass/fail status"));
         }
 
         private string FilterForSummary(string it)

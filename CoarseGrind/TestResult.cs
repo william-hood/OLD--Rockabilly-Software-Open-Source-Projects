@@ -24,10 +24,12 @@ using Rockabilly.MemoirV2;
 
 namespace Rockabilly.CoarseGrind
 {
-	internal enum TestConditionalType
+	public enum TestConditionalType
 	{
-		Unspecified, Prerequisite, PassCriterion
-	}
+		//Unspecified, Prerequisite, PassCriterion
+
+        Consideration, Requirement, Assertion
+    }
 
 	public class TestResult
 	{
@@ -61,46 +63,53 @@ namespace Rockabilly.CoarseGrind
 			return Failures.Count > 0;
 		}
 
-		private static TestResult FromCondition(string conditionDescription, bool condition, TestConditionalType conditionType)
+		internal static TestResult FromConditional(TestConditionalType conditionType, bool outcome, string explaination)
 		{
 			string prefix = string.Empty;
-			if (conditionType == TestConditionalType.PassCriterion)
+			if (conditionType == TestConditionalType.Assertion)
 			{
-				prefix = "(Pass Criterion) ";
+				prefix = "(Assertion) ";
 			}
-			if (conditionType == TestConditionalType.Prerequisite)
+			if (conditionType == TestConditionalType.Requirement)
 			{
-				prefix = "(Prerequisite) ";
+				prefix = "(Requirement) ";
 			}
 
 			TestResult result = new TestResult();
-			if (condition)
+			if (outcome)
 			{
 				result.Status = TestStatus.Pass;
 			}
 			else {
-				if (conditionType != TestConditionalType.Prerequisite)
+				if (conditionType == TestConditionalType.Assertion)
 				{
 					result.Status = TestStatus.Fail;
-				}
-			}
-			result.Description = prefix + conditionDescription;
+                }
+
+                if (conditionType == TestConditionalType.Consideration)
+                {
+                    result.Status = TestStatus.Subjective;
+                }
+
+                // Otherwise leave the default status of inconclusive in-place.
+            }
+			result.Description = prefix + explaination;
 			return result;
 		}
 
-		public static TestResult FromPrerequisite(string conditionDescription, bool condition)
+		public static TestResult FromPrerequisite(bool condition, string conditionDescription)
 		{
-			return FromCondition(conditionDescription, condition, TestConditionalType.Prerequisite);
+			return FromConditional(TestConditionalType.Requirement, condition, conditionDescription);
 		}
 
-		public static TestResult FromPassCriterion(String conditionDescription, bool condition)
+		public static TestResult FromPassCriterion(bool condition, string conditionDescription)
 		{
-			return FromCondition(conditionDescription, condition, TestConditionalType.PassCriterion);
+			return FromConditional(TestConditionalType.Assertion, condition, conditionDescription);
 		}
 
-		public static TestResult FromCondition(String conditionDescription, bool condition)
+		public static TestResult FromConsideration(bool condition, string conditionDescription)
 		{
-			return FromCondition(conditionDescription, condition, TestConditionalType.Unspecified);
+			return FromConditional(TestConditionalType.Consideration, condition, conditionDescription);
 		}
 
 		public void Log(Memoir memoir)

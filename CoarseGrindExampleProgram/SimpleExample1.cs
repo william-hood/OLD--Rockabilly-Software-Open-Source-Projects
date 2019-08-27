@@ -24,7 +24,7 @@ namespace Rockabilly.CoarseGrind.Examples
 			// If setup fails, it will NOT be run.
 
 			int percentSetup = 100;
-			Require("Verifying that everything is setup.", percentSetup == 100);
+            Require.ShouldBeTrue(percentSetup == 100, "Verifying that everything is setup.");
 
 			// Coarse Grind does not interrupt the test if something fails.
 			// This is by-design to support multiple points-of-failure.
@@ -43,9 +43,9 @@ namespace Rockabilly.CoarseGrind.Examples
 				Log.Info("Calling doSomethingThree()");
 				//doSomethingThree();
 
-
-				Assert("Everything adds up nicely.", return1 + return2 == 84);
-			}
+                Assert.ShouldBeEqual(42, return1, "First function returned 42.");
+                Assert.ShouldBeEqual(42, return2, "Second function also returned 42.");
+            }
 
 			// This test should pass.
 			// Note that the test subject will only be passing if there are NO failing or inconclusive tests in its contents.
