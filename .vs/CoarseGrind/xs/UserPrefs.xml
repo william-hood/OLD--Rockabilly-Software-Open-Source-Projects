@@ -1,40 +1,30 @@
 ﻿<Properties StartupConfiguration="{092E53A5-1EAD-4177-AA58-91355E9018C0}|Default">
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="CoarseGrindExampleProgram/SimpleExample4.cs">
     <Files>
-      <File FileName="CoarseGrind/CoarseGrindResultList.cs" Line="1" Column="1" />
-      <File FileName="CoarseGrind/TestCollection.cs" />
-      <File FileName="CoarseGrind/TestEssentials__DEPRECATED.cs" />
-      <File FileName="Memoir/Constants.cs" />
-      <File FileName="CoarseGrindExampleProgram/SampleTest4x.cs" />
-      <File FileName="CoarseGrindExampleProgram/SimpleExample2.cs" />
-      <File FileName="CoarseGrindExampleProgram/SimpleExample3.cs" />
-      <File FileName="Memoir/ShowObject.cs" />
-      <File FileName="Memoir/Memoir.cs" />
-      <File FileName="Memoir/ShowException.cs" />
-      <File FileName="Memoir/ShowHttp.cs" />
-      <File FileName="CoarseGrind/TestResult.cs" Line="112" Column="93" />
-      <File FileName="CoarseGrind/TestProgram.cs" Line="1" Column="1" NotebookId="1" />
-      <File FileName="CoarseGrind/Test.cs" Line="125" Column="70" NotebookId="1" />
-      <File FileName="CoarseGrind/TestFactory.cs" NotebookId="1" />
-      <File FileName="CoarseGrind/TestPriority.cs" NotebookId="1" />
-      <File FileName="CoarseGrindExampleProgram/DataDrivenExample.cs" NotebookId="1" />
-      <File FileName="CoarseGrind/Assertions.cs" Line="142" Column="36" NotebookId="1" />
+      <File FileName="CoarseGrind/Assertions.cs" Line="52" Column="37" />
+      <File FileName="CoarseGrindExampleProgram/DataDrivenExample.cs" Line="69" Column="59" NotebookId="1" />
+      <File FileName="CoarseGrindExampleProgram/DescriptionsExample.cs" Line="73" Column="61" NotebookId="1" />
       <File FileName="CoarseGrindExampleProgram/SimpleExample1.cs" Line="47" Column="88" NotebookId="1" />
+      <File FileName="CoarseGrindExampleProgram/SimpleExample2.cs" Line="48" Column="91" NotebookId="1" />
+      <File FileName="CoarseGrindExampleProgram/SimpleExample3.cs" Line="47" Column="91" NotebookId="1" />
+      <File FileName="CoarseGrindExampleProgram/SimpleExample4.cs" Line="1" Column="1" NotebookId="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="CoarseGrind" expanded="True">
-            <Node name="CoarseGrind" expanded="True">
-              <Node name="TestResult.cs" selected="True" />
-            </Node>
+            <Node name="CoarseGrind" expanded="True" />
             <Node name="CoarseGrindExampleLibrary" expanded="True" />
-            <Node name="CoarseGrindExampleProgram" expanded="True" />
+            <Node name="CoarseGrindExampleProgram" expanded="True">
+              <Node name="SimpleExample4.cs" selected="True" />
+            </Node>
             <Node name="CoarseGrindRunner" expanded="True" />
             <Node name="Memoir" expanded="True" />
-            <Node name="Strings" expanded="True" />
           </Node>
         </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>

@@ -24,12 +24,12 @@ namespace Rockabilly.CoarseGrind.Examples
 
 			// The two lines below should render this test (and thus the whole test subject) inconclusive.
 			int percentSetup = 76;
-			Require("Verifying that everything is setup.", percentSetup == 100);
+            Require.ShouldBeEqual(percentSetup, 100, "Verifying that everything is setup.");
 
-			// Coarse Grind does not interrupt the test if something fails.
-			// This is by-design to support multiple points-of-failure.
-			// If inconclusive or failing status makes it pointless to proceed, you must explicitly enforce that.
-			if (this.OverallStatus != TestStatus.Inconclusive)
+            // Coarse Grind does not interrupt the test if something fails.
+            // This is by-design to support multiple points-of-failure.
+            // If inconclusive or failing status makes it pointless to proceed, you must explicitly enforce that.
+            if (this.OverallStatus != TestStatus.Inconclusive)
 			{
 				// You should log every little thing the test does.  That lessens the chance of needing to re-run when a bug happens.
 				Log.Info("Calling doSomethingOne()");
@@ -41,10 +41,10 @@ namespace Rockabilly.CoarseGrind.Examples
 				int return2 = 42;
 
 				Log.Info("Calling doSomethingThree()");
-				//doSomethingThree();
+                //doSomethingThree();
 
 
-				Assert("Everything adds up nicely.", return1 + return2 == 84);
+                Assert.ShouldBeEqual(return1 + return2, 84, "Everything adds up nicely.");
 			}
 		}
 

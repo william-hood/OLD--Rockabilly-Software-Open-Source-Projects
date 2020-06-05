@@ -65,8 +65,8 @@ Foreign Characters, DD4, 國人, 外, 123 Alley 75 Lane 3, Jiufen, TW, 700";
             Log.Info("Here's the Object");
             Log.ShowObject(address);
 
-            Assert("LastName is not empty", address.LastName != "");
-            Assert("ZipCode has 5 digits", address.ZipCode.Length == 5);
+            Assert.ShouldNotBeEqual(address.LastName, "", "LastName is not empty");
+            Assert.ShouldBeEqual(address.ZipCode.Length, 5, "ZipCode has 5 digits");
         }
     }
 

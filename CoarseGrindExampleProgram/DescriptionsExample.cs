@@ -70,7 +70,7 @@ namespace CoarseGrindExampleProgram
             Log.Info(string.Format("The basis value: {0}", basisValue));
             Log.Info(string.Format("The attacked value: <pre>{0}</pre>", HttpUtility.HtmlEncode(field.DescribedValue)));
             Log.Info("In a real test you'd probably try to send it into a rest call, database, or function and see if it breaks.");
-            Assert("I didn't break it...", true);
+            Assert.ShouldBeTrue(true, "I didn't break it...");
         }
     }
 }
