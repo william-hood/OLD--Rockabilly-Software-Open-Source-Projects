@@ -1,36 +1,28 @@
 ﻿<Properties StartupConfiguration="{B1988925-B82E-468F-A7E0-BC23E5FB85FE}|Default">
-  <MonoDevelop.Ide.ItemProperties.Memoir-MSTest FirstBuild="True" />
-  <MonoDevelop.Ide.ItemProperties.Memoir--MSTest-Wrapper FirstBuild="True" />
-  <MonoDevelop.Ide.ItemProperties.Memoir--NUnit-Wrapper FirstBuild="True" />
   <MonoDevelop.Ide.ItemProperties.MemoirExample PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.ItemProperties.Memoir-NUnit PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="MemoirExample/Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Memoir/Memoir.cs">
     <Files>
       <File FileName="MemoirExample/Program.cs" Line="1" Column="1" />
+      <File FileName="Memoir/Constants.cs" Line="200" Column="13" />
+      <File FileName="Memoir/Memoir.cs" Line="124" Column="1" />
+      <File FileName="Memoir/ShowException.cs" Line="1" Column="1" />
+      <File FileName="Memoir/ShowHttp.cs" Line="1" Column="1" />
+      <File FileName="Memoir/ShowObject.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Memoir" expanded="True">
-            <Node name="MemoirExample" expanded="True">
-              <Node name="Program.cs" selected="True" />
+            <Node name="Memoir" expanded="True">
+              <Node name="Memoir.cs" selected="True" />
             </Node>
+            <Node name="MemoirExample" expanded="True" />
           </Node>
-        </State>
-      </Pad>
-      <Pad Id="MonoDevelop.Debugger.WatchPad">
-        <State />
-      </Pad>
-      <Pad Id="MonoDevelop.UnitTesting.TestPad">
-        <State name="__root__">
-          <Node name="Memoir" expanded="True" selected="True" />
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.ItemProperties.Memoir-xUnit FirstBuild="True" />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.ItemProperties.Memoir--xUnit-Wrapper FirstBuild="True" />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
