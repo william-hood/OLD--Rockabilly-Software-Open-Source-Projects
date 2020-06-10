@@ -6,7 +6,7 @@ namespace Rockabilly.MemoirV2
     public partial class Memoir
     {
         const string DEFAULT_STACKTRACE = "no stacktrace";
-        public string ShowException(Exception target)
+        public string ShowException(Exception target, bool isNested = false)
         {
             DateTime timeStamp = DateTime.Now;
             StringBuilder result = new StringBuilder("<div class=\"object exception\">\r\n");
@@ -56,7 +56,7 @@ namespace Rockabilly.MemoirV2
                 {
                     result.Append(String.Format("<br>\r\n<table><tr><td>&nbsp;</td><td>Caused by {0}</td><td>&nbsp;</td><td>{1}</td></tr></table>",
                         Constants.EMOJI_CAUSED_BY,
-                        ShowException(target.InnerException)));
+                        ShowException(target.InnerException, true)));
                 }
 
                 result.Append("</div>\r\n</label>");
@@ -68,7 +68,7 @@ namespace Rockabilly.MemoirV2
 
             result.Append("</div>");
 
-            WriteToHTML(result.ToString(), timeStamp, Constants.EMOJI_ERROR);
+            if (! isNested) WriteToHTML(result.ToString(), timeStamp, Constants.EMOJI_ERROR);
 
             return result.ToString();
         }
